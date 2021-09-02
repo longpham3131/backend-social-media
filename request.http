@@ -1,0 +1,29 @@
+# POST http://localhost:5000/api/post
+# Content-Type: application/json
+
+# {
+#     "title":"2343453234",
+#     "description":"ss",
+#     "status":"2"
+# }
+
+
+# POST http://localhost:5000/api/auth/login
+# Content-Type: application/json
+
+# {
+#     "username":"ADMIN",
+#     "password":"123453"
+# }
+
+
+
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+    "username":"ADMIN",
+    "password":"12345",
+    "email":"hai"
+}
+

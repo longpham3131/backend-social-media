@@ -1,35 +1,32 @@
 const express = require("express");
-const app = express();
-// mongoose : Mongoose is a MongoDB object modeling tool designed to work in an asynchronous environment. Mongoose supports both promises and callbacks.
 const mongoose = require("mongoose");
-// helmet: giúp bảo mật thông tin nhạy cảm => mã hóa thông tin
+const authRouter = require("./routes/auth");
+const postRouter = require("./routes/post");
 const helmet = require("helmet");
-// dotenv: Tải các biến môi trường từ tệp .env vào process.env.
-const dotenv = require("dotenv");
-// morgan: HTTP request logger middleware for node.js
-const morgan = require("morgan");
-
-//route
-const userRoute = require("./routes/users");
-const authRoute = require("./routes/auth");
-dotenv.config();
-
-mongoose.connect(
-  process.env.MONGO_URL,
-  { seNewUrlParser: true, useUnifiedTopology: true },
-  () => {
-    console.log("connected mongoDB");
+require("dotenv").config();
+const connectDB = async () => {
+  try {
+    await mongoose.connect(
+      `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.shyrq.mongodb.net/socialMediaDatabase?retryWrites=true&w=majority`,
+      (err) => {
+        if (err) throw err;
+        console.log("connected to MongoDB");
+      }
+    );
+  } catch (error) {
+    console.log(error.message);
+    process.exit(1);
   }
-);
+};
 
-// middleware
+connectDB();
+
+const app = express();
 app.use(express.json());
 app.use(helmet());
-app.use(morgan("common"));
+app.use("/api/auth", authRouter);
+app.use("/api/post", postRouter);
 
-app.use("/api/users", userRoute);
-app.use("/api/auth", authRoute);
+const PORT = 5000;
 
-app.listen(8800, () => {
-  console.log("BACKEND IS RUNNING");
-});
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
