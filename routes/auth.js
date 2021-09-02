@@ -10,8 +10,8 @@ const { error500, error400 } = require("../util/res");
 
 //REGISTER
 router.post("/register", async (req, res) => {
-  const { username, password,email } = req.body;
-  if (!username || !password||!email)
+  const { username, password, email } = req.body;
+  if (!username || !password || !email)
     return res
       .status(400)
       .json({ success: false, message: "Missing username and/or password" });
@@ -22,11 +22,16 @@ router.post("/register", async (req, res) => {
       return res
         .status(400)
         .json({ success: false, message: "Username already taken" });
+    const email = await User.findOne({ email });
+    if (email)
+      return res
+        .status(400)
+        .json({ success: false, message: "Email already taken" });
     const hashedPassword = await argon2.hash(password);
     const newUser = new User({
       username,
       password: hashedPassword,
-      email
+      email,
     });
     await newUser.save();
     const date = new Date();
@@ -53,7 +58,7 @@ router.post("/login", async (req, res) => {
 
   try {
     const user = await User.findOne({ username });
-    
+
     if (!user) return error400(res, "Incorrect username or password");
     const passwordValid = await argon2.verify(user.password, password);
     if (!passwordValid) return error400(res, "Incorrect username or password");
