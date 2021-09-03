@@ -7,7 +7,7 @@ require("dotenv").config();
 const connectDB = async () => {
   try {
     await mongoose.connect(
-      `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.shyrq.mongodb.net/socialMediaDatabase?retryWrites=true&w=majority`,
+      `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.sqhkg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
       (err) => {
         if (err) throw err;
         console.log("connected to MongoDB");

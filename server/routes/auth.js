@@ -22,6 +22,11 @@ router.post("/register", async (req, res) => {
       return res
         .status(400)
         .json({ success: false, message: "Username already taken" });
+    const email = await User.findOne({ email });
+    if (email)
+      return res
+        .status(400)
+        .json({ success: false, message: "Email already taken" });
     const hashedPassword = await argon2.hash(password);
     const newUser = new User({
       username,
