@@ -1,5 +1,5 @@
 import axios from "axios";
-import { HTTP_CONNECT } from "../../config";
+import { HTTP_CONNECT } from "../../../config";
 import { USER_LOGIN, USER_REGISTER } from "../constants/auth.constant";
 
 //LOGIN
