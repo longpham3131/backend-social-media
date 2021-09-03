@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Route, Switch, useHistory } from "react-router-dom";
-import Auth from "./pages/Auth";
+import AuthRoute from "./guard/auth.guard";
+import LoginAndRegister from "./pages/LoginAndRegister";
 import Profile from "./pages/Profile";
 import SocialMedia from "./pages/SocialMedia";
 
@@ -9,9 +10,12 @@ const App = () => {
     <BrowserRouter>
       <>
         <Switch>
-          <Route path="/" render={() => <SocialMedia />}></Route>
-          <Route path="/auth" render={() => <Auth></Auth>}></Route>
-          <Route path="/profile/:id" render={() => <Profile></Profile>}></Route>
+          <Route
+            path="/login"
+            render={(props) => <LoginAndRegister {...props} />}
+          />
+          <AuthRoute path="/" Component={SocialMedia} />
+          <AuthRoute path="/profile/:id" Component={Profile} />
         </Switch>
       </>
     </BrowserRouter>
