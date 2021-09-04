@@ -1,0 +1,40 @@
+@import "../../scss/index.scss";
+
+.wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1440px;
+  height: max-content;
+  border-radius: 10px;
+  padding: 20px;
+
+  .background-image {
+    background-image: url(../../assets/images/social-media-image.png);
+    background-position: center;
+    background-position: center;
+    background-size: cover;
+    height: 300px;
+    width: 500px;
+    border-radius: 10px;
+  }
+  .wrapper__form {
+    margin-left: 100px;
+    width: 20%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px #0000001a, 0 8px 16px #0000001a;
+    p {
+      padding-top: 10px;
+      text-align: center;
+      margin-bottom: 0;
+      cursor: pointer;
+      color: $color-blue;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

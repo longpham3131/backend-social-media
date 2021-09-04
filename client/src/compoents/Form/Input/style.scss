@@ -1,0 +1,9 @@
+form {
+  .invalid-message {
+    color: red;
+    font-size: 14px;
+  }
+  .form-control.invalid {
+    border-color: red !important;
+  }
+}

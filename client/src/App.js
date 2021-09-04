@@ -5,6 +5,9 @@ import LoginAndRegister from "./pages/LoginAndRegister";
 import Profile from "./pages/Profile";
 import SocialMedia from "./pages/SocialMedia";
 
+//SCSS
+import "./scss/index.scss";
+
 const App = () => {
   return (
     <BrowserRouter>
