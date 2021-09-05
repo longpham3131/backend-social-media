@@ -14,7 +14,8 @@ const Login = () => {
   useEffect(() => {
     setNotifyForm("");
     if (loginReducer?.status === 200) {
-      history.replace("/");
+      localStorage.setItem("userInfo", loginReducer?.data);
+      history.push("/");
     } else if (loginReducer?.status === 400) {
       setNotifyForm(loginReducer?.data?.message);
     }
