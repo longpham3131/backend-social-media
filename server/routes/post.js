@@ -5,7 +5,6 @@ const Post = require("../models/Post");
 const { error500, error400 } = require("../util/res");
 router.post("/", async (req, res) => {
   const { title, description, status } = req.body;
-
   if (!title) return error400(res, "title is required");
   try {
     const newPost = new Post({

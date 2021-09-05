@@ -9,6 +9,7 @@ const Dialog = ({
   isShow,
   handleHideDialog,
   btnSubmitName = "Xác nhận",
+  form,
   onSubmit,
 }) => {
   const [isLoading, setisLoading] = useState(true);
@@ -28,7 +29,13 @@ const Dialog = ({
         >
           Đóng
         </Button>
-        <Button type="primary" onClick={onSubmit}>
+        <Button
+          type="primary"
+          onClick={() => {
+            form.submit();
+          }}
+          htmlType="submit"
+        >
           {btnSubmitName}
         </Button>
       </div>

@@ -1,13 +1,28 @@
 import FormInput from "../../../compoents/Form/Input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../../store/actions/auth.action";
 const Login = () => {
+  const dispatch = useDispatch();
+  let history = useHistory();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [notifyForm, setNotifyForm] = useState("");
+  const loginReducer = useSelector((state) => state.authReducer.login);
+
+  useEffect(() => {
+    setNotifyForm("");
+    if (loginReducer?.status === 200) {
+      history.replace("/");
+    } else if (loginReducer?.status === 400) {
+      setNotifyForm(loginReducer?.data?.message);
+    }
+  }, [loginReducer]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    console.log("USERNAME - PASSWORD", username, password);
+    dispatch(login(username, password));
   };
 
   return (
@@ -26,6 +41,16 @@ const Login = () => {
           setPassword(value);
         }}
       />
+      <p
+        style={{
+          display: notifyForm !== "" ? "block" : "none",
+          color: "red",
+          textAlign: "center",
+          fontWeight: "500",
+        }}
+      >
+        {notifyForm}
+      </p>
       <div style={{ textAlign: "right" }}>
         <button type="submit" className="btn btn-primary w-100">
           Đăng nhập

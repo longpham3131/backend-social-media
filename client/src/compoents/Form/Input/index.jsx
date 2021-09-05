@@ -1,37 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./style.scss";
-const FormInput = ({ label, type, onChangeValue, validate = "none" }) => {
+const FormInput = ({
+  label,
+  type,
+  onChangeValue,
+  validate = "none",
+  isInputValid,
+}) => {
   const [valid, setValid] = useState(true);
   const [alert, setAlert] = useState("");
 
   const checkValid = (value) => {
+    setAlert("");
+    setValid(true);
+
     switch (validate) {
       case "username": {
-        setAlert("");
-        setValid(true);
         if (value.trim() === "") {
           setAlert("Hãy nhập tài khoản");
           setValid(false);
+          return isInputValid(false);
         }
-        break;
+        return isInputValid(true);
       }
       case "email": {
-        setAlert("");
-        setValid(true);
         if (value.trim() === "") {
           setAlert("Hãy nhập email");
           setValid(false);
+          return isInputValid(false);
         }
-        break;
+        return isInputValid(true);
       }
       case "password": {
-        setAlert("");
-        setValid(true);
         if (value.trim() === "") {
           setAlert("Hãy nhập mật khẩu");
           setValid(false);
+          return isInputValid(false);
         }
-        break;
+        return isInputValid(true);
       }
 
       default: {
@@ -44,13 +50,13 @@ const FormInput = ({ label, type, onChangeValue, validate = "none" }) => {
 
   return (
     <div className="form-group pb-2">
-      <label style={{ color: valid ? "" : "red" }} htmlFor={label + type}>
+      <label style={{ color: valid ? "" : "red" }} htmlFor={type}>
         {label}:
       </label>
       <input
         type={type}
         className={valid ? "form-control" : "form-control invalid"}
-        id={label + type}
+        id={type}
         onChange={(e) => onChangeValue(e.target.value)}
         onBlur={(e) => checkValid(e.target.value)}
       />
