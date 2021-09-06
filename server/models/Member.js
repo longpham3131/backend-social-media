@@ -1,27 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-
 const PostSchema = new Schema({
-  title: {
+  role: {
     type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
+    default: "member",
   },
   createAt: {
     type: Date,
     default: Date.now,
-  },
-  updateAt: {
-    type: Date,
-    default: Date.now,
-  },
-  status: {
-    type: String,
-    enum: ["1", "2", "3"],
   },
   user: {
     type: Schema.Types.ObjectId,
