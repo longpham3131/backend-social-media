@@ -1,0 +1,15 @@
+// BS4
+form {
+  .form-control {
+    &:focus {
+      box-shadow: unset;
+      border-color: unset;
+    }
+  }
+}
+
+// ANTD
+
+.ant-btn {
+  border-radius: 10px !important;
+}

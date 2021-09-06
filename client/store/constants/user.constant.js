@@ -1,5 +1,0 @@
-const GET_USERS = "GET_USERS";
-
-const CREATE_USER = "CREATE_USER";
-
-const UPDATE_USER = "UPDATE_USER";

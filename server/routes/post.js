@@ -6,7 +6,6 @@ const { error500, error400 } = require("../util/res");
 const verifyToken = require("../middleware/auth");
 router.post("/", verifyToken, async (req, res) => {
   const { title, description, status } = req.body;
-
   if (!title) return error400(res, "title is required");
   try {
     const newPost = new Post({

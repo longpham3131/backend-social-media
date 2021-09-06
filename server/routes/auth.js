@@ -11,6 +11,7 @@ const { error500, error400 } = require("../util/res");
 //REGISTER
 router.post("/register", async (req, res) => {
   const { username, password, email } = req.body;
+  res.header("Access-Control-Allow-Origin", "*");
   if (!username || !password || !email)
     return res
       .status(400)
@@ -21,12 +22,12 @@ router.post("/register", async (req, res) => {
     if (user)
       return res
         .status(400)
-        .json({ success: false, message: "Username already taken" });
+        .json({ success: false, message: "Tài khoản đã tồn tại" });
     const emailuser = await User.findOne({ email });
     if (emailuser)
       return res
         .status(400)
-        .json({ success: false, message: "Email already taken" });
+        .json({ success: false, message: "Email đã tồn tại" });
     const hashedPassword = await argon2.hash(password);
     const newUser = new User({
       username,
@@ -59,9 +60,10 @@ router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ username });
 
-    if (!user) return error400(res, "Incorrect username or password");
+    if (!user) return error400(res, "Tài khoản hoặc mật khẩu không đúng");
     const passwordValid = await argon2.verify(user.password, password);
-    if (!passwordValid) return error400(res, "Incorrect username or password");
+    if (!passwordValid)
+      return error400(res, "Tài khoản hoặc mật khẩu không đúng");
 
     const date = new Date();
     date.setDate(date.getDate() + 3);
