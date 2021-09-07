@@ -1,11 +1,12 @@
-POST http://localhost:5000/api/post
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTM2NjEzMTcyOTE1MjY5MjMwNmIzOTMiLCJleHBpcmVkIjoiMjAyMS0wOS0wOVQxODo0Mjo1Ny45MzVaIiwiaWF0IjoxNjMwOTUzNzc3fQ.fEwGjaJZDhrN2RtgoWv4DP_enmgCJxBxmMtOlau4Dp4
+
+ POST http://localhost:5000/api/post
+ Content-Type: application/json
+ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTM2NjEzMTcyOTE1MjY5MjMwNmIzOTMiLCJleHBpcmVkIjoiMjAyMS0wOS0wNFQwNTo0NToyMi41OTBaIiwiaWF0IjoxNjMwOTkzNTIyfQ.1rQOoLwrC4jA4sibZlrmVHJGcj3S4RqBcONOyq8ebws
 
 {
     "title":"2343453234",
-    "description":"ssss",
-    "status":"2"
+     "description":"ssss",
+     "status":"2"
 }
 
 
