@@ -4,6 +4,7 @@ import Dialog from "../../../../compoents/Dialog";
 import { useState } from "react";
 import { Select } from "antd";
 import { Input } from "antd";
+import Post from "./Post";
 
 const { TextArea } = Input;
 
@@ -69,6 +70,10 @@ const ListPost = () => {
           }
         />
       </div>
+      <Post />
+      <Post />
+      <Post />
+      <Post />
     </div>
   );
 };

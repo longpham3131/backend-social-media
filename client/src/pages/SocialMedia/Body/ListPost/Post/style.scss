@@ -1,0 +1,41 @@
+@import "../../../../../scss/";
+
+.post {
+  margin-top: 20px;
+  border-radius: $radius;
+  border: 1px solid black;
+  width: 90%;
+  padding: 0 10px;
+  .post__header {
+    display: flex;
+    align-items: center;
+    .header__userName {
+      font-weight: bold;
+    }
+    .header__permission {
+      font-size: 12px;
+    }
+  }
+  .post__content {
+    .post__content--attachments {
+      padding: 10px 0;
+      .attachment {
+        background-position: center;
+        background-size: cover;
+        height: 300px;
+        max-height: 400px;
+      }
+    }
+  }
+  .post__react {
+    margin-bottom: 10px;
+    border-top: 1px solid black;
+    // border-bottom: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    .btn:hover {
+      background-color: $color-gray;
+    }
+  }
+}
