@@ -1,0 +1,51 @@
+@import "../../../../scss/index.scss";
+
+.listPost {
+  flex-grow: 3;
+
+  .postStatus {
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    height: 80px;
+    border-radius: $radius;
+    width: 90%;
+    .postStatus__placehoder {
+      background-color: $color-gray;
+      width: 100%;
+      border-radius: $radius;
+      height: 30px;
+      line-height: 30px;
+      cursor: pointer;
+      margin-right: 10px;
+      p {
+        padding-left: 10px;
+        font-size: 15px;
+      }
+    }
+  }
+}
+
+.postStatus__content {
+  img.avatar {
+    width: 60px;
+    height: 60px;
+  }
+  .options {
+    margin: 0;
+    padding: 10px 0;
+    font-weight: bold;
+    color: #353030a8;
+  }
+  i {
+    font-size: 25px;
+    padding-right: 20px;
+    cursor: pointer;
+  }
+  i.fa-image {
+    color: green;
+  }
+  i.fa-tag {
+    color: blue;
+  }
+}
