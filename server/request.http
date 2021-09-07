@@ -1,11 +1,13 @@
-# POST http://localhost:5000/api/post
-# Content-Type: application/json
 
-# {
-#     "title":"2343453234",
-#     "description":"ss",
-#     "status":"2"
-# }
+ POST http://localhost:5000/api/post
+ Content-Type: application/json
+ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTM2NjEzMTcyOTE1MjY5MjMwNmIzOTMiLCJleHBpcmVkIjoiMjAyMS0wOS0wNFQwNTo0NToyMi41OTBaIiwiaWF0IjoxNjMwOTkzNTIyfQ.1rQOoLwrC4jA4sibZlrmVHJGcj3S4RqBcONOyq8ebws
+
+{
+    "title":"2343453234",
+     "description":"ssss",
+     "status":"2"
+}
 
 
 # POST http://localhost:5000/api/auth/login
@@ -13,17 +15,17 @@
 
 # {
 #     "username":"ADMIN",
-#     "password":"123453"
+#     "password":"12345"
 # }
 
 
 
-POST http://localhost:5000/api/auth/register
-Content-Type: application/json
+# POST http://localhost:5000/api/auth/register
+# Content-Type: application/json
 
-{
-    "username":"ADMIN",
-    "password":"12345",
-    "email":"hai"
-}
+# {
+#     "username":"ADMIN",
+#     "password":"12345",
+#     "email":"hai"
+# }
 

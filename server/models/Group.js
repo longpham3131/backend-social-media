@@ -1,13 +1,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-
-const PostSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
+const UserFriend = new Schema({
+  createBy: {
+    type: Schema.Types.ObjectId,
+    ref: "users",
   },
-  description: {
+  updateBy: {
+    type: Schema.Types.ObjectId,
+    ref: "users",
+  },
+  targetId: {
     type: String,
     required: true,
   },
@@ -19,14 +22,10 @@ const PostSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  status: {
-    type: String,
-    enum: ["1", "2", "3"],
-  },
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: "users",
-  },
+//   members:{
+//       type:Array<>,
+//       default:[]
+//   }
 });
 
 module.exports = mongoose.model("post", PostSchema);
