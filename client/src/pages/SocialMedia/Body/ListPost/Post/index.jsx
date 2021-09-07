@@ -23,7 +23,7 @@ const Post = () => {
       <div className="post__react">
         <button className="btn w-100">Thích</button>
         <button className="btn w-100">Bình luận</button>
-        <button className="btn w-100">Chia sẽ</button>
+        <button className="btn w-100">Chia sẻ</button>
       </div>
     </div>
   );
