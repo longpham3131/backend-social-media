@@ -17,6 +17,9 @@
     }
   }
   .post__content {
+    .post__content--text {
+      padding-bottom: 10px;
+    }
     .post__content--attachments {
       padding: 10px 0;
       .attachment {

@@ -70,7 +70,12 @@ const ListPost = () => {
           }
         />
       </div>
-      <Post />
+      <Post
+        avatar={DefualtAvatar}
+        username={"Pham Hoang Long"}
+        audience={"Công khai"}
+        text="Disconmemay"
+      />
       <Post />
       <Post />
       <Post />

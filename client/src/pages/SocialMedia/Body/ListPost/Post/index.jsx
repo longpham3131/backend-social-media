@@ -1,22 +1,55 @@
 import "./style.scss";
 import DefaultAvatar from "../../../../../assets/images/default-avatar.jpg";
 import DefaultImage from "../../../../../assets/images/default-image.jpg";
-const Post = () => {
+const Post = ({ avatar, username, audience, text, attachments }) => {
   return (
     <div className="post">
       <div className="post__header">
-        <img src={DefaultAvatar} alt="avatar" className="avatar" />
-        <div>
-          <p className="header__userName">Phạm Hoàng Long</p>
-          <p className="header__permission">Công khai</p>
+        <img
+          src={avatar}
+          alt=" "
+          className={avatar ? "avatar" : "avatar skeleton"}
+        />
+        <div className="w-100">
+          <p
+            className={
+              username
+                ? "header__userName"
+                : "header__userName  skeleton skeleton-username"
+            }
+          >
+            {username}
+          </p>
+          <p
+            className={
+              audience
+                ? "header__permission"
+                : "header__permission  skeleton skeleton-audience"
+            }
+          >
+            {audience}
+          </p>
         </div>
       </div>
       <div className="post__content">
-        <p className="post__content--text">Hôm nay là một ngày như con cặc</p>
-        <div className="post__content--attachments">
+        {text ? (
+          <p className="post__content--text">{text}</p>
+        ) : (
+          <div className="w-100 py-3">
+            <p className="skeleton skeleton-text"></p>
+            <p className="skeleton skeleton-text"></p>
+            <p className="skeleton skeleton-text"></p>
+            <p className="skeleton skeleton-text"></p>
+          </div>
+        )}
+
+        <div
+          className="post__content--attachments"
+          style={{ display: attachments ? "block" : "none" }}
+        >
           <div
             className="attachment"
-            style={{ backgroundImage: `url(${DefaultImage})` }}
+            style={{ backgroundImage: `url(${attachments})` }}
           ></div>
         </div>
       </div>
