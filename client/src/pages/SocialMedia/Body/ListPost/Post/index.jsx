@@ -1,13 +1,15 @@
 import "./style.scss";
 import DefaultAvatar from "../../../../../assets/images/default-avatar.jpg";
 import DefaultImage from "../../../../../assets/images/default-image.jpg";
-const Post = ({ avatar, username, audience, text, attachments }) => {
+const Post = (props) => {
+  const { avatar, username, audience, text, attachments } = props;
+  console.log("PROPS", props);
   return (
-    <div className="post">
+    <div className="card">
       <div className="post__header">
         <img
           src={avatar}
-          alt=" "
+          alt=""
           className={avatar ? "avatar" : "avatar skeleton"}
         />
         <div className="w-100">
@@ -53,7 +55,12 @@ const Post = ({ avatar, username, audience, text, attachments }) => {
           ></div>
         </div>
       </div>
-      <div className="post__react">
+      <div
+        className="post__react"
+        style={{
+          display: props && Object.keys(props).length !== 0 ? "flex" : "none",
+        }}
+      >
         <button className="btn w-100">Thích</button>
         <button className="btn w-100">Bình luận</button>
         <button className="btn w-100">Chia sẻ</button>

@@ -1,3 +1,14 @@
 .rightSidebar {
   flex-grow: 1;
+  max-height: 100vh;
+  .card {
+    width: 100% !important;
+  }
+  .rightSidebar__title {
+    font-weight: bold;
+    padding-bottom: 10px;
+  }
+  .rightSidebar__content {
+    // position: fixed;
+  }
 }

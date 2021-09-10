@@ -18,7 +18,7 @@ const ListPost = () => {
   return (
     <div className="listPost">
       {/* Post status */}
-      <div className="postStatus">
+      <div className="card postStatus">
         <img src={DefualtAvatar} alt="avatar" className="avatar" />
         <div
           className="postStatus__placehoder"
@@ -76,6 +76,9 @@ const ListPost = () => {
         audience={"Công khai"}
         text="Disconmemay"
       />
+      <Post />
+      <Post />
+      <Post />
       <Post />
       <Post />
       <Post />
