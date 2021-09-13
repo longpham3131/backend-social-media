@@ -12,7 +12,7 @@ router.post("/", verifyToken, async (req, res) => {
       title,
       description,
       status: status || "1",
-      user: "612f1e729a7e21f80b3689f7",
+      user: req.userId,
     });
     await newPost.save();
     res.json({
