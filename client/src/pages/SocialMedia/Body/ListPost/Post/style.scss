@@ -1,11 +1,7 @@
 @import "../../../../../scss/";
 
-.post {
-  margin-top: 20px;
-  border-radius: $radius;
-  border: 1px solid black;
-  width: 90%;
-  padding: 0 10px;
+.card {
+  width: 90% !important;
   .post__header {
     display: flex;
     align-items: center;
@@ -17,6 +13,9 @@
     }
   }
   .post__content {
+    .post__content--text {
+      padding-bottom: 10px;
+    }
     .post__content--attachments {
       padding: 10px 0;
       .attachment {

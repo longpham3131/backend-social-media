@@ -3,4 +3,6 @@
   width: 50px;
   border-radius: 50%;
   padding-right: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
 }
