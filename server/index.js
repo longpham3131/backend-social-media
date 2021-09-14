@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/post");
+const usersRouter = require("./routes/users");
 const helmet = require("helmet");
 const cors = require("cors");
 require("dotenv").config();
@@ -29,6 +30,7 @@ app.use(cors());
 app.use(helmet());
 app.use("/api/auth", authRouter);
 app.use("/api/post", postRouter);
+app.use("/api/users", usersRouter);
 
 const PORT = 5000;
 
