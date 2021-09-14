@@ -18,7 +18,7 @@ const App = () => {
             render={(props) => <LoginAndRegister {...props} />}
           />
           <AuthRoute path="/" Component={SocialMedia} />
-          <AuthRoute path="/profile/" Component={Profile} />
+          <AuthRoute path="/profile/:id" Component={Profile} />
         </Switch>
       </>
     </BrowserRouter>

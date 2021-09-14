@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../../store/actions/auth.action";
+import jwt_decode from "jwt-decode";
 const Login = () => {
   const dispatch = useDispatch();
   let history = useHistory();
@@ -14,8 +15,11 @@ const Login = () => {
   useEffect(() => {
     setNotifyForm("");
     if (loginReducer?.status === 200) {
-      localStorage.setItem("userInfo", loginReducer?.data);
+      localStorage.setItem("token", loginReducer?.data?.accessToken);
+      const decodeJWT = jwt_decode(loginReducer?.data?.accessToken);
+      localStorage.setItem("userId", decodeJWT?.userId);
       history.push("/");
+      window.location.reload();
     } else if (loginReducer?.status === 400) {
       setNotifyForm(loginReducer?.data?.message);
     }

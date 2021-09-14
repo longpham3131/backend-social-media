@@ -74,8 +74,7 @@ router.get("/search", verifyToken, (req, res) => {
 
 // UPDATE USER
 router.put("/", verifyToken, async (req, res) => {
-  const { fullName, newPassword, email, profilePicture, coverPicture } =
-    req.body;
+  const { fullName, newPassword, email, avatar, coverPicture } = req.body;
   const hashedPassword = await argon2.hash(newPassword);
   const date = new Date();
 
@@ -83,12 +82,13 @@ router.put("/", verifyToken, async (req, res) => {
     fullName,
     password: hashedPassword,
     email,
-    profilePicture,
+    avatar,
     coverPicture,
     updatedAt: date.getDate(),
   };
 
   await User.findByIdAndUpdate(req.body.id, updateData)
+    .setOptions({ new: true })
     .then((result) => {
       res.json(result);
       //   console.log(result);

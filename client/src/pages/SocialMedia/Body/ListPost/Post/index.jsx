@@ -3,7 +3,7 @@ import DefaultAvatar from "../../../../../assets/images/default-avatar.jpg";
 import DefaultImage from "../../../../../assets/images/default-image.jpg";
 const Post = (props) => {
   const { avatar, username, audience, text, attachments } = props;
-  console.log("PROPS", props);
+
   return (
     <div className="card">
       <div className="post__header">
