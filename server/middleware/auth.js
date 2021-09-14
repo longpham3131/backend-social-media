@@ -15,7 +15,6 @@ const verifyToken = async (req, res, next) => {
     req.userId = decode.userId;
     const user = await User.findOne({ _id: decode.userId });
     const currentTime = moment(new Date());
-    console.log(" decode.userId", moment(decode.expired).isAfter(currentTime));
     if (!moment(decode.expired).isAfter(currentTime))
       return res.status(401).json({ success: false, message: "Token has expired" });
     if (user) {
