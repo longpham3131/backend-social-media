@@ -1,6 +1,6 @@
 import "./style.scss";
 import { Input } from "antd";
-import _defaultAvatar from "../../../assets/images/default-avatar.jpg";
+import _defaultAvatar from "../../assets/images/default-avatar.jpg";
 import { useEffect, useRef, useState } from "react";
 import Notifications from "./Notifications";
 import { Link, useHistory } from "react-router-dom";
@@ -54,10 +54,10 @@ const Header = () => {
         </div>
         <div className="listTab">
           <div className="listTab__tabHome">
-            <i class="fa fa-home"></i>
+            <i className="fa fa-home"></i>
           </div>
           <div className="listTab__tabMessages">
-            <i class="fa fa-comments "></i>
+            <i className="fa fa-comments "></i>
           </div>
 
           <Notifications />
@@ -72,14 +72,7 @@ const Header = () => {
               <Link to={`/profile/${localStorage.getItem("userId")}`}>
                 Trang cá nhân
               </Link>
-              <Link
-                to="/login"
-                onClick={() => {
-                  history.replace("/login");
-                }}
-              >
-                Đăng xuất
-              </Link>
+              <Link to="/login">Đăng xuất</Link>
             </div>
           </div>
         </div>

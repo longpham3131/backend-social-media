@@ -1,6 +1,6 @@
 import "./style.scss";
-import DefualtAvatar from "../../../../assets/images/default-avatar.jpg";
-import Dialog from "../../../../compoents/Dialog";
+import DefualtAvatar from "../../../assets/images/default-avatar.jpg";
+import Dialog from "../../../compoents/Dialog";
 import { useState } from "react";
 import { Select } from "antd";
 import { Input } from "antd";
@@ -63,8 +63,8 @@ const ListPost = () => {
               </div>
               <p className="options">Tùy chọn thêm</p>
               <div className="d-flex align-items-center justify-content-start">
-                <i class="fa fa-image"></i>
-                <i class="fa fa-tag"></i>
+                <i className="fa fa-image"></i>
+                <i className="fa fa-tag"></i>
               </div>
             </div>
           }

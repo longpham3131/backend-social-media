@@ -1,0 +1,10 @@
+@import "~scss/index.scss";
+#Profile {
+  padding-top: 70px;
+  .profile {
+    flex-grow: 2;
+    border: 1px solid black;
+    // width: 500px;
+    max-width: $maxWidth-xl;
+  }
+}
