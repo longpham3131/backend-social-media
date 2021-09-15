@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import _defaultAvatar from "../../../assets/images/default-avatar.jpg";
+import _defaultAvatar from "assets/images/default-avatar.jpg";
 import "./style.scss";
 
 function useOutsideAlerter(ref) {

@@ -1,6 +1,6 @@
 import "./style.scss";
-import DefaultAvatar from "../../../../assets/images/default-avatar.jpg";
-import DefaultImage from "../../../../assets/images/default-image.jpg";
+import DefaultAvatar from "assets/images/default-avatar.jpg";
+import DefaultImage from "assets/images/default-image.jpg";
 const Post = (props) => {
   const { avatar, username, audience, text, attachments } = props;
 

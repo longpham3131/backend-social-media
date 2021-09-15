@@ -1,8 +1,8 @@
-import FormInput from "../../../compoents/Form/Input";
+import FormInput from "compoents/Form/Input";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../../store/actions/auth.action";
+import { login } from "store/actions/auth.action";
 import jwt_decode from "jwt-decode";
 const Login = () => {
   const dispatch = useDispatch();

@@ -1,6 +1,6 @@
 import "./style.scss";
 import { Input } from "antd";
-import _defaultAvatar from "../../assets/images/default-avatar.jpg";
+import _defaultAvatar from "assets/images/default-avatar.jpg";
 import { useEffect, useRef, useState } from "react";
 import Notifications from "./Notifications";
 import { Link, useHistory } from "react-router-dom";

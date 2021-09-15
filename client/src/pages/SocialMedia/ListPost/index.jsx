@@ -1,6 +1,6 @@
 import "./style.scss";
-import DefualtAvatar from "../../../assets/images/default-avatar.jpg";
-import Dialog from "../../../compoents/Dialog";
+import DefualtAvatar from "assets/images/default-avatar.jpg";
+import Dialog from "compoents/Dialog";
 import { useState } from "react";
 import { Select } from "antd";
 import { Input } from "antd";
