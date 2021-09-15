@@ -44,7 +44,14 @@ const Header = () => {
   return (
     <div className="header">
       <div className="header__content">
-        <div className="logo">Social</div>
+        <div
+          className="logo"
+          onClick={() => {
+            history.push("/");
+          }}
+        >
+          Social
+        </div>
         <div className="searchInput">
           <Search
             placeholder="Tìm kiếm"
@@ -53,7 +60,12 @@ const Header = () => {
           />
         </div>
         <div className="listTab">
-          <div className="listTab__tabHome">
+          <div
+            className="listTab__tabHome"
+            onClick={() => {
+              history.push("/");
+            }}
+          >
             <i className="fa fa-home"></i>
           </div>
           <div className="listTab__tabMessages">
@@ -69,7 +81,12 @@ const Header = () => {
               onClick={handleShow}
             />
             <div className="box" ref={wrapperRefAva}>
-              <Link to={`/profile/${localStorage.getItem("userId")}`}>
+              <Link
+                to={`/profile/${localStorage.getItem("userId")}`}
+                onClick={() => {
+                  wrapperRefAva.current.style.display = "none";
+                }}
+              >
                 Trang cá nhân
               </Link>
               <Link to="/login">Đăng xuất</Link>
