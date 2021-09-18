@@ -9,7 +9,7 @@ import Post from "./Post";
 const { TextArea } = Input;
 
 const { Option } = Select;
-const ListPost = () => {
+const ListPost = ({ postList }) => {
   const [isShowDialog, setIsShowDialog] = useState(false);
 
   const handleChange = (value) => {
@@ -70,18 +70,29 @@ const ListPost = () => {
           }
         />
       </div>
-      <Post
-        avatar={DefualtAvatar}
-        username={"Pham Hoang Long"}
-        audience={"Công khai"}
-        text="Disconmemay"
-      />
-      <Post />
-      <Post />
-      <Post />
-      <Post />
-      <Post />
-      <Post />
+
+      {/* Render Post List */}
+      {postList ? (
+        postList.map((post) => {
+          return (
+            <Post
+              userId={post.poster.userId}
+              username={post.poster.userName}
+              avatar={post.poster.userName}
+              audience={post.audience}
+              text={post.text}
+              createAt={post.createAt}
+            />
+          );
+        })
+      ) : (
+        <div>
+          <Post />
+          <Post />
+          <Post />
+          <Post />
+        </div>
+      )}
     </div>
   );
 };

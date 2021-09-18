@@ -1,14 +1,21 @@
 import "./style.scss";
 import DefaultAvatar from "assets/images/default-avatar.jpg";
 import DefaultImage from "assets/images/default-image.jpg";
+import moment from "moment";
+import "moment/locale/vi"; // without this line it didn't work
+import { useHistory } from "react-router-dom";
+moment.locale("vi");
+
 const Post = (props) => {
-  const { avatar, username, audience, text, attachments } = props;
+  let history = useHistory();
+  const { userId, avatar, username, audience, text, attachments, createAt } =
+    props;
 
   return (
     <div className="card">
       <div className="post__header">
         <img
-          src={avatar}
+          src={avatar === "" ? avatar : DefaultAvatar}
           alt=""
           className={avatar ? "avatar" : "avatar skeleton"}
         />
@@ -19,6 +26,9 @@ const Post = (props) => {
                 ? "header__userName"
                 : "header__userName  skeleton skeleton-username"
             }
+            onClick={() => {
+              history.push(`/profile/${userId}`);
+            }}
           >
             {username}
           </p>
@@ -29,7 +39,8 @@ const Post = (props) => {
                 : "header__permission  skeleton skeleton-audience"
             }
           >
-            {audience}
+            {audience}{" "}
+            {createAt ? " - " + moment(createAt).startOf("hour").fromNow() : ""}
           </p>
         </div>
       </div>

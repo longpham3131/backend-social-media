@@ -4,6 +4,8 @@ import _defaultAvatar from "assets/images/default-avatar.jpg";
 import { useEffect, useRef, useState } from "react";
 import Notifications from "./Notifications";
 import { Link, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserProfile } from "store/actions/user.action";
 function useOutsideAvatar(ref) {
   useEffect(() => {
     /**
@@ -29,6 +31,16 @@ function useOutsideAvatar(ref) {
 }
 const { Search } = Input;
 const Header = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getUserProfile(localStorage.getItem("userId")));
+  }, []);
+  const profileStore = useSelector((state) => state.userReducer.profile);
+
+  useEffect(() => {
+    console.log("USERRR", profileStore);
+  }, [profileStore]);
+
   const onSearch = (value) => console.log(value);
 
   let history = useHistory();
