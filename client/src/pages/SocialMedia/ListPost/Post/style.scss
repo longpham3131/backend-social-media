@@ -6,16 +6,27 @@
     display: flex;
     align-items: center;
     .header__userName {
+      width: fit-content;
       font-weight: bold;
       cursor: pointer;
     }
     .header__permission {
       font-size: 12px;
     }
+    .header__settings {
+      width: 30px;
+      height: 25px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 20px;
+      &:hover {
+        background-color: $color-gray;
+      }
+    }
   }
   .post__content {
     .post__content--text {
-      padding-bottom: 10px;
+      padding: 10px 0;
     }
     .post__content--attachments {
       padding: 10px 0;

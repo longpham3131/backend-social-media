@@ -18,7 +18,7 @@ const SocialMedia = () => {
 
   return (
     <div className="bodyPage">
-      <ListPost postList={postListStore.data} />
+      <ListPost postList={postListStore?.data} />
       <RightSideBar />
     </div>
   );

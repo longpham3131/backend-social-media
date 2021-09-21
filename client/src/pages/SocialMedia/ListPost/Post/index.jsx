@@ -3,19 +3,65 @@ import DefaultAvatar from "assets/images/default-avatar.jpg";
 import DefaultImage from "assets/images/default-image.jpg";
 import moment from "moment";
 import "moment/locale/vi"; // without this line it didn't work
+import { Menu, Dropdown, Button, Space } from "antd";
+import {
+  EllipsisOutlined,
+  CloseCircleOutlined,
+  FormOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
+
 import { useHistory } from "react-router-dom";
 moment.locale("vi");
 
 const Post = (props) => {
+  const {
+    userId,
+    avatar,
+    username,
+    fullName,
+    audience,
+    text,
+    attachments,
+    createAt,
+    onEdit,
+    onDelete,
+  } = props;
   let history = useHistory();
-  const { userId, avatar, username, audience, text, attachments, createAt } =
-    props;
+  const handleSettings = ({ key }) => {
+    switch (key) {
+      case "1":
+        console.log("Báo cáo");
+        break;
+      case "2":
+        onEdit();
+        break;
+      case "3":
+        onDelete();
+        break;
+      default:
+        break;
+    }
+  };
+  const menu = (
+    <Menu onClick={handleSettings}>
+      <Menu.Item key={1} icon={<ExclamationCircleOutlined />}>
+        Báo cáo
+      </Menu.Item>
+      <Menu.Item key={2} icon={<FormOutlined />}>
+        Chỉnh sửa bài viết
+      </Menu.Item>
+      <Menu.Item key={3} icon={<CloseCircleOutlined />}>
+        Xóa bài viết
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <div className="card">
       <div className="post__header">
         <img
-          src={avatar === "" ? avatar : DefaultAvatar}
+          src={avatar}
           alt=""
           className={avatar ? "avatar" : "avatar skeleton"}
         />
@@ -30,7 +76,7 @@ const Post = (props) => {
               history.push(`/profile/${userId}`);
             }}
           >
-            {username}
+            {fullName}
           </p>
           <p
             className={
@@ -43,6 +89,11 @@ const Post = (props) => {
             {createAt ? " - " + moment(createAt).startOf("hour").fromNow() : ""}
           </p>
         </div>
+        <Dropdown overlay={menu} placement="bottomRight" trigger={["click"]}>
+          <p className="header__settings">
+            <EllipsisOutlined />
+          </p>
+        </Dropdown>
       </div>
       <div className="post__content">
         {text ? (
