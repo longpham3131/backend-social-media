@@ -1,16 +1,36 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-
 const PostSchema = new Schema({
   title: {
     type: String,
-    required: true,
   },
-  description: {
+  text: {
+    type: String,
+    default: "",
+  },
+  audience: {
     type: String,
     required: true,
   },
+  poster: {
+    type: Object,
+    required: true,
+    default: {
+      userId: "",
+      username: "",
+      avatar: "",
+      fullName: "",
+    },
+  },
+  like: { type: Number, default: 0 },
+  comments: { type: Number, default: 0 },
+  share: { type: Number, default: 0 },
+  attachments: {
+    type: Array,
+    default: [],
+  },
+  postParent: { type: String, default: "" },
   createAt: {
     type: Date,
     default: Date.now,
@@ -18,14 +38,6 @@ const PostSchema = new Schema({
   updateAt: {
     type: Date,
     default: Date.now,
-  },
-  status: {
-    type: String,
-    enum: ["1", "2", "3"],
-  },
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
   },
 });
 

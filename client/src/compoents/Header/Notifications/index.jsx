@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import _defaultAvatar from "../../../../assets/images/default-avatar.jpg";
+import _defaultAvatar from "assets/images/default-avatar.jpg";
 import "./style.scss";
 
 function useOutsideAlerter(ref) {
@@ -38,7 +38,7 @@ const Notifications = () => {
 
   return (
     <div className="tabNotify" onClick={handleShowNotify}>
-      <i class="fa fa-heart"></i>
+      <i className="fa fa-heart"></i>
       <div ref={wrapperRef} className="tabNotify__boxTab">
         <p className="boxTab__header">Thông báo</p>
 

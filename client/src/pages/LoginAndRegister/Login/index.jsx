@@ -1,21 +1,32 @@
-import FormInput from "../../../compoents/Form/Input";
+import FormInput from "compoents/Form/Input";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../../store/actions/auth.action";
+import { login } from "store/actions/auth.action";
+import jwt_decode from "jwt-decode";
+import { getUserProfile } from "store/actions/user.action";
 const Login = () => {
   const dispatch = useDispatch();
   let history = useHistory();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [notifyForm, setNotifyForm] = useState("");
-  const loginReducer = useSelector((state) => state.authReducer.login);
+  const loginReducer = useSelector((state) => state.authReducer.auth);
 
   useEffect(() => {
     setNotifyForm("");
     if (loginReducer?.status === 200) {
-      localStorage.setItem("userInfo", loginReducer?.data);
+      localStorage.setItem("token", loginReducer?.data?.accessToken);
+
+      const decodeJWT = jwt_decode(loginReducer?.data?.accessToken);
+
+      localStorage.setItem("userId", decodeJWT?.userId);
+
+      dispatch(getUserProfile(decodeJWT?.userId));
+
       history.push("/");
+
+      window.location.reload();
     } else if (loginReducer?.status === 400) {
       setNotifyForm(loginReducer?.data?.message);
     }

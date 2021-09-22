@@ -11,7 +11,7 @@ const { error500, error400 } = require("../util/res");
 
 //REGISTER
 router.post("/register", async (req, res) => {
-  const { username, password, email } = req.body;
+  const { username, password, email, fullName } = req.body;
   res.header("Access-Control-Allow-Origin", "*");
   if (!username || !password || !email)
     return res
@@ -34,6 +34,7 @@ router.post("/register", async (req, res) => {
       username,
       password: hashedPassword,
       email,
+      fullName,
     });
     await newUser.save();
     const date = new Date();

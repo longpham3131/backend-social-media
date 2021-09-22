@@ -9,6 +9,11 @@ const UserSchema = new mongoose.Schema(
       max: 20,
       unique: true,
     },
+    fullName: {
+      type: String,
+      required: true,
+      max: 50,
+    },
     email: {
       type: String,
       required: true,
@@ -20,7 +25,7 @@ const UserSchema = new mongoose.Schema(
       required: true,
       min: 8,
     },
-    profilePicture: {
+    avatar: {
       type: String,
       default: "",
     },

@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Dialog from "../../../compoents/Dialog";
+import Dialog from "compoents/Dialog";
 import { Tabs, Form, Input, Button, Upload } from "antd";
-import FormInput from "../../../compoents/Form/Input";
+import FormInput from "compoents/Form/Input";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   NotificationContainer,
   NotificationManager,
 } from "react-notifications";
-import { register } from "../../../store/actions/auth.action";
+import { register } from "store/actions/auth.action";
 
 const Register = () => {
   const dispatch = useDispatch();

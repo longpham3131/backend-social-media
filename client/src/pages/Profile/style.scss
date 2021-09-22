@@ -1,0 +1,63 @@
+@import "~scss/index.scss";
+#Profile {
+  padding-top: 80px;
+
+  .wrapper-content {
+    box-shadow: $boxShadow;
+    border-radius: $radius;
+  }
+  .profile {
+    flex-grow: 2;
+    max-width: $maxWidth-xl;
+    .profile__coverBg {
+      position: relative;
+      height: 300px;
+      width: 100%;
+      background-position: center;
+      background-size: cover;
+      background-color: $color-gray;
+      border-radius: $radius;
+      .avatar {
+        width: 150px;
+        height: 150px;
+        bottom: -20px;
+        position: absolute;
+        left: 42%;
+        border: 1px solid black;
+        z-index: 3;
+        padding: 0;
+      }
+    }
+
+    .profile__content {
+      // height: 500px;
+      padding-top: 0;
+      // border: 1px solid black;
+      margin-top: 20px;
+      .leftSide {
+        max-width: 35%;
+        .card {
+          width: 90% !important;
+          .listPicture {
+            display: flex;
+            flex-wrap: wrap;
+            padding-bottom: 10px;
+            .picture {
+              width: 33.3333%;
+              box-sizing: border-box;
+              padding: 2px 2px 0 0;
+              cursor: pointer;
+              // max-width: 120px;
+            }
+          }
+        }
+      }
+      .listPost .postStatus {
+        width: 100% !important;
+      }
+      .card {
+        width: 100% !important;
+      }
+    }
+  }
+}

@@ -32,7 +32,11 @@ const Dialog = ({
         <Button
           type="primary"
           onClick={() => {
-            form.submit();
+            if (form) {
+              form.submit();
+            } else {
+              onSubmit();
+            }
           }}
           htmlType="submit"
         >

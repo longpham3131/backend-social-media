@@ -6,7 +6,7 @@ const AuthRoute = ({ path, Component }) => {
     <Route
       path={path}
       render={(routeProps) => {
-        if (localStorage.getItem("userInfo")) {
+        if (localStorage.getItem("token")) {
           return <Component {...routeProps} />;
         }
         return <Redirect to="/login" />;
