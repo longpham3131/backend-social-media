@@ -3,9 +3,10 @@ const MultipleFile = require("../models/MultipleFile");
 const { error500, error400 } = require("../util/res");
 const singleFileUpload = async (req, res, next) => {
   try {
+    console.log(req.file);
     const file = new SingleFile({
       fileName: req.file.originalname,
-      filePath: req.file.path.split('\\')[1],
+      filePath: (req.file.path.split('\\')[1]).replace(/\s/g,''),
       fileType: req.file.mimetype,
       fileSize: fileSizeFormatter(req.file.size, 2), // 0.00
     });
@@ -25,7 +26,7 @@ const multipleFileUpload = async (req, res, next) => {
       const element = req.files[i];
       const file = new SingleFile({
         fileName: element.originalname,
-        filePath: element.path.split('\\')[1],
+        filePath: (element.path.split('\\')[1]).replace(/\s/g,''),
         fileType: element.mimetype,
         fileSize: fileSizeFormatter(element.size, 2), // 0.00
       });

@@ -5,15 +5,16 @@ const storage = multer.diskStorage({
         cb(null,"uploads")
     },
     filename:(req,file,cb)=>{
-        cb(null,new Date().toISOString().replace(/:/g,'-')+'-'+file.originalname)
+        cb(null,new Date().toISOString().replace(/:/g,'-')+'-'+file.originalname.replace(/\s/g,''))
     }
 });
 
 const filefilter = (req,file,cb)=>{
-    if(file.mimetype === 'image/png'|| file.mimetype === 'image/jpg'|| file.mimetype ==='image/jpeg'){
+    if(['image/png', 'image/jpg','image/jpeg','image/gif','image/jpeg','video/mp4','video/x-msvideo','video/quicktime','video/x-ms-wmv'].includes(file.mimetype)){
         cb(null,true);
-    }else{
-        cb(null,false)
+    }
+    else{
+        cb(null,true)
     }
 
 }
