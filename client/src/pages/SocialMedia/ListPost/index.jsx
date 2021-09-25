@@ -3,12 +3,14 @@ import DefualtAvatar from "assets/images/default-avatar.jpg";
 import Dialog from "compoents/Dialog";
 import { useEffect, useState } from "react";
 import { Select, Form } from "antd";
-import { Input } from "antd";
+import { Input, Upload } from "antd";
+import ImgCrop from "antd-img-crop";
 import Post from "./Post";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { createPost, deletePost } from "store/actions/post.action";
 import Notifications from "compoents/Notifications";
+import { uploadFile } from "store/actions/upload.action";
 
 const { TextArea } = Input;
 
@@ -44,10 +46,17 @@ const ListPost = ({ postList }) => {
   //Notifications
   const [titleNotify, setTitleNotify] = useState("Tạo bài viết");
 
-  const handleSubmit = () => {
+  const handleUpload = (attachments) => {
+    dispatch(uploadFile(attachments[0].originFileObj));
+  };
+  const handleSubmit = async () => {
     switch (typeForm) {
       case "create":
-        const post = {
+        let newAttachments = [];
+        // if (attachments.length > 0) {
+        //   newAttachments = await handleUpload(attachments);
+        // }
+        const post = await {
           text,
           audience,
           poster: {
@@ -56,10 +65,10 @@ const ListPost = ({ postList }) => {
             avatar: profileReducer.avatar,
             username: profileReducer.username,
           },
-          attachments,
+          attachments: newAttachments,
         };
-        console.log("create", post);
-        dispatch(createPost(post));
+        await console.log("create", post);
+        await dispatch(createPost(post));
         break;
       case "edit":
         console.log("EDIT");
@@ -90,6 +99,29 @@ const ListPost = ({ postList }) => {
     setSelectedPost(postId);
     setIsShowDialog(true);
   };
+
+  const onPreview = async (file) => {
+    let src = file.url;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj);
+        reader.onload = () => resolve(reader.result);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow.document.write(image.outerHTML);
+  };
+
+  const onChangeAttach = ({ fileList: newFileList }) => {
+    setAttachments(newFileList);
+  };
+
+  useEffect(() => {
+    console.log(attachments);
+  }, [attachments]);
 
   return (
     <div className="listPost">
@@ -154,7 +186,9 @@ const ListPost = ({ postList }) => {
                 <div className="pt-2">
                   <Form form={formCreateEditPost} onFinish={handleSubmit}>
                     <Form.Item
+                      label={"Nội dung"}
                       name="text"
+                      labelCol={{ span: 24 }}
                       rules={[
                         {
                           required: true,
@@ -170,6 +204,23 @@ const ListPost = ({ postList }) => {
                           setText(e.target.value);
                         }}
                       />
+                    </Form.Item>
+                    <Form.Item
+                      label={"Hình ảnh"}
+                      name="attachments"
+                      labelCol={{ span: 24 }}
+                    >
+                      <ImgCrop rotate>
+                        <Upload
+                          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                          listType="picture-card"
+                          fileList={attachments}
+                          onChange={onChangeAttach}
+                          onPreview={onPreview}
+                        >
+                          {attachments.length < 5 && "+ Upload"}
+                        </Upload>
+                      </ImgCrop>
                     </Form.Item>
                   </Form>
                 </div>
