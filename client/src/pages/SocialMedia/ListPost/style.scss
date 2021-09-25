@@ -1,13 +1,12 @@
 @import "~scss/index.scss";
 
 .listPost {
-  flex-grow: 2;
+  flex-grow: 1;
   padding-bottom: 50px;
   .postStatus {
     display: flex;
     align-items: center;
     height: 80px;
-    width: 90%;
     padding: 0 10px;
     flex-direction: unset;
     .postStatus__placehoder {

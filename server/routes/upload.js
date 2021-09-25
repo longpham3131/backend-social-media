@@ -1,7 +1,12 @@
 const upload = require("../middleware/upload");
 const express = require("express");
 const router = express.Router();
-const {singleFileUpload,multipleFileUpload,getAllFiles,getAllMultiFiles}= require("../controllers/upload")
+const {
+  singleFileUpload,
+  multipleFileUpload,
+  getAllFiles,
+  getAllMultiFiles,
+} = require("../controllers/upload");
 const { error500, error400 } = require("../util/res");
 const { cloudinary } = require("../util/cloudinary");
 router.post("/singleFile",upload.single("file"));
@@ -17,5 +22,5 @@ router.get('file',async(req,res)=>{
     res.send(publicIds)
 })
 module.exports = {
-    routes:router
-}
+  routes: router,
+};

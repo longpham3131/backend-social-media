@@ -45,35 +45,14 @@ const ListPost = ({ postList }) => {
 
   //Notifications
   const [titleNotify, setTitleNotify] = useState("Tạo bài viết");
-
-  const handleUpload = (attachments) => {
-    dispatch(uploadFile(attachments[0].originFileObj));
-  };
-  const uploadImage = async (base64EncodedImage) => {
-    try {
-      console.log(base64EncodedImage)
-    } catch (err) {
-        console.error('AHHHHHHHH',err);
-    }
-};
   const handleSubmit = async () => {
     switch (typeForm) {
       case "create":
-        const reader = new FileReader();
-        reader.readAsDataURL(attachments[0]);
-        reader.onloadend = () => {
-          uploadImage(reader.result);
-        };
-        reader.onerror = () => {
-          console.error('AHHHHHHHH!!');
-        };
-
-
-
-        let newAttachments = [];
-        // if (attachments.length > 0) {
-        //   newAttachments = await handleUpload(attachments);
-        // }
+        let newAttachments = attachments.map(
+          (item) =>
+            `https://uploadfile0510.herokuapp.com/filemanager/${item.response.data.filePath}`
+        );
+        console.log("creat", newAttachments);
         const post = await {
           text,
           audience,
@@ -85,7 +64,7 @@ const ListPost = ({ postList }) => {
           },
           attachments: newAttachments,
         };
-        await console.log("create", post);
+        // await console.log("create", post);
         await dispatch(createPost(post));
         break;
       case "edit":
@@ -137,10 +116,6 @@ const ListPost = ({ postList }) => {
     setAttachments(newFileList);
   };
 
-  useEffect(() => {
-    console.log(attachments);
-  }, [attachments]);
-
   return (
     <div className="listPost">
       {/* Notification */}
@@ -156,6 +131,7 @@ const ListPost = ({ postList }) => {
         onSuccess={() => {
           console.log("SUCCC");
           formCreateEditPost.resetFields();
+          setAttachments([]);
           setAudience("public");
           setIsShowDialog(false);
         }}
@@ -228,17 +204,15 @@ const ListPost = ({ postList }) => {
                       name="attachments"
                       labelCol={{ span: 24 }}
                     >
-                      <ImgCrop rotate>
-                        <Upload
-                          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                          listType="picture-card"
-                          fileList={attachments}
-                          onChange={onChangeAttach}
-                          onPreview={onPreview}
-                        >
-                          {attachments.length < 5 && "+ Upload"}
-                        </Upload>
-                      </ImgCrop>
+                      <Upload
+                        action="https://uploadfile0510.herokuapp.com/api/upload/singleFile"
+                        listType="picture-card"
+                        fileList={attachments}
+                        onChange={onChangeAttach}
+                        onPreview={onPreview}
+                      >
+                        {attachments.length < 5 && "+ Upload"}
+                      </Upload>
                     </Form.Item>
                   </Form>
                 </div>
@@ -257,6 +231,7 @@ const ListPost = ({ postList }) => {
 
       {/* Render Post List */}
       {postList ? (
+        postList &&
         postList.map((post, index) => {
           return (
             <Post
@@ -268,6 +243,7 @@ const ListPost = ({ postList }) => {
               text={post.text}
               createAt={post.createAt}
               key={`post_${index + post.createAt}`}
+              attachments={post.attachments}
               onEdit={handleEdit}
               onDelete={() => {
                 handleDelete(post._id);
