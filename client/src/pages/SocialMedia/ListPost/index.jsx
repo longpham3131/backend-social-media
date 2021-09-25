@@ -49,9 +49,27 @@ const ListPost = ({ postList }) => {
   const handleUpload = (attachments) => {
     dispatch(uploadFile(attachments[0].originFileObj));
   };
+  const uploadImage = async (base64EncodedImage) => {
+    try {
+      console.log(base64EncodedImage)
+    } catch (err) {
+        console.error('AHHHHHHHH',err);
+    }
+};
   const handleSubmit = async () => {
     switch (typeForm) {
       case "create":
+        const reader = new FileReader();
+        reader.readAsDataURL(attachments[0]);
+        reader.onloadend = () => {
+          uploadImage(reader.result);
+        };
+        reader.onerror = () => {
+          console.error('AHHHHHHHH!!');
+        };
+
+
+
         let newAttachments = [];
         // if (attachments.length > 0) {
         //   newAttachments = await handleUpload(attachments);
@@ -131,8 +149,8 @@ const ListPost = ({ postList }) => {
           typeForm === "delete"
             ? deletePostReducer
             : typeForm === "create"
-            ? createPostReducer
-            : deletePostReducer
+              ? createPostReducer
+              : deletePostReducer
         }
         title={titleNotify}
         onSuccess={() => {

@@ -1,9 +1,13 @@
 const SingleFile = require("../models/SingleFile");
 const MultipleFile = require("../models/MultipleFile");
 const { error500, error400 } = require("../util/res");
+const { cloudinary } = require("../util/cloudinary");
 const singleFileUpload = async (req, res, next) => {
   try {
     console.log(req.file);
+    const filleStr= req.file;
+    const uploadRes = await cloudinary.uploader.upload(filleStr,{upload_preset:"ml_default"})
+    console.log(uploadRes)
     const file = new SingleFile({
       fileName: req.file.originalname,
       filePath: (req.file.path.split('\\')[1]).replace(/\s/g,''),

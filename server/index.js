@@ -6,6 +6,7 @@ const usersRouter = require("./routes/users");
 const uploadRouter = require("./routes/upload");
 const helmet = require("helmet");
 const path = require("path");
+const {cloudinary} = require('./util/cloudinary');
 const cors = require("cors");
 require("dotenv").config();
 const connectDB = async () => {
