@@ -11,7 +11,8 @@ import { useSelector } from "react-redux";
 import { createPost, deletePost } from "store/actions/post.action";
 import Notifications from "compoents/Notifications";
 import { uploadFile } from "store/actions/upload.action";
-
+import {getUrlImage} from "util/index"
+import axios from "axios";
 const { TextArea } = Input;
 
 const { Option } = Select;
@@ -49,8 +50,7 @@ const ListPost = ({ postList }) => {
     switch (typeForm) {
       case "create":
         let newAttachments = attachments.map(
-          (item) =>
-            `https://uploadfile0510.herokuapp.com/filemanager/${item.response.data.filePath}`
+          (item) =>({file:item.response.data.filePath,type:item.response.data.fileType})
         );
         console.log("creat", newAttachments);
         const post = await {
@@ -116,6 +116,35 @@ const ListPost = ({ postList }) => {
     setAttachments(newFileList);
   };
 
+ 
+  const customRequest = async option => {
+    const { onSuccess, onError, file, action, onProgress } = option;
+    const url = action;
+    const type = 'image/png';
+    console.log(file)
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      axios
+      .post(url,{file:JSON.stringify(reader.result)}, {
+        onUploadProgress: e => {
+          onProgress({ percent: (e.loaded / e.total) * 100 });
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+      .then(respones => {
+        onSuccess(respones.body);
+      })
+      .catch(err => {
+        onError(err);
+      });
+    };
+   
+  };
+  
+   
   return (
     <div className="listPost">
       {/* Notification */}
@@ -205,11 +234,12 @@ const ListPost = ({ postList }) => {
                       labelCol={{ span: 24 }}
                     >
                       <Upload
-                        action="https://uploadfile0510.herokuapp.com/api/upload/singleFile"
+                        action="http://localhost:5000/api/upload/singleFile"
                         listType="picture-card"
                         fileList={attachments}
                         onChange={onChangeAttach}
                         onPreview={onPreview}
+                        // customRequest={customRequest}
                       >
                         {attachments.length < 5 && "+ Upload"}
                       </Upload>

@@ -3,16 +3,51 @@ const MultipleFile = require("../models/MultipleFile");
 const { error500, error400 } = require("../util/res");
 const { cloudinary } = require("../util/cloudinary");
 const singleFileUpload = async (req, res, next) => {
-  await console.log(req.data);
   try {
-    await console.log(req);
+    console.log(req.file);
     await console.log("----------------------------");
-    const filleStr= req.file;
-    const uploadRes = await cloudinary.uploader.upload(filleStr,{upload_preset:"ml_default"})
-    console.log(uploadRes)
+    let uploadRes = null;
+    if (req.file.mimetype.split("/")[0] === "image") {
+      uploadRes = await cloudinary.uploader.upload(
+        "uploads\\" + req.file.path.split("\\")[1],
+        { upload_preset: "ml_default" }
+      );
+    } else if (req.file.mimetype.split("/")[0] === "video") {
+      uploadRes = await cloudinary.uploader.upload(
+        "uploads\\" + req.file.path.split("\\")[1],
+        {
+          resource_type: "video",
+          chunk_size: 6000000,
+          eager: [
+            { width: 300, height: 300, crop: "pad", audio_codec: "none" },
+            {
+              width: 160,
+              height: 100,
+              crop: "crop",
+              gravity: "south",
+              audio_codec: "none",
+            },
+          ],
+          eager_async: true,
+          eager_notification_url: "https://mysite.example.com/notify_endpoint",
+        },
+        function (error, result) {
+          console.log(result, error);
+        }
+      );
+    } else {
+      uploadRes = await cloudinary.uploader.upload(
+        "uploads\\" + req.file.path.split("\\")[1],
+        { resource_type: "auto" },
+        function (error, result) {
+          console.log(result, error);
+        }
+      );
+    }
+    console.log(uploadRes);
     const file = new SingleFile({
-      fileName: req.file.name,
-      filePath: req.file.path.split("\\")[1],
+      fileName: uploadRes.original_filename,
+      filePath: uploadRes.public_id,
       fileType: req.file.mimetype,
       fileSize: fileSizeFormatter(req.file.size, 2), // 0.00
     });
@@ -30,9 +65,13 @@ const multipleFileUpload = async (req, res, next) => {
     let filesArray = [];
     for (let i = 0; i < req.files.length; i++) {
       const element = req.files[i];
+      const uploadRes = await cloudinary.uploader.upload(
+        "uploads\\" + element.path.split("\\")[1],
+        { upload_preset: "ml_default" }
+      );
       const file = new SingleFile({
-        fileName: element.originalname,
-        filePath: element.path.split("\\")[1],
+        fileName: uploadRes.original_filename,
+        filePath: req.file.mimetype,
         fileType: element.mimetype,
         fileSize: fileSizeFormatter(element.size, 2), // 0.00
       });

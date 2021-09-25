@@ -10,7 +10,7 @@ import {
   FormOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-
+import {getUrlImage,getUrlVideo} from "util/index"
 import { useHistory } from "react-router-dom";
 moment.locale("vi");
 
@@ -28,7 +28,7 @@ const Post = (props) => {
     onDelete,
   } = props;
   let history = useHistory();
-  console.log(attachments);
+  // console.log(attachments);
   const handleSettings = ({ key }) => {
     switch (key) {
       case "1":
@@ -110,7 +110,7 @@ const Post = (props) => {
 
         <div
           className="post__content--attachments"
-          style={{ display: attachments.length > 0 ? "block" : "none" }}
+          style={{ display: attachments?.length > 0 ? "block" : "none" }}
         >
           {/* <div
             className="attachment"
@@ -118,7 +118,14 @@ const Post = (props) => {
               backgroundImage: `url(${attachments ? attachments[0] : null})`,
             }}
           ></div> */}
-          <img src={attachments ? attachments[0] : null} alt="attachments" />
+          {(attachments?.length>0 && attachments[0].type?.split("/")[0] === "video") ?
+            <video width="450" controls height="350" >
+              <source  src={getUrlVideo(attachments[0].file)} />
+            </video>
+            : <img src={attachments?.file} alt="attachments" />
+          }
+
+
         </div>
       </div>
       <div
