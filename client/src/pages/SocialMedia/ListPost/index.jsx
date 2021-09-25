@@ -56,13 +56,8 @@ const ListPost = ({ postList }) => {
         const post = await {
           text,
           audience,
-          poster: {
-            userId: profileReducer._id,
-            fullName: profileReducer.fullName,
-            avatar: profileReducer.avatar,
-            username: profileReducer.username,
-          },
           attachments: newAttachments,
+          postParent: ""
         };
         // await console.log("create", post);
         await dispatch(createPost(post));
@@ -265,7 +260,7 @@ const ListPost = ({ postList }) => {
         postList.map((post, index) => {
           return (
             <Post
-              userId={post.poster.userId}
+              userId={post.poster._id}
               username={post.poster.username}
               fullName={post.poster.fullName}
               avatar={post.poster.avatar}

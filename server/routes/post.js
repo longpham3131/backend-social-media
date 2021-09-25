@@ -7,7 +7,7 @@ const verifyToken = require("../middleware/auth");
 
 // CREATE POST
 router.post("/", verifyToken, async (req, res) => {
-  const { title, text, audience, poster, attachments, postParent } = req.body;
+  const { title, text, audience, attachments, postParent } = req.body;
   if (!text && attachments.length === 0)
     return error400(res, "Nội dung bài đăng không được trống");
   try {
@@ -66,18 +66,18 @@ router.get("/", verifyToken, (req, res) => {
   const { limitPost } = req.query;
   Post.find()
     .limit(limitPost)
-    .populate("users")
+    .populate("poster")
     .then((result) => {
       res.json(result.reverse());
     })
     .catch((err) => {
-      return error500(err);
+      console.log(err)
+      return error500(res);
     });
 });
 router.get("/deleteall", verifyToken, (req, res) => {
   Post.remove({})
   res.json({code:200});
 });
-
 
 module.exports = router;

@@ -15,7 +15,7 @@ const PostSchema = new Schema({
   },
   poster: {
     type: Schema.Types.ObjectId,
-    ref: "users",
+    ref: "User",
   },
   like: { type: Number, default: 0 },
   comments: { type: Number, default: 0 },
