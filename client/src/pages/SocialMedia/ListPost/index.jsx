@@ -260,7 +260,7 @@ const ListPost = ({ postList }) => {
       </div>
 
       {/* Render Post List */}
-      {postList ? (
+      {postList?.length>0 ? (
         postList &&
         postList.map((post, index) => {
           return (

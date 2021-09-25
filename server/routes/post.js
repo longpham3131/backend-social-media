@@ -14,8 +14,8 @@ router.post("/", verifyToken, async (req, res) => {
     const newPost = new Post({
       title,
       text,
+      poster: req.userId,
       audience,
-      poster,
       attachments,
       postParent,
     });
@@ -66,6 +66,7 @@ router.get("/", verifyToken, (req, res) => {
   const { limitPost } = req.query;
   Post.find()
     .limit(limitPost)
+    .populate("users")
     .then((result) => {
       res.json(result.reverse());
     })
@@ -73,5 +74,10 @@ router.get("/", verifyToken, (req, res) => {
       return error500(err);
     });
 });
+router.get("/deleteall", verifyToken, (req, res) => {
+  Post.remove({})
+  res.json({code:200});
+});
+
 
 module.exports = router;

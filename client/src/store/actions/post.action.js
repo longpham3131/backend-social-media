@@ -9,7 +9,7 @@ import {
   DELETE_POST_FAIL,
   GET_POST_LIST,
 } from "store/constants/post.constant";
-
+import apis from "service";
 const config = {
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 };
@@ -17,11 +17,7 @@ const config = {
 export const getPostList = (limit) => {
   return async (dispatch) => {
     try {
-      const res = await axios.get(
-        `${HTTP_CONNECT}/post?limitPost=${limit}`,
-
-        config
-      );
+      const res =await apis.post.getPostList(limit)
       await dispatch(getPostListAction(res));
     } catch (err) {
       dispatch(getPostListAction(err.response));
@@ -29,7 +25,23 @@ export const getPostList = (limit) => {
   };
 };
 
+// export const getPostList = (limit) => {
+//   return async (dispatch) => {
+//     try {
+//       const res = await axios.get(
+//         `${HTTP_CONNECT}/post?limitPost=${limit}`,
+
+//         config
+//       );
+//       await dispatch(getPostListAction(res));
+//     } catch (err) {
+//       dispatch(getPostListAction(err.response));
+//     }
+//   };
+// };
+
 const getPostListAction = (data) => {
+  console.log(data)
   return { type: GET_POST_LIST, payload: data };
 };
 

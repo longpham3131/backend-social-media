@@ -10,7 +10,7 @@ const SocialMedia = () => {
   useEffect(() => {
     dispatch(getPostList(limitPost));
   }, []);
-  const postListStore = useSelector((state) => state.postReducer.postList);
+  const postListStore = useSelector((state) => state.postReducer.postList??[]);
 
   // useEffect(() => {
   //   console.log("USERRR", profileStore);
@@ -18,7 +18,7 @@ const SocialMedia = () => {
 
   return (
     <div className="bodyPage">
-      <ListPost postList={postListStore?.data} />
+      <ListPost postList={postListStore} />
       <RightSideBar />
     </div>
   );

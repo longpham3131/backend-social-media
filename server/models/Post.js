@@ -14,14 +14,8 @@ const PostSchema = new Schema({
     required: true,
   },
   poster: {
-    type: Object,
-    required: true,
-    default: {
-      userId: "",
-      username: "",
-      avatar: "",
-      fullName: "",
-    },
+    type: Schema.Types.ObjectId,
+    ref: "users",
   },
   like: { type: Number, default: 0 },
   comments: { type: Number, default: 0 },
