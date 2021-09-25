@@ -32,7 +32,7 @@ const multipleFileUpload = async (req, res, next) => {
       const element = req.files[i];
       const file = new SingleFile({
         fileName: element.originalname,
-        filePath: (element.path.split('\\')[1]).replace(/\s/g,''),
+        filePath: element.path.split("\\")[1],
         fileType: element.mimetype,
         fileSize: fileSizeFormatter(element.size, 2), // 0.00
       });
