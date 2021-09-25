@@ -2,10 +2,13 @@ const SingleFile = require("../models/SingleFile");
 const MultipleFile = require("../models/MultipleFile");
 const { error500, error400 } = require("../util/res");
 const singleFileUpload = async (req, res, next) => {
+  await console.log(req.data);
   try {
+    await console.log(req);
+    await console.log("----------------------------");
     const file = new SingleFile({
-      fileName: req.file.originalname,
-      filePath: req.file.path.split('\\')[1],
+      fileName: req.file.name,
+      filePath: req.file.path.split("\\")[1],
       fileType: req.file.mimetype,
       fileSize: fileSizeFormatter(req.file.size, 2), // 0.00
     });
@@ -25,7 +28,7 @@ const multipleFileUpload = async (req, res, next) => {
       const element = req.files[i];
       const file = new SingleFile({
         fileName: element.originalname,
-        filePath: element.path.split('\\')[1],
+        filePath: element.path.split("\\")[1],
         fileType: element.mimetype,
         fileSize: fileSizeFormatter(element.size, 2), // 0.00
       });
@@ -38,8 +41,8 @@ const multipleFileUpload = async (req, res, next) => {
     });
     await multipleFiles.save();
     res
-    .status(200)
-    .send({ message: "Files upload successfully", data: multipleFiles });
+      .status(200)
+      .send({ message: "Files upload successfully", data: multipleFiles });
   } catch (er) {
     error400("upload error");
   }
@@ -58,8 +61,8 @@ const getAllFiles = async (req, res, next) => {
 };
 const getAllMultiFiles = async (req, res, next) => {
   try {
-    const files = await MultipleFile.find().populate('files');
-    console.log(files[0])
+    const files = await MultipleFile.find().populate("files");
+    console.log(files[0]);
     res.json({
       message: "success",
       data: files,

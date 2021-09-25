@@ -28,6 +28,7 @@ const Post = (props) => {
     onDelete,
   } = props;
   let history = useHistory();
+  console.log(attachments);
   const handleSettings = ({ key }) => {
     switch (key) {
       case "1":
@@ -109,12 +110,15 @@ const Post = (props) => {
 
         <div
           className="post__content--attachments"
-          style={{ display: attachments ? "block" : "none" }}
+          style={{ display: attachments.length > 0 ? "block" : "none" }}
         >
-          <div
+          {/* <div
             className="attachment"
-            style={{ backgroundImage: `url(${attachments})` }}
-          ></div>
+            style={{
+              backgroundImage: `url(${attachments ? attachments[0] : null})`,
+            }}
+          ></div> */}
+          <img src={attachments ? attachments[0] : null} alt="attachments" />
         </div>
       </div>
       <div

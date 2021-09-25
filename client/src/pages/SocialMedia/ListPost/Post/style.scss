@@ -1,7 +1,8 @@
 @import "~scss/index.scss";
 
 .card {
-  width: 90% !important;
+  // width: 90% !important;
+  max-width: 650px;
   .post__header {
     display: flex;
     align-items: center;
@@ -25,16 +26,23 @@
     }
   }
   .post__content {
+    width: 100%;
     .post__content--text {
       padding: 10px 0;
     }
     .post__content--attachments {
-      padding: 10px 0;
+      padding-bottom: 10px;
       .attachment {
         background-position: center;
-        background-size: cover;
+        background-size: contain;
+        background-repeat: no-repeat;
         height: 300px;
         max-height: 400px;
+      }
+      img {
+        width: 100%;
+
+        object-fit: cover;
       }
     }
   }
