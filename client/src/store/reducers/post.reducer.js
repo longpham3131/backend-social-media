@@ -9,7 +9,7 @@ import {
 } from "store/constants/post.constant";
 
 const initialState = {
-  postList: {},
+  postList: [],
   createPost: {},
   editPost: {},
   deletePost: {},
@@ -24,10 +24,7 @@ export const postReducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         createPost: payload,
-        postList: {
-          ...state.postList,
-          data: [payload.data.data, ...state.postList.data],
-        },
+        postList: [payload.data, ...state.postList],
       };
     case CREATE_POST_FAIL:
       return {
@@ -38,11 +35,13 @@ export const postReducer = (state = initialState, { type, payload }) => {
     case EDIT_POST_SUCCESS:
       return {
         ...state,
-        createPost: payload,
-        postList: {
-          ...state.postList,
-          data: [payload.data.data, ...state.postList.data],
-        },
+        editPost: payload,
+        postList: state.postList.map((post) => {
+          if (post._id === payload.data._id) {
+            post = payload.data;
+          }
+          return post;
+        }),
       };
     case EDIT_POST_FAIL:
       return {
@@ -54,12 +53,9 @@ export const postReducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         deletePost: payload,
-        postList: {
-          ...state.postList,
-          data: state.postList.data.filter(
-            (post) => post._id !== payload.data.postId
-          ),
-        },
+        postList: state.postList.filter(
+          (post) => post._id !== payload.data.postId
+        ),
       };
     case DELETE_POST_FAIL:
       return {

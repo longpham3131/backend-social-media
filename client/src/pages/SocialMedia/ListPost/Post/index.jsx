@@ -10,25 +10,13 @@ import {
   FormOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import {getUrlImage,getUrlVideo} from "util/index"
+import { getUrlImage, getUrlVideo } from "util/index";
 import { useHistory } from "react-router-dom";
 moment.locale("vi");
 
 const Post = (props) => {
-  const {
-    userId,
-    avatar,
-    username,
-    fullName,
-    audience,
-    text,
-    attachments,
-    createAt,
-    onEdit,
-    onDelete,
-  } = props;
+  const { post, onEdit, onDelete } = props;
   let history = useHistory();
-  // console.log(attachments);
   const handleSettings = ({ key }) => {
     switch (key) {
       case "1":
@@ -62,32 +50,34 @@ const Post = (props) => {
     <div className="card">
       <div className="post__header">
         <img
-          src={avatar}
+          src={post?.poster.avatar}
           alt=""
-          className={avatar ? "avatar" : "avatar skeleton"}
+          className={post?.poster.avatar ? "avatar" : "avatar skeleton"}
         />
         <div className="w-100">
           <p
             className={
-              username
+              post?.poster.username
                 ? "header__userName"
                 : "header__userName  skeleton skeleton-username"
             }
             onClick={() => {
-              history.push(`/profile/${userId}`);
+              history.push(`/profile/${post?.poster.userId}`);
             }}
           >
-            {fullName}
+            {post?.poster.fullName}
           </p>
           <p
             className={
-              audience
+              post?.audience
                 ? "header__permission"
                 : "header__permission  skeleton skeleton-audience"
             }
           >
-            {audience}{" "}
-            {createAt ? " - " + moment(createAt).startOf("hour").fromNow() : ""}
+            {post?.audience}{" "}
+            {post?.createAt
+              ? " - " + moment(post?.createAt).startOf("hour").fromNow()
+              : ""}
           </p>
         </div>
         <Dropdown overlay={menu} placement="bottomRight" trigger={["click"]}>
@@ -97,8 +87,8 @@ const Post = (props) => {
         </Dropdown>
       </div>
       <div className="post__content">
-        {text ? (
-          <p className="post__content--text">{text}</p>
+        {post?.text ? (
+          <p className="post__content--text">{post?.text}</p>
         ) : (
           <div className="w-100 py-3">
             <p className="skeleton skeleton-text"></p>
@@ -110,22 +100,24 @@ const Post = (props) => {
 
         <div
           className="post__content--attachments"
-          style={{ display: attachments?.length > 0 ? "block" : "none" }}
+          style={{ display: post?.attachments?.length > 0 ? "block" : "none" }}
         >
-          {/* <div
-            className="attachment"
-            style={{
-              backgroundImage: `url(${attachments ? attachments[0] : null})`,
-            }}
-          ></div> */}
-          {(attachments?.length>0 && attachments[0].type?.split("/")[0] === "video") ?
-            <video width="450" controls height="350" >
-              <source  src={getUrlVideo(attachments[0].file)} />
+          {post?.attachments?.length > 0 &&
+          post?.attachments[0].type?.split("/")[0] === "video" ? (
+            <video
+              controls
+              height="350"
+              className="w-100"
+              style={{ backgroundColor: "#00000040" }}
+            >
+              <source src={getUrlVideo(post?.attachments[0].file)} />
             </video>
-            : <img src={attachments?.file} alt="attachments" />
-          }
-
-
+          ) : (
+            <img
+              src={getUrlImage(post?.attachments[0]?.file)}
+              alt="attachments"
+            />
+          )}
         </div>
       </div>
       <div

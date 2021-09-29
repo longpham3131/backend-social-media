@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const argon2 = require("argon2");
 const Post = require("../models/Post");
+const User = require("../models/User");
 const { error500, error400 } = require("../util/res");
 const verifyToken = require("../middleware/auth");
 
@@ -14,16 +15,13 @@ router.post("/", verifyToken, async (req, res) => {
     const newPost = new Post({
       title,
       text,
-      poster: req.userId,
+      poster: await User.findById(req.userId).then((user) => user),
       audience,
       attachments,
       postParent,
     });
     await newPost.save();
-    res.json({
-      success: true,
-      data: newPost,
-    });
+    res.json(newPost);
   } catch (error) {
     console.log(error);
     return error500(res);
@@ -43,10 +41,12 @@ router.delete("/delete/:id", verifyToken, (req, res) => {
 });
 
 //UPDATE POST
-router.put("/", verifyToken, (req, res) => {
+router.put("/", verifyToken, async (req, res) => {
   const { postId, text, audience, attachments } = req.body;
   const date = new Date();
-  const update = {
+  const poster = await User.findById(req.userId).then((user) => user);
+
+  const update = await {
     text,
     audience,
     attachments,
@@ -55,6 +55,7 @@ router.put("/", verifyToken, (req, res) => {
   Post.findByIdAndUpdate(postId, update)
     .setOptions({ new: true })
     .then((result) => {
+      result.poster = poster;
       res.json(result);
     })
     .catch((err) => {
@@ -71,13 +72,13 @@ router.get("/", verifyToken, (req, res) => {
       res.json(result.reverse());
     })
     .catch((err) => {
-      console.log(err)
+      console.log(err);
       return error500(res);
     });
 });
 router.get("/deleteall", verifyToken, (req, res) => {
-  Post.remove({})
-  res.json({code:200});
+  Post.remove({});
+  res.json({ code: 200 });
 });
 
 module.exports = router;

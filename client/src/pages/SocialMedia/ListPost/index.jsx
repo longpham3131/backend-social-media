@@ -4,15 +4,12 @@ import Dialog from "compoents/Dialog";
 import { useEffect, useState } from "react";
 import { Select, Form } from "antd";
 import { Input, Upload } from "antd";
-import ImgCrop from "antd-img-crop";
 import Post from "./Post";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { createPost, deletePost } from "store/actions/post.action";
+import { createPost, deletePost, editPost } from "store/actions/post.action";
 import Notifications from "compoents/Notifications";
-import { uploadFile } from "store/actions/upload.action";
-import {getUrlImage} from "util/index"
-import axios from "axios";
+import { getUrlImage, getUrlVideo } from "util/index";
 const { TextArea } = Input;
 
 const { Option } = Select;
@@ -46,32 +43,57 @@ const ListPost = ({ postList }) => {
 
   //Notifications
   const [titleNotify, setTitleNotify] = useState("Tạo bài viết");
-  const handleSubmit = async () => {
+  const setInitState = () => {
+    formCreateEditPost.resetFields();
+    setAttachments([]);
+    setAudience("public");
+    setText("");
+    setIsShowDialog(false);
+  };
+  const handleSubmit = () => {
     switch (typeForm) {
-      case "create":
-        let newAttachments = attachments.map(
-          (item) =>({file:item.response.data.filePath,type:item.response.data.fileType})
-        );
-        console.log("creat", newAttachments);
-        const post = await {
+      case "create": {
+        console.log("CREATE");
+        let newAttachments = attachments.map((item) => ({
+          file: item.response.data.filePath,
+          type: item.response.data.fileType,
+        }));
+        const post = {
           text,
           audience,
           attachments: newAttachments,
-          postParent: ""
+          postParent: "",
         };
         // await console.log("create", post);
-        await dispatch(createPost(post));
+        dispatch(createPost(post));
         break;
-      case "edit":
-        console.log("EDIT");
+      }
+      case "edit": {
+        console.log("EDIT", attachments);
+        let newAttachments = attachments.map((item) => ({
+          file: item.file ? item.file : item.response.data.filePath,
+          type: item.type ? item.type : item.response.data.fileType,
+        }));
+        const post = {
+          postId: selectedPost,
+          text,
+          audience,
+          attachments: newAttachments,
+          postParent: "",
+        };
+        // await console.log("create", post);
+        dispatch(editPost(post));
         break;
-      default:
+      }
+      default: {
         dispatch(deletePost(selectedPost));
         break;
+      }
     }
   };
 
   const handleCreate = () => {
+    setInitState();
     setTypeForm("create");
     setTitleDialog("Đăng bài viết");
     setTitleNotify("Đăng bài viết");
@@ -79,9 +101,34 @@ const ListPost = ({ postList }) => {
     setIsShowDialog(true);
   };
 
-  const handleEdit = () => {
+  const handleEdit = (postId) => {
+    const { audience, text, attachments } = postList.filter(
+      (item) => item._id === postId
+    )[0];
+
+    let editAttach = [];
+    attachments.map((item, index) => {
+      editAttach.push({
+        uid: index,
+        name: item.file,
+        status: "done",
+        url:
+          item.type === "video/mp4"
+            ? getUrlVideo(item.file)
+            : getUrlImage(item.file),
+        file: item.file,
+        type: item.type,
+      });
+    });
+    setSelectedPost(postId);
+    setAttachments(editAttach);
+    setAudience(audience);
+    setText(text);
     setTypeForm("edit");
+    setTitleDialog("Chỉnh sửa bài viết");
     setTitleNotify("Cập nhật bài viết");
+    setBtnSubmitDialog("Cập nhật");
+    setIsShowDialog(true);
   };
 
   const handleDelete = (postId) => {
@@ -111,53 +158,20 @@ const ListPost = ({ postList }) => {
     setAttachments(newFileList);
   };
 
- 
-  const customRequest = async option => {
-    const { onSuccess, onError, file, action, onProgress } = option;
-    const url = action;
-    const type = 'image/png';
-    console.log(file)
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      axios
-      .post(url,{file:JSON.stringify(reader.result)}, {
-        onUploadProgress: e => {
-          onProgress({ percent: (e.loaded / e.total) * 100 });
-        },
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      })
-      .then(respones => {
-        onSuccess(respones.body);
-      })
-      .catch(err => {
-        onError(err);
-      });
-    };
-   
-  };
-  
-   
   return (
     <div className="listPost">
       {/* Notification */}
       <Notifications
         response={
-          typeForm === "delete"
-            ? deletePostReducer
-            : typeForm === "create"
-              ? createPostReducer
-              : deletePostReducer
+          typeForm === "create"
+            ? createPostReducer
+            : typeForm === "edit"
+            ? editPostReducer
+            : deletePostReducer
         }
         title={titleNotify}
         onSuccess={() => {
-          console.log("SUCCC");
-          formCreateEditPost.resetFields();
-          setAttachments([]);
-          setAudience("public");
-          setIsShowDialog(false);
+          setInitState();
         }}
       />
       {/* Post status */}
@@ -255,21 +269,14 @@ const ListPost = ({ postList }) => {
       </div>
 
       {/* Render Post List */}
-      {postList?.length>0 ? (
+      {postList?.length > 0 ? (
         postList &&
         postList.map((post, index) => {
           return (
             <Post
-              userId={post.poster._id}
-              username={post.poster.username}
-              fullName={post.poster.fullName}
-              avatar={post.poster.avatar}
-              audience={post.audience}
-              text={post.text}
-              createAt={post.createAt}
+              post={post}
               key={`post_${index + post.createAt}`}
-              attachments={post.attachments}
-              onEdit={handleEdit}
+              onEdit={() => handleEdit(post._id)}
               onDelete={() => {
                 handleDelete(post._id);
               }}
@@ -277,12 +284,12 @@ const ListPost = ({ postList }) => {
           );
         })
       ) : (
-        <div>
+        <>
           <Post />
           <Post />
           <Post />
           <Post />
-        </div>
+        </>
       )}
     </div>
   );

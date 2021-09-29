@@ -17,7 +17,7 @@ const config = {
 export const getPostList = (limit) => {
   return async (dispatch) => {
     try {
-      const res =await apis.post.getPostList(limit)
+      const res = await apis.post.getPostList(limit);
       await dispatch(getPostListAction(res));
     } catch (err) {
       dispatch(getPostListAction(err.response));
@@ -41,7 +41,7 @@ export const getPostList = (limit) => {
 // };
 
 const getPostListAction = (data) => {
-  console.log(data)
+  console.log(data);
   return { type: GET_POST_LIST, payload: data };
 };
 
@@ -49,9 +49,7 @@ export const createPost = (post) => {
   return async (dispatch) => {
     try {
       const res = await axios.post(`${HTTP_CONNECT}/post`, post, config);
-      if (res.status === 200) {
-        await dispatch(createPostAction(true, res));
-      }
+      await dispatch(createPostAction(true, res));
     } catch (err) {
       dispatch(createPostAction(false, err.response));
     }
@@ -61,6 +59,27 @@ export const createPost = (post) => {
 const createPostAction = (isSuccess, data) => {
   return {
     type: isSuccess ? CREATE_POST_SUCCESS : CREATE_POST_FAIL,
+    payload: data,
+  };
+};
+
+export const editPost = (post) => {
+  return async (dispatch) => {
+    try {
+      const res = await axios.put(`${HTTP_CONNECT}/post`, post, config);
+      if (res.status === 200) {
+        await dispatch(editPostAction(true, res));
+        console.log(res);
+      }
+    } catch (err) {
+      dispatch(editPostAction(false, err.response));
+    }
+  };
+};
+
+const editPostAction = (isSuccess, data) => {
+  return {
+    type: isSuccess ? EDIT_POST_SUCCESS : EDIT_POST_FAIL,
     payload: data,
   };
 };
