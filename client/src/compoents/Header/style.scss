@@ -13,8 +13,7 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: $maxWidth-xl;
-    margin: 0 auto;
+    padding: 0 20px;
     padding-top: 10px;
     .logo {
       font-weight: bold;
@@ -46,7 +45,7 @@
         }
         .box {
           display: none;
-          left: -20px;
+          left: -80px;
           position: absolute;
           width: 150px;
           max-width: 200px;

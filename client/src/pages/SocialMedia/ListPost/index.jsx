@@ -120,10 +120,15 @@ const ListPost = ({ postList }) => {
         type: item.type,
       });
     });
+
+    formCreateEditPost.setFieldsValue({
+      Text: text,
+    });
+    setText(text);
     setSelectedPost(postId);
     setAttachments(editAttach);
     setAudience(audience);
-    setText(text);
+
     setTypeForm("edit");
     setTitleDialog("Chỉnh sửa bài viết");
     setTitleNotify("Cập nhật bài viết");
@@ -191,35 +196,35 @@ const ListPost = ({ postList }) => {
           onSubmit={handleSubmit}
           content={
             typeForm !== "delete" ? (
-              <div className="postStatus__content">
-                <div className="d-flex align-items-center">
-                  <img
-                    src={DefualtAvatar}
-                    alt="avatar"
-                    className="avatar"
-                    style={{ paddingRight: "0" }}
-                  />
-                  <div>
-                    <p className="m-0">{profileReducer?.fullName}</p>
-                    <Select
-                      defaultValue="public"
-                      style={{ width: 120 }}
-                      onChange={(value) => {
-                        setAudience(value);
-                      }}
-                      value={audience}
-                    >
-                      <Option value="public">Công khai</Option>
-                      <Option value="friends">Bạn bè</Option>
-                      <Option value="private">Chỉ mình tôi</Option>
-                    </Select>
+              <Form form={formCreateEditPost} onFinish={handleSubmit}>
+                <div className="postStatus__content">
+                  <div className="d-flex align-items-center">
+                    <img
+                      src={DefualtAvatar}
+                      alt="avatar"
+                      className="avatar"
+                      style={{ paddingRight: "0" }}
+                    />
+                    <div>
+                      <p className="m-0">{profileReducer?.fullName}</p>
+                      <Select
+                        defaultValue="public"
+                        style={{ width: 120 }}
+                        onChange={(value) => {
+                          setAudience(value);
+                        }}
+                        value={audience}
+                      >
+                        <Option value="public">Công khai</Option>
+                        <Option value="friends">Bạn bè</Option>
+                        <Option value="private">Chỉ mình tôi</Option>
+                      </Select>
+                    </div>
                   </div>
-                </div>
-                <div className="pt-2">
-                  <Form form={formCreateEditPost} onFinish={handleSubmit}>
+                  <div className="pt-2">
                     <Form.Item
                       label={"Nội dung"}
-                      name="text"
+                      name="Text"
                       labelCol={{ span: 24 }}
                       rules={[
                         {
@@ -231,15 +236,16 @@ const ListPost = ({ postList }) => {
                       <TextArea
                         autoSize={{ minRows: 3 }}
                         placeholder="Bạn đang nghĩ gì thế"
-                        value={text}
+                        value={"sadsdasd"}
                         onChange={(e) => {
                           setText(e.target.value);
+                          console.log("object", e.target.value);
                         }}
                       />
                     </Form.Item>
                     <Form.Item
                       label={"Hình ảnh"}
-                      name="attachments"
+                      name="Attachments"
                       labelCol={{ span: 24 }}
                     >
                       <Upload
@@ -248,19 +254,18 @@ const ListPost = ({ postList }) => {
                         fileList={attachments}
                         onChange={onChangeAttach}
                         onPreview={onPreview}
-                        // customRequest={customRequest}
                       >
                         {attachments.length < 5 && "+ Upload"}
                       </Upload>
                     </Form.Item>
-                  </Form>
+                  </div>
+                  <p className="options">Tùy chọn thêm</p>
+                  <div className="d-flex align-items-center justify-content-start">
+                    <i className="fa fa-image"></i>
+                    <i className="fa fa-tag"></i>
+                  </div>
                 </div>
-                <p className="options">Tùy chọn thêm</p>
-                <div className="d-flex align-items-center justify-content-start">
-                  <i className="fa fa-image"></i>
-                  <i className="fa fa-tag"></i>
-                </div>
-              </div>
+              </Form>
             ) : (
               <p>Bạn có muốn xóa bài viết này</p>
             )

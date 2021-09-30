@@ -1,6 +1,12 @@
 .rightSidebar {
   flex-grow: 1;
   max-height: 100vh;
+  margin-left: 30px;
+  .rightSidebar__position {
+    position: fixed;
+    // width: calc(100% - 20px);
+    width: 300px;
+  }
   .card {
     width: 100% !important;
   }
@@ -11,4 +17,7 @@
   .rightSidebar__content {
     // position: fixed;
   }
+}
+
+@media only screen and (max-width: 600px) {
 }

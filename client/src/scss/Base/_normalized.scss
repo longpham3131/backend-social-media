@@ -27,3 +27,14 @@ form {
 textarea.ant-input {
   border-radius: 10px !important;
 }
+
+.ant-carousel .slick-dots-bottom {
+  bottom: -30px !important;
+}
+
+.ant-carousel .slick-dots li button {
+  background-color: cornflowerblue !important;
+}
+.ant-carousel .slick-dots li.slick-active button {
+  background-color: black !important;
+}

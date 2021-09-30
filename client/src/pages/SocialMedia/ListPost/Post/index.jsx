@@ -3,7 +3,7 @@ import DefaultAvatar from "assets/images/default-avatar.jpg";
 import DefaultImage from "assets/images/default-image.jpg";
 import moment from "moment";
 import "moment/locale/vi"; // without this line it didn't work
-import { Menu, Dropdown, Button, Space } from "antd";
+import { Menu, Dropdown, Carousel } from "antd";
 import {
   EllipsisOutlined,
   CloseCircleOutlined,
@@ -102,22 +102,23 @@ const Post = (props) => {
           className="post__content--attachments"
           style={{ display: post?.attachments?.length > 0 ? "block" : "none" }}
         >
-          {post?.attachments?.length > 0 &&
-          post?.attachments[0].type?.split("/")[0] === "video" ? (
-            <video
-              controls
-              height="350"
-              className="w-100"
-              style={{ backgroundColor: "#00000040" }}
-            >
-              <source src={getUrlVideo(post?.attachments[0].file)} />
-            </video>
-          ) : (
-            <img
-              src={getUrlImage(post?.attachments[0]?.file)}
-              alt="attachments"
-            />
-          )}
+          <Carousel dotPosition={"bottom"}>
+            {post?.attachments?.length > 0 &&
+              post?.attachments.map((item, index) => {
+                if (item.type === "video/mp4") {
+                  return (
+                    <video controls key={index}>
+                      <source src={getUrlVideo(item.file)} />
+                    </video>
+                  );
+                }
+                return (
+                  <div key={index}>
+                    <img src={getUrlImage(item.file)} alt="attachments" />
+                  </div>
+                );
+              })}
+          </Carousel>
         </div>
       </div>
       <div
