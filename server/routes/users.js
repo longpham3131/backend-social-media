@@ -44,7 +44,7 @@ router.get("/search", verifyToken, (req, res) => {
   const searchKey = req.query.key;
   const page = Number.parseInt(req.query.page);
   const pageSize = Number.parseInt(req.query.pageSize);
-  console.log(searchKey, page, pageSize);
+
   User.find({ fullName: searchKey })
     .sort({ fullName: "asc" })
     .limit(pageSize)
