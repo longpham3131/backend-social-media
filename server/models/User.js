@@ -25,6 +25,10 @@ const UserSchema = new mongoose.Schema(
       required: true,
       min: 8,
     },
+    dateOfBirth: {
+      type: String,
+      default: "",
+    },
     avatar: {
       type: String,
       default: "",
@@ -32,6 +36,10 @@ const UserSchema = new mongoose.Schema(
     coverPicture: {
       type: String,
       default: "",
+    },
+    imageList: {
+      type: Array,
+      default: [],
     },
     followers: {
       type: Array,

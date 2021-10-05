@@ -62,7 +62,7 @@ const Post = (props) => {
                 : "header__userName  skeleton skeleton-username"
             }
             onClick={() => {
-              history.push(`/profile/${post?.poster.userId}`);
+              history.push(`/profile/${post?.poster._id}`);
             }}
           >
             {post?.poster.fullName}
