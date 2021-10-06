@@ -9,7 +9,7 @@ import { getUserProfile } from "store/actions/user.action";
 import { SocketContext } from "service/socket/SocketContext";
 function useOutsideAvatar(ref) {
 
-  
+
   useEffect(() => {
     /**
      * Alert if clicked on outside of element
@@ -32,7 +32,7 @@ function useOutsideAvatar(ref) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [ref]);
- 
+
 }
 const { Search } = Input;
 const Header = () => {
@@ -46,9 +46,12 @@ const Header = () => {
     console.log("USERRR", profileStore);
   }, [profileStore]);
   useEffect(() => {
-    if(profileStore!==null &&profileStore.data){
+    if (profileStore !== null && profileStore.data) {
       console.log(profileStore)
-      socket.emit('join-room',"user_"+ profileStore?.data?._id);
+      socket.emit('join-room', "user_" + profileStore?.data?._id);
+      socket.on('post', msg => {
+        console.log(msg)
+      });
     }
   }, [profileStore])
   const onSearch = (value) => console.log(value);
