@@ -17,13 +17,15 @@ import "../node_modules/react-loader-spinner/dist/loader/css/react-spinner-loade
 //Redux
 import { Provider } from "react-redux";
 import store from "./store/index";
-
+import SocketService from "./service/socket/SocketService";
 //Notification
 import "react-notifications/lib/notifications.css";
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <SocketService uri={"http://localhost:5001"}>
+      <App />
+    </SocketService>
   </Provider>,
   document.getElementById("root")
 );

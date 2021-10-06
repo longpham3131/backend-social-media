@@ -23,7 +23,7 @@ const ListPost = ({ postList }) => {
   const [btnSubmitDialog, setBtnSubmitDialog] = useState("Đăng");
 
   //Reducer
-  const profileReducer = useSelector((state) => state.userReducer.profile.data);
+  const profileReducer = useSelector((state) => state.userReducer.profile?.data??null);
   const createPostReducer = useSelector(
     (state) => state.postReducer.createPost
   );
