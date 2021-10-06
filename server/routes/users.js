@@ -44,28 +44,24 @@ router.get("/search", verifyToken, (req, res) => {
   const searchKey = req.query.key;
   const page = Number.parseInt(req.query.page);
   const pageSize = Number.parseInt(req.query.pageSize);
-  console.log(searchKey, page, pageSize);
+
   User.find({ fullName: searchKey })
-    .select("fullName")
     .sort({ fullName: "asc" })
-    .skip(page)
     .limit(pageSize)
     .then((result) => {
-      User.find({ fullName: searchKey })
-        .select("fullName")
-        .then((totalResult) => {
-          res.json({
-            data: {
-              items: result,
-              pagination: {
-                page,
-                pageSize,
-                totalElements: totalResult.length,
-                numberOfElements: result.length,
-              },
+      User.find({ fullName: searchKey }).then((totalResult) => {
+        res.json({
+          data: {
+            items: result,
+            pagination: {
+              page,
+              pageSize,
+              totalElements: totalResult.length,
+              numberOfElements: result.length,
             },
-          });
+          },
         });
+      });
     })
     .catch((err) => {
       return error500(err);
