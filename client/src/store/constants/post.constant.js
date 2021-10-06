@@ -8,5 +8,3 @@ export const EDIT_POST_FAIL = "EDIT_POST_FAIL";
 
 export const DELETE_POST_SUCCESS = "DELETE_POST_SUCCESS";
 export const DELETE_POST_FAIL = "DELETE_POST_FAIL";
-
-export const CLEAR_NOTIFY = "CLEAR_NOTIFY";

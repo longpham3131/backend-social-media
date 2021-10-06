@@ -2,15 +2,12 @@ import axios from "axios";
 import { HTTP_CONNECT } from "config";
 import {
   CREATE_POST_SUCCESS,
-  CREATE_POST_FAIL,
   EDIT_POST_SUCCESS,
-  EDIT_POST_FAIL,
   DELETE_POST_SUCCESS,
-  DELETE_POST_FAIL,
   GET_POST_LIST,
-  CLEAR_NOTIFY,
 } from "store/constants/post.constant";
 import apis from "service";
+import { setNotify } from "./common.action";
 const config = {
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 };
@@ -42,7 +39,6 @@ export const getPostList = (limit) => {
 // };
 
 const getPostListAction = (data) => {
-  console.log(data);
   return { type: GET_POST_LIST, payload: data };
 };
 
@@ -50,16 +46,17 @@ export const createPost = (post) => {
   return async (dispatch) => {
     try {
       const res = await axios.post(`${HTTP_CONNECT}/post`, post, config);
-      await dispatch(createPostAction(true, res));
+      await dispatch(createPostAction(res));
+      await dispatch(setNotify(res.status));
     } catch (err) {
-      dispatch(createPostAction(false, err.response));
+      await dispatch(setNotify(err.response.status));
     }
   };
 };
 
-const createPostAction = (isSuccess, data) => {
+const createPostAction = (data) => {
   return {
-    type: isSuccess ? CREATE_POST_SUCCESS : CREATE_POST_FAIL,
+    type: CREATE_POST_SUCCESS,
     payload: data,
   };
 };
@@ -69,18 +66,19 @@ export const editPost = (post) => {
     try {
       const res = await axios.put(`${HTTP_CONNECT}/post`, post, config);
       if (res.status === 200) {
-        await dispatch(editPostAction(true, res));
-        console.log(res);
+        await dispatch(editPostAction(res));
+        await dispatch(setNotify(res.status));
       }
     } catch (err) {
-      dispatch(editPostAction(false, err.response));
+      // console.log(err.response);
+      dispatch(setNotify(err.response.status));
     }
   };
 };
 
-const editPostAction = (isSuccess, data) => {
+const editPostAction = (data) => {
   return {
-    type: isSuccess ? EDIT_POST_SUCCESS : EDIT_POST_FAIL,
+    type: EDIT_POST_SUCCESS,
     payload: data,
   };
 };
@@ -93,21 +91,18 @@ export const deletePost = (postId) => {
         config
       );
       if (res.status === 200) {
-        await dispatch(detelePostAction(true, res));
+        await dispatch(detelePostAction(res));
+        await dispatch(setNotify(res.status));
       }
     } catch (err) {
-      dispatch(detelePostAction(false, err.response));
+      await dispatch(setNotify(err.response.status));
     }
   };
 };
 
-const detelePostAction = (isSuccess, data) => {
+const detelePostAction = (data) => {
   return {
-    type: isSuccess ? DELETE_POST_SUCCESS : DELETE_POST_FAIL,
+    type: DELETE_POST_SUCCESS,
     payload: data,
   };
-};
-
-export const clearNotifyPost = () => {
-  return { type: CLEAR_NOTIFY, payload: null };
 };

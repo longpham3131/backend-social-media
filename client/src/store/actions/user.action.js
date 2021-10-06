@@ -1,11 +1,11 @@
 import axios from "axios";
 import { HTTP_CONNECT } from "config";
 import {
-  CLEAR_NOTIFY,
   GET_USER_PROFILE,
   UPDATE_PROFILE_FAIL,
   UPDATE_PROFILE_SUCCESS,
 } from "store/constants/user.constant";
+import { setNotify } from "./common.action";
 
 const config = {
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -35,20 +35,17 @@ export const updateProfile = (newProfile) => {
   return async (dispatch) => {
     try {
       const res = await axios.put(`${HTTP_CONNECT}/users/`, newProfile, config);
-      await dispatch(updateProfileAction(true, res));
+      await dispatch(updateProfileAction(res));
+      await dispatch(setNotify(res.status));
     } catch (err) {
-      dispatch(updateProfile(false, err.response));
+      dispatch(setNotify(err.response.status));
     }
   };
 };
 
-const updateProfileAction = (isSuc, data) => {
+const updateProfileAction = (data) => {
   return {
-    type: isSuc ? UPDATE_PROFILE_SUCCESS : UPDATE_PROFILE_FAIL,
+    type: UPDATE_PROFILE_SUCCESS,
     payload: data,
   };
-};
-
-export const clearNotify = () => {
-  return { type: CLEAR_NOTIFY, payload: null };
 };

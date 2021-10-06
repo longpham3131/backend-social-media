@@ -6,7 +6,6 @@ import {
   DELETE_POST_SUCCESS,
   DELETE_POST_FAIL,
   GET_POST_LIST,
-  CLEAR_NOTIFY,
 } from "store/constants/post.constant";
 
 const initialState = {
@@ -22,19 +21,16 @@ export const postReducer = (state = initialState, { type, payload }) => {
     case CREATE_POST_SUCCESS:
       return {
         ...state,
-        notify: payload.status,
         postList: [payload.data, ...state.postList],
       };
     case CREATE_POST_FAIL:
       return {
         ...state,
-        notify: payload.status,
       };
     //EDIT
     case EDIT_POST_SUCCESS:
       return {
         ...state,
-        notify: payload.status,
         postList: state.postList.map((post) => {
           if (post._id === payload.data._id) {
             post = payload.data;
@@ -45,13 +41,11 @@ export const postReducer = (state = initialState, { type, payload }) => {
     case EDIT_POST_FAIL:
       return {
         ...state,
-        notify: payload.status,
       };
     //DELETE
     case DELETE_POST_SUCCESS:
       return {
         ...state,
-        notify: payload.status,
         postList: state.postList.filter(
           (post) => post._id !== payload.data.postId
         ),
@@ -59,10 +53,7 @@ export const postReducer = (state = initialState, { type, payload }) => {
     case DELETE_POST_FAIL:
       return {
         ...state,
-        notify: payload.status,
       };
-    case CLEAR_NOTIFY:
-      return { ...state, notify: payload };
     default:
       return state;
   }

@@ -7,9 +7,8 @@ import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "store/actions/user.action";
 import { SocketContext } from "service/socket/SocketContext";
+import { getUrlImage } from "util/index";
 function useOutsideAvatar(ref) {
-
-  
   useEffect(() => {
     /**
      * Alert if clicked on outside of element
@@ -24,7 +23,6 @@ function useOutsideAvatar(ref) {
       }
     }
 
-
     // Bind the event listener
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -32,7 +30,6 @@ function useOutsideAvatar(ref) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [ref]);
- 
 }
 const { Search } = Input;
 const Header = () => {
@@ -40,17 +37,15 @@ const Header = () => {
   useEffect(() => {
     dispatch(getUserProfile(localStorage.getItem("userId")));
   }, []);
-  const profileStore = useSelector((state) => state.userReducer.profile);
+  const profileReducer = useSelector((state) => state.userReducer.profile);
   const socket = useContext(SocketContext);
+
   useEffect(() => {
-    console.log("USERRR", profileStore);
-  }, [profileStore]);
-  useEffect(() => {
-    if(profileStore!==null &&profileStore.data){
-      console.log(profileStore)
-      socket.emit('join-room',"user_"+ profileStore?.data?._id);
+    if (profileReducer !== null && profileReducer) {
+      console.log(profileReducer);
+      socket.emit("join-room", "user_" + profileReducer?._id);
     }
-  }, [profileStore])
+  }, [profileReducer]);
   const onSearch = (value) => console.log(value);
 
   let history = useHistory();
@@ -97,7 +92,11 @@ const Header = () => {
           <Notifications />
           <div className="listTab__avatar">
             <img
-              src={_defaultAvatar}
+              src={
+                profileReducer?.avatar
+                  ? getUrlImage(profileReducer?.avatar)
+                  : _defaultAvatar
+              }
               alt="avatar"
               className="avatar"
               onClick={handleShow}

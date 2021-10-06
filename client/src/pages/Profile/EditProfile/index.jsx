@@ -68,11 +68,9 @@ const EditProfile = () => {
     <div>
       {/* Notification */}
       <Notifications
-        response={{ status: useSelector((state) => state.userReducer.notify) }}
         title={"Cập nhật"}
         onSuccess={() => {
           setIsShowDialog(false);
-          dispatch(clearNotify());
         }}
       />
       <button

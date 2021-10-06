@@ -7,12 +7,7 @@ import { Input, Upload } from "antd";
 import Post from "./Post";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import {
-  clearNotifyPost,
-  createPost,
-  deletePost,
-  editPost,
-} from "store/actions/post.action";
+import { createPost, deletePost, editPost } from "store/actions/post.action";
 import Notifications from "compoents/Notifications";
 import { getUrlImage, getUrlVideo } from "util/index";
 const { TextArea } = Input;
@@ -28,9 +23,7 @@ const ListPost = ({ postList }) => {
   const [btnSubmitDialog, setBtnSubmitDialog] = useState("Đăng");
 
   //Reducer
-  const profileReducer = useSelector(
-    (state) => state.userReducer.profile?.data ?? null
-  );
+  const profileReducer = useSelector((state) => state.userReducer.profile);
   const notifyReducer = useSelector((state) => state.postReducer.notify);
   // const createPostReducer = useSelector(
   //   (state) => state.postReducer.createPost
@@ -179,12 +172,19 @@ const ListPost = ({ postList }) => {
         title={titleNotify}
         onSuccess={() => {
           setInitState();
-          dispatch(clearNotifyPost());
         }}
       />
       {/* Post status */}
       <div className="card postStatus">
-        <img src={DefualtAvatar} alt="avatar" className="avatar" />
+        <img
+          src={
+            profileReducer?.avatar
+              ? getUrlImage(profileReducer?.avatar)
+              : DefualtAvatar
+          }
+          alt="avatar"
+          className="avatar"
+        />
         <div className="postStatus__placehoder" onClick={handleCreate}>
           <p> Chia sẽ với mọi người về suy nghĩ của bạn hiện tại nào...</p>
         </div>
@@ -203,7 +203,11 @@ const ListPost = ({ postList }) => {
                 <div className="postStatus__content">
                   <div className="d-flex align-items-center">
                     <img
-                      src={DefualtAvatar}
+                      src={
+                        profileReducer?.avatar
+                          ? getUrlImage(profileReducer?.avatar)
+                          : DefualtAvatar
+                      }
                       alt="avatar"
                       className="avatar"
                       style={{ paddingRight: "0" }}

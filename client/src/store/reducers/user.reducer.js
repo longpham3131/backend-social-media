@@ -7,7 +7,6 @@ import {
 
 const initialState = {
   profile: {},
-  notify: null,
 };
 
 export const userReducer = (state = initialState, { type, payload }) => {
@@ -15,12 +14,9 @@ export const userReducer = (state = initialState, { type, payload }) => {
     case GET_USER_PROFILE:
       return { ...state, profile: payload.data };
     case UPDATE_PROFILE_SUCCESS:
-      return { ...state, profile: payload.data, notify: payload.status };
+      return { ...state, profile: payload.data };
     case UPDATE_PROFILE_FAIL:
-      return { ...state, notify: payload.status };
-
-    case CLEAR_NOTIFY:
-      return { ...state, notify: payload };
+      return { ...state };
     default:
       return state;
   }
