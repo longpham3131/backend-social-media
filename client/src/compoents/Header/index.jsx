@@ -41,9 +41,12 @@ const Header = () => {
   const socket = useContext(SocketContext);
 
   useEffect(() => {
-    if (profileReducer !== null && profileReducer) {
+    if (profileReducer !== null && profileReducer.data) {
       console.log(profileReducer);
-      socket.emit("join-room", "user_" + profileReducer?._id);
+      socket.emit("join-room", "user_" + profileReducer?.data?._id);
+      socket.on("post", (msg) => {
+        console.log(msg);
+      });
     }
   }, [profileReducer]);
   const onSearch = (value) => console.log(value);
