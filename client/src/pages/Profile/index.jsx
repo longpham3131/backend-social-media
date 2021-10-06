@@ -8,6 +8,8 @@ import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
 import { getUserProfile } from "store/actions/user.action";
 import { useEffect } from "react";
+import EditProfile from "./EditProfile";
+import { getUrlImage } from "util/index";
 const Profile = () => {
   const quantityImage = [1, 2, 3, 4, 5];
   const dispatch = useDispatch();
@@ -18,9 +20,6 @@ const Profile = () => {
     dispatch(getUserProfile(id));
   }, []);
 
-  useEffect(() => {
-    console.log(profileReducer);
-  }, [profileReducer]);
   return (
     <div className="bodyPage" id="Profile">
       {/* Top */}
@@ -28,9 +27,23 @@ const Profile = () => {
         <div className="wrapper-content">
           <div
             className="profile__coverBg"
-            style={{ backgroundImage: `url(${DefaultImage})` }}
+            style={{
+              backgroundImage: `url(${
+                profileReducer?.coverPicture
+                  ? getUrlImage(profileReducer?.coverPicture)
+                  : DefaultImage
+              })`,
+            }}
           >
-            <img src={DefaultAvatar} alt="avatar" className="avatar" />
+            <img
+              src={
+                profileReducer?.avatar
+                  ? getUrlImage(profileReducer?.avatar)
+                  : DefaultImage
+              }
+              alt="avatar"
+              className="avatar"
+            />
           </div>
           <h3 className="text-center py-4">{profileReducer?.fullName}</h3>
         </div>
@@ -58,9 +71,7 @@ const Profile = () => {
                     {profileReducer?.followings?.length}
                   </p>
                 </div>
-                <button className="btn btn-secondary w-100 mt-3">
-                  Chỉnh sử thông tin
-                </button>
+                <EditProfile />
               </div>
             </div>
 

@@ -50,7 +50,7 @@ const Post = (props) => {
     <div className="card">
       <div className="post__header">
         <img
-          src={post?.poster.avatar}
+          src={getUrlImage(post?.poster.avatar)}
           alt=""
           className={post?.poster.avatar ? "avatar" : "avatar skeleton"}
         />

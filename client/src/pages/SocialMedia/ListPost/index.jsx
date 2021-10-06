@@ -267,7 +267,7 @@ const ListPost = ({ postList }) => {
                 </div>
               </Form>
             ) : (
-              <p>Bạn có muốn xóa bài viết này</p>
+              <p>Bạn có muốn xóa bài viết này ?</p>
             )
           }
         />
