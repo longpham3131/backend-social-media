@@ -8,6 +8,7 @@ import {
   DELETE_POST_SUCCESS,
   DELETE_POST_FAIL,
   GET_POST_LIST,
+  CLEAR_NOTIFY,
 } from "store/constants/post.constant";
 import apis from "service";
 const config = {
@@ -105,4 +106,8 @@ const detelePostAction = (isSuccess, data) => {
     type: isSuccess ? DELETE_POST_SUCCESS : DELETE_POST_FAIL,
     payload: data,
   };
+};
+
+export const clearNotifyPost = () => {
+  return { type: CLEAR_NOTIFY, payload: null };
 };

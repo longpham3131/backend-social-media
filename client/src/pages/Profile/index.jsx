@@ -14,7 +14,7 @@ const Profile = () => {
   const quantityImage = [1, 2, 3, 4, 5];
   const dispatch = useDispatch();
   const { id } = useParams();
-  const profileReducer = useSelector((state) => state.userReducer.profile.data);
+  const profileReducer = useSelector((state) => state.userReducer.profile);
 
   useEffect(() => {
     dispatch(getUserProfile(id));

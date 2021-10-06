@@ -7,7 +7,12 @@ import { Input, Upload } from "antd";
 import Post from "./Post";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { createPost, deletePost, editPost } from "store/actions/post.action";
+import {
+  clearNotifyPost,
+  createPost,
+  deletePost,
+  editPost,
+} from "store/actions/post.action";
 import Notifications from "compoents/Notifications";
 import { getUrlImage, getUrlVideo } from "util/index";
 const { TextArea } = Input;
@@ -23,14 +28,17 @@ const ListPost = ({ postList }) => {
   const [btnSubmitDialog, setBtnSubmitDialog] = useState("Đăng");
 
   //Reducer
-  const profileReducer = useSelector((state) => state.userReducer.profile?.data??null);
-  const createPostReducer = useSelector(
-    (state) => state.postReducer.createPost
+  const profileReducer = useSelector(
+    (state) => state.userReducer.profile?.data ?? null
   );
-  const editPostReducer = useSelector((state) => state.postReducer.editPost);
-  const deletePostReducer = useSelector(
-    (state) => state.postReducer.deletePost
-  );
+  const notifyReducer = useSelector((state) => state.postReducer.notify);
+  // const createPostReducer = useSelector(
+  //   (state) => state.postReducer.createPost
+  // );
+  // const editPostReducer = useSelector((state) => state.postReducer.editPost);
+  // const deletePostReducer = useSelector(
+  //   (state) => state.postReducer.deletePost
+  // );
 
   //Form post
   const [formCreateEditPost] = Form.useForm();
@@ -167,16 +175,11 @@ const ListPost = ({ postList }) => {
     <div className="listPost">
       {/* Notification */}
       <Notifications
-        response={
-          typeForm === "create"
-            ? createPostReducer
-            : typeForm === "edit"
-            ? editPostReducer
-            : deletePostReducer
-        }
+        response={notifyReducer}
         title={titleNotify}
         onSuccess={() => {
           setInitState();
+          dispatch(clearNotifyPost());
         }}
       />
       {/* Post status */}

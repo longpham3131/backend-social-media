@@ -1,6 +1,7 @@
 import axios from "axios";
 import { HTTP_CONNECT } from "config";
 import {
+  CLEAR_NOTIFY,
   GET_USER_PROFILE,
   UPDATE_PROFILE_FAIL,
   UPDATE_PROFILE_SUCCESS,
@@ -46,4 +47,8 @@ const updateProfileAction = (isSuc, data) => {
     type: isSuc ? UPDATE_PROFILE_SUCCESS : UPDATE_PROFILE_FAIL,
     payload: data,
   };
+};
+
+export const clearNotify = () => {
+  return { type: CLEAR_NOTIFY, payload: null };
 };

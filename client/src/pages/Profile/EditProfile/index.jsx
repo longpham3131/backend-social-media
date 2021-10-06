@@ -4,8 +4,9 @@ import { Select, Form, Upload, Input, DatePicker } from "antd";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getUrlImage } from "util/index";
-import { updateProfile } from "store/actions/user.action";
+import { clearNotify, updateProfile } from "store/actions/user.action";
 import moment from "moment";
+import Notifications from "compoents/Notifications";
 
 const { TextArea } = Input;
 const EditProfile = () => {
@@ -16,7 +17,7 @@ const EditProfile = () => {
   const [isShowDialog, setIsShowDialog] = useState(false);
 
   // Reducer
-  const profileReducer = useSelector((state) => state.userReducer.profile.data);
+  const profileReducer = useSelector((state) => state.userReducer.profile);
 
   // Form
   const [formEditProfile] = Form.useForm();
@@ -58,16 +59,30 @@ const EditProfile = () => {
   };
 
   const handleSubmit = () => {
+    console.log("VALUES SUBMIT", fullName, email);
     dispatch(
       updateProfile({ fullName, avatar, email, coverPicture, dateOfBirth })
     );
   };
   return (
     <div>
+      {/* Notification */}
+      <Notifications
+        response={{ status: useSelector((state) => state.userReducer.notify) }}
+        title={"Cập nhật"}
+        onSuccess={() => {
+          setIsShowDialog(false);
+          dispatch(clearNotify());
+        }}
+      />
       <button
         className="btn btn-secondary w-100 mt-3"
         onClick={() => {
           setIsShowDialog(true);
+          formEditProfile.setFieldsValue({
+            fullName,
+            email,
+          });
         }}
       >
         Chỉnh sử thông tin
@@ -76,6 +91,7 @@ const EditProfile = () => {
         isShow={isShowDialog}
         handleHideDialog={() => {
           setIsShowDialog(false);
+          formEditProfile.resetFields();
         }}
         btnSubmitName={"Cập nhật"}
         form={formEditProfile}
@@ -90,7 +106,7 @@ const EditProfile = () => {
             wrapperCol={{ span: 14 }}
             labelAlign={"left"}
           >
-            <Form.Item label={"Ảnh đại diện"} name="Avatar">
+            <Form.Item label={"Ảnh đại diện"}>
               <Upload
                 action="http://localhost:5000/api/upload/singleFile"
                 listType="picture-card"
@@ -116,7 +132,7 @@ const EditProfile = () => {
               </Upload>
               {message && <div>{message}</div>}
             </Form.Item>
-            <Form.Item label={"Ảnh nền"} name="CoverPicture">
+            <Form.Item label={"Ảnh nền"}>
               <Upload
                 action="http://localhost:5000/api/upload/singleFile"
                 listType="picture-card"
@@ -152,14 +168,10 @@ const EditProfile = () => {
                 },
               ]}
             >
-              <Input
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
+              <Input onChange={(e) => setFullName(e.target.value)} />
             </Form.Item>
             <Form.Item
               label={"Ngày sinh"}
-              name="DateOfBirth"
               rules={[
                 {
                   required: true,
@@ -169,6 +181,7 @@ const EditProfile = () => {
             >
               <DatePicker
                 format={"DD/MM/YYYY"}
+                defaultValue={moment(dateOfBirth, "DD/MM/YYYY")}
                 onChange={(date, dateString) => {
                   setDateOfBirth(dateString);
                 }}
@@ -176,7 +189,7 @@ const EditProfile = () => {
             </Form.Item>
             <Form.Item
               label={"Email"}
-              name="Email"
+              name="email"
               rules={[
                 {
                   required: true,
@@ -184,7 +197,7 @@ const EditProfile = () => {
                 },
               ]}
             >
-              <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input onChange={(e) => setEmail(e.target.value)} />
             </Form.Item>
           </Form>
         }
