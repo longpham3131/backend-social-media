@@ -1,4 +1,4 @@
-import { SET_NOTIFY } from "store/constants/common.constant";
+import { SET_NOTIFY } from "store/common/common.constant";
 
 const initialState = {
   notify: null,

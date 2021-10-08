@@ -3,7 +3,7 @@ import { HTTP_CONNECT } from "config";
 import { GET_NOTI_SUCCESS } from "./notification.constant";
 
 import apis from "service";
-import { setNotify } from "store/actions/common.action";
+import { setNotify } from "store/common/common.action";
 const config = {
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 };
