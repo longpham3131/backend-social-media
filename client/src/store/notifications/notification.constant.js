@@ -1,0 +1,1 @@
+export const GET_NOTI_SUCCESS = "GET_NOTI_SUCCESS";

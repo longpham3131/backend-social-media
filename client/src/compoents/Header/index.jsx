@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "store/actions/user.action";
 import { SocketContext } from "service/socket/SocketContext";
 import { getUrlImage } from "util/index";
+import { getNotifications } from "store/notifications/notifications.action"
 function useOutsideAvatar(ref) {
   useEffect(() => {
     /**
@@ -38,14 +39,21 @@ const Header = () => {
     dispatch(getUserProfile(localStorage.getItem("userId")));
   }, []);
   const profileReducer = useSelector((state) => state.userReducer.profile);
+  const notifications = useSelector((state) => state.notificationReducer.notifications ?? []);
   const socket = useContext(SocketContext);
 
+
   useEffect(() => {
-    if (profileReducer !== null && profileReducer.data) {
+    console.log(notifications)
+  }, [notifications])
+  
+  useEffect(() => {
+    if (profileReducer !== null && profileReducer._id) {
       console.log(profileReducer);
-      socket.emit("join-room", "user_" + profileReducer?.data?._id);
-      socket.on("post", (msg) => {
+      socket.emit("join-room", "user_" + profileReducer?._id);
+      socket.on("notification", (msg) => {
         console.log(msg);
+        dispatch(getNotifications())
       });
     }
   }, [profileReducer]);

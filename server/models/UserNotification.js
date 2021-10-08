@@ -18,3 +18,4 @@ const UserNotification = new Schema({
     default: Date.now,
   },
 });
+module.exports = mongoose.model("UserNotification", UserNotification);

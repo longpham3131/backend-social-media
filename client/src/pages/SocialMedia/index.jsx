@@ -16,6 +16,9 @@ const SocialMedia = () => {
   //   console.log("USERRR", profileStore);
   // }, [profileStore]);
 
+  useEffect(() => {
+    console.log(postListStore)
+  }, [postListStore])
   return (
     <div className="bodyPage">
       <ListPost postList={postListStore} />

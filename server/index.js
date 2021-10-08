@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/post");
 const usersRouter = require("./routes/users");
+const usersNotificationRouter = require("./routes/userNotification");
 const uploadRouter = require("./routes/upload");
 const helmet = require("helmet");
 const path = require("path");
@@ -46,7 +47,7 @@ app.use(helmet());
 const PORT = process.env.PORT || 4000;
 const userNotification = io.of("/notification");
 userNotification.on("connection", (socket) => {
-  console.log("1", socket.id);
+  // console.log("1", socket.id);
 });
 // userNotification.use((socket, next) => {
 //   if (socket.handshake.auth.token) {
@@ -57,7 +58,7 @@ userNotification.on("connection", (socket) => {
 //   }
 // });
 io.on("connection", (socket) => {
-  console.log("1", socket.id);
+  // console.log("1", socket.id);
   // socket.on('test',(rq)=>{
   //   console.log('sss',rq)
   //  io.emit('receive-message','server rs')
@@ -75,6 +76,7 @@ app.use(function (req, res, next) {
 app.use("/api/auth", authRouter);
 app.use("/api/post", postRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/notification", usersNotificationRouter);
 app.use("/api/upload", uploadRouter.routes);
 app.use("/filemanager", express.static(path.join(__dirname, "uploads")));
 

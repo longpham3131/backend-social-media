@@ -4,6 +4,7 @@ const argon2 = require("argon2");
 const Post = require("../models/Post");
 const Like = require("../models/Like");
 const User = require("../models/User");
+const UserNotification = require("../models/UserNotification");
 const { error500, error400 } = require("../util/res");
 const verifyToken = require("../middleware/auth");
 const SingleFile = require("../models/SingleFile");
@@ -17,10 +18,10 @@ router.post("/", verifyToken, async (req, res) => {
     return error400(res, "Nội dung bài đăng không được trống");
   try {
     console.log("s");
-    let attachFile=[]
+    let attachFile = [];
     if (attachments.length > 0) {
-      attachFile=  await Promise.all(
-        attachments.map(async e => {
+      attachFile = await Promise.all(
+        attachments.map(async (e) => {
           const file = new SingleFile({
             fileName: e.name,
             filePath: e.file,
@@ -29,17 +30,17 @@ router.post("/", verifyToken, async (req, res) => {
             user: req.userId,
           });
           await file.save();
-          return {...e,id: file._id }
+          return { ...e, id: file._id };
         })
       );
     }
-    console.log(attachFile)
+    console.log(attachFile);
     const newPost = new Post({
       title,
       text,
       poster: await User.findById(req.userId).then((user) => user),
       audience,
-      attachments:attachFile,
+      attachments: attachFile,
       postParent,
     });
     await newPost.save();
@@ -49,7 +50,7 @@ router.post("/", verifyToken, async (req, res) => {
     return error500(res);
   }
 });
-// DELETE POSS
+// DELETE POST
 router.delete("/delete/:id", verifyToken, (req, res) => {
   const { id } = req.params;
   Post.findByIdAndDelete(id)
@@ -102,12 +103,12 @@ router.put("/", verifyToken, async (req, res) => {
 router.get("/", verifyToken, (req, res) => {
   const { limitPost, profile } = req.query;
   console.log(limitPost, profile);
-  if (profile==1) {
+  if (profile == 1) {
     Post.find({ poster: req.userId })
       .limit(limitPost)
       .populate("poster")
       .then((result) => {
-        console.log(result.length)
+        console.log(result.length);
         res.json(result.reverse());
       })
       .catch((err) => {
@@ -119,7 +120,7 @@ router.get("/", verifyToken, (req, res) => {
       .limit(limitPost)
       .populate("poster")
       .then((result) => {
-        console.log(result.length)
+        console.log(result.length);
         res.json(result.reverse());
       })
       .catch((err) => {
@@ -129,7 +130,7 @@ router.get("/", verifyToken, (req, res) => {
   }
 });
 
-router.post("/likepost/:id", verifyToken, async (req, res) => {
+router.get("/likepost/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   try {
     let post = await Post.findById(id).populate("like.user");
@@ -137,7 +138,17 @@ router.post("/likepost/:id", verifyToken, async (req, res) => {
       console.log("a");
       post.like = post.like.filter((e) => e.user._id.toString() !== req.userId);
       await post.save();
-      return res.json({ code: 200, message: "delete successfully" });
+      const noti = await UserNotification({
+        user: post.poster,
+        type: 1,
+        fromUser: req.userId,
+      });
+      await noti.save();
+      return res.json({
+        success: true,
+        data: post._id,
+        message: "delete successfully",
+      });
     } else {
       let like = {
         user: req.userId,
@@ -145,7 +156,17 @@ router.post("/likepost/:id", verifyToken, async (req, res) => {
       };
       post.like.push(like);
       await post.save();
-      return res.json({ code: 200, message: "create successfully" });
+      const io = req.io;
+
+      io.sockets.to(`user_${req.userId}`).emit(
+        "notification",
+        "you have new notification"
+      );
+      return res.json({
+        success: true,
+        data: { postId: post._id, likePost: like },
+        message: "create successfully",
+      });
     }
   } catch (err) {
     console.log(err);
