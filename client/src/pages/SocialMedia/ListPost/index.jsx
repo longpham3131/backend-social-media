@@ -58,6 +58,8 @@ const ListPost = ({ postList }) => {
         let newAttachments = attachments.map((item) => ({
           file: item.response.data.filePath,
           type: item.response.data.fileType,
+          name:item.response.data.fileName,
+          size:item.response.data.fileSize
         }));
         const post = {
           text,
@@ -256,7 +258,7 @@ const ListPost = ({ postList }) => {
                       labelCol={{ span: 24 }}
                     >
                       <Upload
-                        action="http://localhost:5000/api/upload/singleFile"
+                        action="http://localhost:4000/api/upload/singleFile"
                         listType="picture-card"
                         fileList={attachments}
                         onChange={onChangeAttach}

@@ -23,7 +23,7 @@ import "react-notifications/lib/notifications.css";
 
 ReactDOM.render(
   <Provider store={store}>
-    <SocketService uri={"http://localhost:5001"}>
+    <SocketService uri={"http://localhost:4001"}>
       <App />
     </SocketService>
   </Provider>,

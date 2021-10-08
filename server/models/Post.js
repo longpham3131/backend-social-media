@@ -19,8 +19,14 @@ const PostSchema = new Schema({
   },
   like: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "Like",
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+      createAt: {
+        type: Date,
+        default: Date.now, 
+      },
     },
   ],
   comments: { type: Number, default: 0 },
@@ -39,10 +45,8 @@ const PostSchema = new Schema({
     default: Date.now,
   },
 });
-PostSchema.pre('remove',function(){
-  
-})
-PostSchema.pre('updateOne', function() {
+PostSchema.pre("remove", function () {});
+PostSchema.pre("updateOne", function () {
   this.set({ updateAt: new Date() });
 });
 module.exports = mongoose.model("post", PostSchema);
