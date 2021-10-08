@@ -1,6 +1,6 @@
 import axios from "axios";
 import { HTTP_CONNECT } from "../../config";
-import { USER_AUTH, USER_REGISTER } from "../constants/auth.constant";
+import { USER_AUTH, USER_REGISTER } from "../auth/auth.constant";
 
 //LOGIN
 export const login = (username, password) => {

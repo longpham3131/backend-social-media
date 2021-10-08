@@ -7,9 +7,9 @@ import {
   GET_POST_LIST,
   LIKE_POST,
   LIKE_POST_SUCCESS
-} from "store/constants/post.constant";
+} from "store/post/post.constant";
 import apis from "service";
-import { setNotify } from "./common.action";
+import { setNotify } from "../actions/common.action";
 const config = {
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 };

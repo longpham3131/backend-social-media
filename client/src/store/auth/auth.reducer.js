@@ -1,4 +1,4 @@
-import { USER_AUTH, USER_REGISTER } from "../constants/auth.constant";
+import { USER_AUTH, USER_REGISTER } from "./auth.constant";
 
 const initialState = {
   auth: {},

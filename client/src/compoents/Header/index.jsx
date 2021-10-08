@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, useContext } from "react";
 import Notifications from "./Notifications";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserProfile } from "store/actions/user.action";
+import { getUserProfile } from "store/user/user.action";
 import { SocketContext } from "service/socket/SocketContext";
 import { getUrlImage } from "util/index";
 import { getNotifications } from "store/notifications/notifications.action"
@@ -46,7 +46,7 @@ const Header = () => {
   useEffect(() => {
     console.log(notifications)
   }, [notifications])
-  
+
   useEffect(() => {
     if (profileReducer !== null && profileReducer._id) {
       console.log(profileReducer);

@@ -13,7 +13,7 @@ import {
 import { getUrlImage, getUrlVideo } from "util/index";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { likePost } from "store/actions/post.action"
+import { likePost } from "store/post/post.action"
 moment.locale("vi");
 
 const Post = (props) => {

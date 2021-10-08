@@ -3,7 +3,7 @@ import {
   GET_USER_PROFILE,
   UPDATE_PROFILE_FAIL,
   UPDATE_PROFILE_SUCCESS,
-} from "../constants/user.constant";
+} from "./user.constant";
 
 const initialState = {
   profile: {},

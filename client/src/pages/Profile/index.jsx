@@ -6,7 +6,7 @@ import ListPost from "pages/SocialMedia/ListPost";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
-import { getUserProfile } from "store/actions/user.action";
+import { getUserProfile } from "store/user/user.action";
 import { useEffect } from "react";
 import EditProfile from "./EditProfile";
 import { getUrlImage } from "util/index";

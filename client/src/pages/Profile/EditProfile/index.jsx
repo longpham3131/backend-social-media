@@ -4,7 +4,7 @@ import { Select, Form, Upload, Input, DatePicker } from "antd";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getUrlImage } from "util/index";
-import { clearNotify, updateProfile } from "store/actions/user.action";
+import { clearNotify, updateProfile } from "store/user/user.action";
 import moment from "moment";
 import Notifications from "compoents/Notifications";
 

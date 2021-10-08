@@ -7,7 +7,7 @@ import { Input, Upload } from "antd";
 import Post from "./Post";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { createPost, deletePost, editPost } from "store/actions/post.action";
+import { createPost, deletePost, editPost } from "store/post/post.action";
 import Notifications from "compoents/Notifications";
 import { getUrlImage, getUrlVideo } from "util/index";
 const { TextArea } = Input;

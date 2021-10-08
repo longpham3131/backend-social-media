@@ -7,7 +7,7 @@ import {
   DELETE_POST_FAIL,
   GET_POST_LIST,
   LIKE_POST_SUCCESS,
-} from "store/constants/post.constant";
+} from "store/post/post.constant";
 
 const initialState = {
   postList: [],

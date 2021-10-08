@@ -8,7 +8,7 @@ import {
   NotificationContainer,
   NotificationManager,
 } from "react-notifications";
-import { register } from "store/actions/auth.action";
+import { register } from "store/post/auth.action";
 
 const Register = () => {
   const dispatch = useDispatch();
