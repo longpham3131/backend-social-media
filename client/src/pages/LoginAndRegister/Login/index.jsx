@@ -2,7 +2,7 @@ import FormInput from "compoents/Form/Input";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "store/post/auth.action";
+import { login } from "store/auth/auth.action";
 import jwt_decode from "jwt-decode";
 import { getUserProfile } from "store/user/user.action";
 const Login = () => {

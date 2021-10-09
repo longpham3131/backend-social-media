@@ -125,5 +125,15 @@ router.get("/notification", verifyToken, (req, res) => {
     }
   });
 });
+// router.get("/fi", verifyToken, (req, res) => {
+//   const userId = req.params.id;
+//   User.findById(userId).then((user) => {
+//     try {
+//       res.json(user);
+//     } catch (error) {
+//       return error500(res);
+//     }
+//   });
+// });
 
 module.exports = router;

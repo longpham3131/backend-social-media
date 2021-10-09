@@ -13,6 +13,10 @@ const UserNotification = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+  postId:{
+    type:String,
+    default:0
+  },
   createAt: {
     type: Date,
     default: Date.now,

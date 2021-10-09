@@ -2,7 +2,7 @@ import React, { Component, useImperativeHandle, useRef, useState } from "react";
 import DefualtAvatar from "assets/images/default-avatar.jpg";
 import { Select, Form, Input, Upload } from "antd";
 
-import { createPost, deletePost, editPost } from "store/actions/post.action";
+import { createPost, deletePost, editPost } from "store/post/post.action";
 import { useDispatch } from "react-redux";
 import { getUrlImage } from "util/index";
 
@@ -52,6 +52,8 @@ const AddEditPost = React.forwardRef(({ avatar, fullName }, ref) => {
         let newAttachments = attachments.map((item) => ({
           file: item.response.data.filePath,
           type: item.response.data.fileType,
+          name: item.response.data.fileName,
+          size: item.response.data.fileSize
         }));
         const post = {
           text,
@@ -156,7 +158,7 @@ const AddEditPost = React.forwardRef(({ avatar, fullName }, ref) => {
               labelCol={{ span: 24 }}
             >
               <Upload
-                action="http://localhost:5000/api/upload/singleFile"
+                action="http://localhost:4000/api/upload/singleFile"
                 listType="picture-card"
                 fileList={attachments}
                 onChange={({ fileList: newFileList }) => {

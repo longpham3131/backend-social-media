@@ -10,7 +10,7 @@ import { getUserProfile } from "store/user/user.action";
 import { useEffect, useState } from "react";
 import EditProfile from "./EditProfile";
 import { getUrlImage } from "util/index";
-import { getPostList } from "store/actions/post.action";
+import { getPostList } from "store/post/post.action";
 const Profile = () => {
   const quantityImage = [1, 2, 3, 4, 5];
   const dispatch = useDispatch();

@@ -10,6 +10,21 @@ const verifyToken = require("../middleware/auth");
 const SingleFile = require("../models/SingleFile");
 const { fileSizeFormatter } = require("../controllers/upload");
 const mongoose = require("mongoose");
+const {ObjectId} = require('mongodb');
+router.get("/getPostByIdImage/:id", verifyToken, async (req, res) => {
+  const { id } = req.params;
+  Post.find({
+    attachments: {
+      $elemMatch: {
+        id: ObjectId(id)
+      }
+    },
+  }).then((rs) => {
+    console.log(rs);
+    res.json({ success: true, data: rs, message: "true" });
+  });
+});
+
 // CREATE POST
 router.post("/", verifyToken, async (req, res) => {
   const { title, text, audience, attachments, postParent } = req.body;
@@ -141,6 +156,7 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
       const noti = await UserNotification({
         user: post.poster,
         type: 1,
+        postId: post._id,
         fromUser: req.userId,
       });
       await noti.save();
@@ -158,10 +174,9 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
       await post.save();
       const io = req.io;
 
-      io.sockets.to(`user_${req.userId}`).emit(
-        "notification",
-        "you have new notification"
-      );
+      io.sockets
+        .to(`user_${req.userId}`)
+        .emit("notification", "you have new notification");
       return res.json({
         success: true,
         data: { postId: post._id, likePost: like },
@@ -178,8 +193,8 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
 
 router.get("/deleteall", verifyToken, async (req, res) => {
   try {
-    await Like.remove({});
-    await Post.remove({});
+    // await Like.remove({});
+    await SingleFile.remove({});
   } catch (err) {
     console.log(err);
     return error500(res);
