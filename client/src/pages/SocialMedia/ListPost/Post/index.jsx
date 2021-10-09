@@ -12,10 +12,13 @@ import {
 } from "@ant-design/icons";
 import { getUrlImage, getUrlVideo } from "util/index";
 import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { likePost } from "store/post/post.action"
 moment.locale("vi");
 
 const Post = (props) => {
   const { post, onEdit, onDelete } = props;
+  const dispatch = useDispatch();
   let history = useHistory();
   const handleSettings = ({ key }) => {
     switch (key) {
@@ -32,6 +35,9 @@ const Post = (props) => {
         break;
     }
   };
+  const handleLike = () => {
+    dispatch(likePost(post._id));
+  }
   const menu = (
     <Menu onClick={handleSettings}>
       <Menu.Item key={1} icon={<ExclamationCircleOutlined />}>
@@ -127,7 +133,7 @@ const Post = (props) => {
           display: props && Object.keys(props).length !== 0 ? "flex" : "none",
         }}
       >
-        <button className="btn w-100">Thích</button>
+        <button className="btn w-100" onClick={() => handleLike()}>Thích</button>
         <button className="btn w-100">Bình luận</button>
         <button className="btn w-100">Chia sẻ</button>
       </div>

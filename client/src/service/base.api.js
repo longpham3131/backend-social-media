@@ -15,7 +15,7 @@ class BaseApi {
   constructor(opts = {}) {
     Object.assign(this, opts);
 
-    const baseURL = 'http://localhost:5000/api';
+    const baseURL = 'http://localhost:4000/api';
 
     this.client = axios.create({
       timeout: 120000,

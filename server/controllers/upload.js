@@ -45,13 +45,13 @@ const singleFileUpload = async (req, res, next) => {
       );
     }
     console.log(uploadRes);
-    const file = new SingleFile({
+    const file = {
       fileName: uploadRes.original_filename,
       filePath: uploadRes.public_id,
       fileType: req.file.mimetype,
       fileSize: fileSizeFormatter(req.file.size, 2), // 0.00
-    });
-    await file.save();
+    };
+   
     console.log(file);
     res.status(200).send({ message: "File upload successfully", data: file });
   } catch (er) {
@@ -132,4 +132,5 @@ module.exports = {
   multipleFileUpload,
   getAllFiles,
   getAllMultiFiles,
+  fileSizeFormatter
 };

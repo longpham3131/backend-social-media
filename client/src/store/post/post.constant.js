@@ -8,3 +8,6 @@ export const EDIT_POST_FAIL = "EDIT_POST_FAIL";
 
 export const DELETE_POST_SUCCESS = "DELETE_POST_SUCCESS";
 export const DELETE_POST_FAIL = "DELETE_POST_FAIL";
+
+export const LIKE_POST = "LIKE_POST";
+export const LIKE_POST_SUCCESS = "LIKE_POST_SUCCESS";

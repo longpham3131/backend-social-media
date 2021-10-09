@@ -4,8 +4,8 @@ import {
   GET_USER_PROFILE,
   UPDATE_PROFILE_FAIL,
   UPDATE_PROFILE_SUCCESS,
-} from "store/constants/user.constant";
-import { setNotify } from "./common.action";
+} from "store/user/user.constant";
+import { setNotify } from "../common/common.action";
 
 const config = {
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

@@ -4,7 +4,7 @@ import { Select, Form, Upload, Input, DatePicker } from "antd";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getUrlImage } from "util/index";
-import { clearNotify, updateProfile } from "store/actions/user.action";
+import { clearNotify, updateProfile } from "store/user/user.action";
 import moment from "moment";
 import Notifications from "compoents/Notifications";
 
@@ -106,7 +106,7 @@ const EditProfile = () => {
           >
             <Form.Item label={"Ảnh đại diện"}>
               <Upload
-                action="http://localhost:5000/api/upload/singleFile"
+                action="http://localhost:4000/api/upload/singleFile"
                 listType="picture-card"
                 beforeUpload={beforeUpload}
                 onPreview={onPreview}
@@ -132,7 +132,7 @@ const EditProfile = () => {
             </Form.Item>
             <Form.Item label={"Ảnh nền"}>
               <Upload
-                action="http://localhost:5000/api/upload/singleFile"
+                action="http://localhost:4000/api/upload/singleFile"
                 listType="picture-card"
                 beforeUpload={beforeUpload}
                 onPreview={onPreview}

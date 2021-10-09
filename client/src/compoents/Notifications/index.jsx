@@ -5,7 +5,7 @@ import {
   NotificationManager,
 } from "react-notifications";
 import { useDispatch, useSelector } from "react-redux";
-import { setNotify } from "store/actions/common.action";
+import { setNotify } from "store/common/common.action";
 
 import "./style.scss";
 

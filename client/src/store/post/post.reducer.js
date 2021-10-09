@@ -6,7 +6,8 @@ import {
   DELETE_POST_SUCCESS,
   DELETE_POST_FAIL,
   GET_POST_LIST,
-} from "store/constants/post.constant";
+  LIKE_POST_SUCCESS,
+} from "store/post/post.constant";
 
 const initialState = {
   postList: [],
@@ -16,6 +17,7 @@ const initialState = {
 export const postReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case GET_POST_LIST:
+      console.log(payload);
       return { ...state, postList: payload };
     //CREATE
     case CREATE_POST_SUCCESS:
@@ -53,6 +55,18 @@ export const postReducer = (state = initialState, { type, payload }) => {
     case DELETE_POST_FAIL:
       return {
         ...state,
+      };
+    case LIKE_POST_SUCCESS:
+      console.log(payload.data);
+      let listNewPosts = state.postList.map((post) => {
+        if (payload.data.postId == post._id) {
+          post.like = [...post.like, payload.data.likePost];
+        }
+        return post;
+      });
+      return {
+        ...state,
+        postList: listNewPosts,
       };
     default:
       return state;

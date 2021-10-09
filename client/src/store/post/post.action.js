@@ -5,9 +5,11 @@ import {
   EDIT_POST_SUCCESS,
   DELETE_POST_SUCCESS,
   GET_POST_LIST,
-} from "store/constants/post.constant";
+  LIKE_POST,
+  LIKE_POST_SUCCESS
+} from "store/post/post.constant";
 import apis from "service";
-import { setNotify } from "./common.action";
+import { setNotify } from "../common/common.action";
 const config = {
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 };
@@ -99,6 +101,30 @@ export const deletePost = (postId) => {
     }
   };
 };
+
+export const likePost = (postId) => {
+  return async (dispatch) => {
+    try {
+      const res = await axios.get(
+        `${HTTP_CONNECT}/post/likepost/${postId}`,
+        config
+      );
+      if (res.status === 200) {
+        await dispatch(likePostSuccess(res.data));
+      }
+    } catch (err) {
+      await dispatch(setNotify(err.response.status));
+    }
+  };
+};
+
+const likePostSuccess = (data) => {
+  return {
+    type: LIKE_POST_SUCCESS,
+    payload: data,
+  };
+};
+
 
 const detelePostAction = (data) => {
   return {
