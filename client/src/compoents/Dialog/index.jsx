@@ -5,11 +5,10 @@ import Loader from "react-loader-spinner";
 const Dialog = ({
   type = "form",
   title = "",
-  content = "",
   isShow,
   handleHideDialog,
+  content = "",
   btnSubmitName = "Xác nhận",
-  form,
   onSubmit,
 }) => {
   const [isLoading, setisLoading] = useState(true);
@@ -29,54 +28,11 @@ const Dialog = ({
         >
           Đóng
         </Button>
-        <Button
-          type="primary"
-          onClick={() => {
-            if (form) {
-              form.submit();
-            } else {
-              onSubmit();
-            }
-          }}
-          htmlType="submit"
-        >
+        <Button type="primary" onClick={onSubmit} htmlType="submit">
           {btnSubmitName}
         </Button>
       </div>
     );
-  };
-
-  const onRenderContent = () => {
-    if (type === "file") {
-      return (
-        <div style={{ position: "relative" }}>
-          <div
-            style={{
-              position: "absolute",
-              top: "45%",
-              right: "45%",
-              visibility: isLoading ? "visible" : "hidden",
-            }}
-          >
-            <Loader type="Oval" color="#7554a0" height={50} width={50} />
-          </div>
-          <img
-            src={content}
-            alt="img"
-            className="w-100"
-            style={{
-              backgroundColor: "#c3c3c3",
-              height: isLoading ? "300px" : "unset",
-            }}
-            onLoad={() => {
-              setisLoading(false);
-            }}
-          />
-        </div>
-      );
-    }
-
-    return content;
   };
 
   return (
@@ -90,7 +46,7 @@ const Dialog = ({
         handleHideDialog();
       }}
     >
-      {onRenderContent()}
+      {content}
     </Modal>
   );
 };

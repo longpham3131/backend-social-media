@@ -7,18 +7,25 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
 import { getUserProfile } from "store/actions/user.action";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import EditProfile from "./EditProfile";
 import { getUrlImage } from "util/index";
+import { getPostList } from "store/actions/post.action";
 const Profile = () => {
   const quantityImage = [1, 2, 3, 4, 5];
   const dispatch = useDispatch();
+  const [limitPost, setLimitPost] = useState(10);
   const { id } = useParams();
   const profileReducer = useSelector((state) => state.userReducer.profile);
 
   useEffect(() => {
+    dispatch(getPostList(limitPost));
     dispatch(getUserProfile(id));
   }, []);
+
+  const postListReducer = useSelector(
+    (state) => state.postReducer.postList ?? []
+  );
 
   return (
     <div className="bodyPage" id="Profile">
@@ -84,7 +91,7 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          <ListPost />
+          <ListPost postList={postListReducer} />
         </div>
       </div>
     </div>
