@@ -121,6 +121,10 @@ router.get("/", verifyToken, (req, res) => {
     Post.find({ poster: req.userId })
       .limit(limitPost)
       .populate({ path: "comments", perDocumentLimit: 10 })
+      .populate({
+        path: "like",
+        populate: { path: "user" },
+      })
       .lean()
       .then((result) => {
         res.json(result.reverse());
@@ -134,6 +138,10 @@ router.get("/", verifyToken, (req, res) => {
       .limit(limitPost)
       .populate("poster")
       .populate({ path: "comments", perDocumentLimit: 10 })
+      .populate({
+        path: "like",
+        populate: { path: "user", select: "username fullName avatar" },
+      })
       .lean()
       .then((result) => {
         res.json(result.reverse());
