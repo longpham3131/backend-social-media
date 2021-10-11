@@ -161,13 +161,7 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
       console.log("a");
       post.like = post.like.filter((e) => e.user._id.toString() !== req.userId);
       await post.save();
-      const noti = await UserNotification({
-        user: post.poster,
-        type: 1,
-        postId: post._id,
-        fromUser: req.userId,
-      });
-      await noti.save();
+    
       return res.json({
         success: true,
         data: post._id,
@@ -181,7 +175,13 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
       post.like.push(like);
       await post.save();
       const io = req.io;
-
+      const noti = await UserNotification({
+        user: post.poster,
+        type: 1,
+        postId: post._id,
+        fromUser: req.userId,
+      });
+      await noti.save();
       io.sockets
         .to(`user_${req.userId}`)
         .emit("notification", "you have new notification");
