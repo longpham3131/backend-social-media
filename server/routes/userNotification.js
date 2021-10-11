@@ -7,7 +7,7 @@ const verifyToken = require("../middleware/auth");
 
 router.get("", verifyToken, async(req, res) => {
   const cound=await UserNotification.countDocuments({ user: req.userId})
-  UserNotification.find({ user: req.userId }).populate("fromUser").then((rs) => {
+  UserNotification.find({ user: req.userId }).limit(10).populate("fromUser").then((rs) => {
     try {
       res.json({ code: 200, data: rs ,total:cound});
     } catch (error) {

@@ -25,11 +25,16 @@ const PostSchema = new Schema({
       },
       createAt: {
         type: Date,
-        default: Date.now, 
+        default: Date.now,
       },
     },
   ],
-  comments: { type: Number, default: 0 },
+  comments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
   share: { type: Number, default: 0 },
   attachments: {
     type: Array,

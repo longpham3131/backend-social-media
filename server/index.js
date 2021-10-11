@@ -8,6 +8,7 @@ const io = require("socket.io")(4001, {
 const mongoose = require("mongoose");
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/post");
+const commentRouter = require("./routes/comment");
 const usersRouter = require("./routes/users");
 const usersNotificationRouter = require("./routes/userNotification");
 const uploadRouter = require("./routes/upload");
@@ -75,6 +76,7 @@ app.use(function (req, res, next) {
 });
 app.use("/api/auth", authRouter);
 app.use("/api/post", postRouter);
+app.use("/api/comment", commentRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/notification", usersNotificationRouter);
 app.use("/api/upload", uploadRouter.routes);

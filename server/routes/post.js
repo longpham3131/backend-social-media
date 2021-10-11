@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const argon2 = require("argon2");
 const Post = require("../models/Post");
+const Comment = require("../models/comment");
 const Like = require("../models/Like");
 const User = require("../models/User");
 const UserNotification = require("../models/UserNotification");
@@ -10,17 +11,18 @@ const verifyToken = require("../middleware/auth");
 const SingleFile = require("../models/SingleFile");
 const { fileSizeFormatter } = require("../controllers/upload");
 const mongoose = require("mongoose");
-const {ObjectId} = require('mongodb');
+const { ObjectId } = require("mongodb");
+
+//GET ID POST BY ID IMAGE
 router.get("/getPostByIdImage/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   Post.find({
     attachments: {
       $elemMatch: {
-        id: ObjectId(id)
-      }
+        id: ObjectId(id),
+      },
     },
   }).then((rs) => {
-    console.log(rs);
     res.json({ success: true, data: rs, message: "true" });
   });
 });
@@ -32,7 +34,6 @@ router.post("/", verifyToken, async (req, res) => {
   if (!text && attachments.length === 0)
     return error400(res, "Nội dung bài đăng không được trống");
   try {
-    console.log("s");
     let attachFile = [];
     if (attachments.length > 0) {
       attachFile = await Promise.all(
@@ -49,7 +50,6 @@ router.post("/", verifyToken, async (req, res) => {
         })
       );
     }
-    console.log(attachFile);
     const newPost = new Post({
       title,
       text,
@@ -117,13 +117,12 @@ router.put("/", verifyToken, async (req, res) => {
 // GET POST PROFILE
 router.get("/", verifyToken, (req, res) => {
   const { limitPost, profile } = req.query;
-  console.log(limitPost, profile);
   if (profile == 1) {
     Post.find({ poster: req.userId })
       .limit(limitPost)
-      .populate("poster")
+      .populate({ path: "comments", perDocumentLimit: 10 })
+      .lean()
       .then((result) => {
-        console.log(result.length);
         res.json(result.reverse());
       })
       .catch((err) => {
@@ -134,8 +133,9 @@ router.get("/", verifyToken, (req, res) => {
     Post.find()
       .limit(limitPost)
       .populate("poster")
+      .populate({ path: "comments", perDocumentLimit: 10 })
+      .lean()
       .then((result) => {
-        console.log(result.length);
         res.json(result.reverse());
       })
       .catch((err) => {
@@ -193,8 +193,39 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
 
 router.get("/deleteall", verifyToken, async (req, res) => {
   try {
-    // await Like.remove({});
-    await SingleFile.remove({});
+    //
+    // const data=new Comment({
+    //   user:req.userId,
+    //   content:'1',
+    // })
+    // const data2=new Comment({
+    //   user:req.userId,
+    //   content:'2',
+    // })
+    // const data3=new Comment({
+    //   user:req.userId,
+    //   content:'3',
+    // })
+    // const data4=new Comment({
+    //   user:req.userId,
+    //   content:'4',
+    // })
+
+    // await data.save();
+    // await data2.save();
+    // await data3.save();
+    // await data4.save();
+
+    // await Post.deleteMany({});
+    const found = await Post.findOne({ _id: "6163268f9f5bf69884135eed" });
+    found.comments = [
+      ObjectId("616321405fb8421f2f10eb37"),
+      ObjectId("616321405fb8421f2f10eb38"),
+      ObjectId("616321405fb8421f2f10eb39"),
+      ObjectId("616321405fb8421f2f10eb3a"),
+    ];
+    await found.save();
+    // console.log(found)
   } catch (err) {
     console.log(err);
     return error500(res);
