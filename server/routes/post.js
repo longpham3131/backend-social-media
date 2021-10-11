@@ -155,16 +155,26 @@ router.get("/", verifyToken, (req, res) => {
 
 router.get("/likepost/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
+  const io = req.io;
   try {
     let post = await Post.findById(id).populate("like.user");
     if (post.like.length > 0) {
       console.log("a");
       post.like = post.like.filter((e) => e.user._id.toString() !== req.userId);
       await post.save();
-    
+      const notiDelete = await UserNotification.findOneAndDelete({
+        user: post.poster,
+        postId: ObjectId(post._id),
+        fromUser: ObjectId(req.userId),
+        type: 1,
+      });
+      io.sockets
+      .to(`user_${post.poster.toString()}`)
+      .emit("notification", "you have new notification");
       return res.json({
         success: true,
-        data: post._id,
+        like:false,
+        data: { postId: post._id },
         message: "delete successfully",
       });
     } else {
@@ -174,7 +184,7 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
       };
       post.like.push(like);
       await post.save();
-      const io = req.io;
+      
       const noti = await UserNotification({
         user: post.poster,
         type: 1,
@@ -183,10 +193,11 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
       });
       await noti.save();
       io.sockets
-        .to(`user_${req.userId}`)
+        .to(`user_${post.poster.toString()}`)
         .emit("notification", "you have new notification");
       return res.json({
         success: true,
+        like:true,
         data: { postId: post._id, likePost: like },
         message: "create successfully",
       });
