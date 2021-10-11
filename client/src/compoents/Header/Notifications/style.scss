@@ -1,6 +1,19 @@
 @import "~scss/index.scss";
 .tabNotify {
   position: relative;
+  .countNoti {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: red;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: white;
+    font-weight: 500;
+    text-align: center;
+    line-height: 20px;
+  }
   .tabNotify__boxTab {
     display: none;
     position: absolute;

@@ -1,14 +1,12 @@
 import "./style.scss";
 import { Input } from "antd";
 import _defaultAvatar from "assets/images/default-avatar.jpg";
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef } from "react";
 import Notifications from "./Notifications";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "store/user/user.action";
-import { SocketContext } from "service/socket/SocketContext";
 import { getUrlImage } from "util/index";
-import { getNotifications } from "store/notifications/notifications.action";
 function useOutsideAvatar(ref) {
   useEffect(() => {
     /**
@@ -37,28 +35,9 @@ const Header = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getUserProfile(localStorage.getItem("userId")));
-    dispatch(getNotifications());
   }, []);
   const profileReducer = useSelector((state) => state.userReducer.profile);
-  const notifications = useSelector(
-    (state) => state.notificationReducer.notifications ?? []
-  );
-  const socket = useContext(SocketContext);
 
-  useEffect(() => {
-    console.log(notifications);
-  }, [notifications]);
-
-  useEffect(() => {
-    if (profileReducer !== null && profileReducer._id) {
-      console.log(profileReducer);
-      socket.emit("join-room", "user_" + profileReducer?._id);
-      socket.on("notification", (msg) => {
-        console.log("messs-notify", msg);
-        dispatch(getNotifications());
-      });
-    }
-  }, [profileReducer]);
   const onSearch = (value) => console.log(value);
 
   let history = useHistory();
@@ -102,7 +81,7 @@ const Header = () => {
             <i className="fa fa-comments "></i>
           </div>
 
-          <Notifications noti={notifications.reverse()} />
+          <Notifications />
           <div className="listTab__avatar">
             <img
               src={

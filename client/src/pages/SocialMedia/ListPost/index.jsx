@@ -6,11 +6,15 @@ import { useEffect, useRef, useState } from "react";
 import Post from "./Post";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import Notifications from "compoents/Notifications";
+import Alert from "compoents/Alert";
 import { getUrlImage, getUrlVideo } from "util/index";
 import AddEditPost from "./AddEditPost";
+import { deletePost } from "store/post/post.action";
 
 const ListPost = ({ postList }) => {
+  //Init
+  const dispatch = useDispatch();
+  //
   //Dialog
   const [isShowDialog, setIsShowDialog] = useState(false);
   const [titleDialog, setTitleDialog] = useState("Đăng bài viết");
@@ -20,25 +24,27 @@ const ListPost = ({ postList }) => {
   const profileReducer = useSelector((state) => state.userReducer.profile);
   const notifyReducer = useSelector((state) => state.postReducer.notify);
 
-  //Notifications
-  const [titleNotify, setTitleNotify] = useState("Tạo bài viết");
+  //Alert
+  const [titleAlert, setTitleAlert] = useState("Tạo bài viết");
 
   //Form post
   const refAddEditPost = useRef(null);
   const [typeForm, setTypeForm] = useState("create");
+  const [selectedPost, setSelectedPost] = useState(null);
 
   //set
-  const handleCreate = () => {
-    refAddEditPost?.current?.setInitState();
+  const handleCreate = async () => {
+    await setIsShowDialog(true);
+
     // console.log(refAddEditPost.current);
     setTypeForm("create");
     setTitleDialog("Đăng bài viết");
-    setTitleNotify("Đăng bài viết");
+    setTitleAlert("Đăng bài viết");
     setBtnSubmitDialog("Đăng");
-    setIsShowDialog(true);
+    await refAddEditPost?.current?.setInitState();
   };
 
-  const handleEdit = (postId) => {
+  const handleEdit = async (postId) => {
     const { audience, text, attachments } = postList.filter(
       (item) => item._id === postId
     )[0];
@@ -57,32 +63,40 @@ const ListPost = ({ postList }) => {
         type: item.type,
       });
     });
-
-    refAddEditPost.current.setValuesForm(audience, text, editAttach, postId);
+    await setIsShowDialog(true);
 
     setTypeForm("edit");
     setTitleDialog("Chỉnh sửa bài viết");
-    setTitleNotify("Cập nhật bài viết");
+    setTitleAlert("Cập nhật bài viết");
     setBtnSubmitDialog("Cập nhật");
-    setIsShowDialog(true);
+
+    await refAddEditPost.current.setValuesForm(
+      audience,
+      text,
+      editAttach,
+      postId
+    );
   };
 
-  const handleDelete = (postId) => {
+  const handleDelete = async (postId) => {
     setTypeForm("delete");
     setBtnSubmitDialog("Xóa");
-    setTitleNotify("Xóa bài viết");
-    refAddEditPost.current.setSelectedPost(postId);
-    setIsShowDialog(true);
+    setTitleDialog("Xóa bài viết");
+    setTitleAlert("Xóa bài viết");
+    await setSelectedPost(postId);
+    await setIsShowDialog(true);
   };
 
   return (
     <div className="listPost">
       {/* Notification */}
-      <Notifications
+      <Alert
         response={notifyReducer}
-        title={titleNotify}
+        title={titleAlert}
         onSuccess={() => {
-          refAddEditPost.current.setInitState();
+          if (refAddEditPost.current) {
+            refAddEditPost.current.setInitState();
+          }
           setIsShowDialog(false);
         }}
       />
@@ -108,7 +122,9 @@ const ListPost = ({ postList }) => {
           btnSubmitName={btnSubmitDialog}
           title={titleDialog}
           onSubmit={() => {
-            refAddEditPost.current.handleSubmit(typeForm);
+            typeForm !== "delete"
+              ? refAddEditPost.current.handleSubmit(typeForm)
+              : dispatch(deletePost(selectedPost));
           }}
           content={
             typeForm !== "delete" ? (
@@ -133,9 +149,7 @@ const ListPost = ({ postList }) => {
               post={post}
               key={`post_${index + post.createAt}`}
               onEdit={() => handleEdit(post._id)}
-              onDelete={() => {
-                handleDelete(post._id);
-              }}
+              onDelete={() => handleDelete(post._id)}
             />
           );
         })

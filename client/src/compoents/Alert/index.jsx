@@ -9,7 +9,7 @@ import { setNotify } from "store/common/common.action";
 
 import "./style.scss";
 
-const Notifications = ({ onSuccess, title }) => {
+const Alert = ({ onSuccess, title }) => {
   const dispatch = useDispatch();
   const notifyReducer = useSelector((state) => state.commonReducer.notify);
   useEffect(() => {
@@ -28,4 +28,4 @@ const Notifications = ({ onSuccess, title }) => {
 
   return <NotificationContainer />;
 };
-export default Notifications;
+export default Alert;

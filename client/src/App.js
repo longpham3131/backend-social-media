@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { BrowserRouter, Route, Switch, useHistory } from "react-router-dom";
+import React from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import AuthRoute from "./guard/auth.guard";
 import LoginAndRegister from "./pages/LoginAndRegister";
 import Profile from "./pages/Profile";
@@ -10,8 +10,6 @@ import Header from "./compoents/Header";
 import "./scss/index.scss";
 
 const App = () => {
-
-  
   return (
     <BrowserRouter>
       <>

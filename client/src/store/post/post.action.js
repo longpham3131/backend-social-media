@@ -110,7 +110,6 @@ export const likePost = (postId) => {
         config
       );
       if (res.status === 200) {
-        console.log("SUC", res.data);
         await dispatch(likePostSuccess(res.data));
       }
     } catch (err) {

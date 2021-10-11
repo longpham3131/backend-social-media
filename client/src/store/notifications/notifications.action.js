@@ -13,7 +13,7 @@ export const getNotifications = () => {
     try {
       const res = await axios.get(`${HTTP_CONNECT}/notification`, config);
       if (res.status === 200) {
-        await dispatch(getNotificationsSuccess(res.data));
+        await dispatch(getNotificationsSuccess(res));
       }
     } catch (err) {
       await dispatch(setNotify(err.response.status));

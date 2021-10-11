@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getUrlImage } from "util/index";
 import { clearNotify, updateProfile } from "store/user/user.action";
 import moment from "moment";
-import Notifications from "compoents/Notifications";
+import Notifications from "compoents/Alert";
 
 const { TextArea } = Input;
 const EditProfile = () => {

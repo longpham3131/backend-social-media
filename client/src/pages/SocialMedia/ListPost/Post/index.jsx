@@ -146,7 +146,11 @@ const Post = (props) => {
           {post?.like.length} lượt thích
           <div className="post__countReact--preview">
             {post?.like.map((item, index) => {
-              return <p key={index}>{item.user.fullName}</p>;
+              return (
+                <span key={index} className="d-block">
+                  {item.user.fullName}
+                </span>
+              );
             })}
           </div>
         </p>

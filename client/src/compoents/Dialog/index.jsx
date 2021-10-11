@@ -1,7 +1,7 @@
 import { Modal, Button } from "antd";
 import { useState } from "react";
 import { useEffect } from "react";
-import Loader from "react-loader-spinner";
+
 const Dialog = ({
   type = "form",
   title = "",
@@ -11,12 +11,6 @@ const Dialog = ({
   btnSubmitName = "Xác nhận",
   onSubmit,
 }) => {
-  const [isLoading, setisLoading] = useState(true);
-  useEffect(() => {
-    if (isShow) {
-      setisLoading(true);
-    }
-  }, [isShow]);
   const customFooter = () => {
     return (
       <div>

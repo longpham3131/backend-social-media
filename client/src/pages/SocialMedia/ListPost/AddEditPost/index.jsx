@@ -1,8 +1,14 @@
-import React, { Component, useImperativeHandle, useRef, useState } from "react";
+import React, {
+  Component,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import DefualtAvatar from "assets/images/default-avatar.jpg";
 import { Select, Form, Input, Upload } from "antd";
 
-import { createPost, deletePost, editPost } from "store/post/post.action";
+import { createPost, editPost } from "store/post/post.action";
 import { useDispatch } from "react-redux";
 import { getUrlImage } from "util/index";
 
@@ -13,6 +19,9 @@ const AddEditPost = React.forwardRef(({ avatar, fullName }, ref) => {
   //
   const [formCreateEditPost] = Form.useForm();
   const dispatch = useDispatch();
+  useEffect(() => {
+    console.log("DidMount");
+  }, []);
 
   //Form post
 
@@ -25,24 +34,26 @@ const AddEditPost = React.forwardRef(({ avatar, fullName }, ref) => {
   //
   useImperativeHandle(ref, () => ({
     setInitState,
-    setSelectedPost: (postId) => setSelectedPost(postId),
-    setValuesForm: (audience, text, editAttach, postId) => {
-      formCreateEditPost.setFieldsValue({
-        Text: text,
-      });
-      setText(text);
-      setSelectedPost(postId);
-      setAttachments(editAttach);
-      setAudience(audience);
-    },
+    setValuesForm,
     handleSubmit,
   }));
 
   const setInitState = () => {
+    console.log("SET INIT");
     formCreateEditPost.resetFields();
     setAttachments([]);
     setAudience("public");
     setText("");
+  };
+
+  const setValuesForm = (audience, text, editAttach, postId) => {
+    formCreateEditPost.setFieldsValue({
+      Text: text,
+    });
+    setText(text);
+    setSelectedPost(postId);
+    setAttachments(editAttach);
+    setAudience(audience);
   };
 
   const handleSubmit = (typeForm) => {
@@ -53,7 +64,7 @@ const AddEditPost = React.forwardRef(({ avatar, fullName }, ref) => {
           file: item.response.data.filePath,
           type: item.response.data.fileType,
           name: item.response.data.fileName,
-          size: item.response.data.fileSize
+          size: item.response.data.fileSize,
         }));
         const post = {
           text,
@@ -83,7 +94,6 @@ const AddEditPost = React.forwardRef(({ avatar, fullName }, ref) => {
         break;
       }
       default: {
-        dispatch(deletePost(selectedPost));
         break;
       }
     }
