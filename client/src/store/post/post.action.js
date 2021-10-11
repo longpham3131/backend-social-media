@@ -6,7 +6,7 @@ import {
   DELETE_POST_SUCCESS,
   GET_POST_LIST,
   LIKE_POST,
-  LIKE_POST_SUCCESS
+  LIKE_POST_SUCCESS,
 } from "store/post/post.constant";
 import apis from "service";
 import { setNotify } from "../common/common.action";
@@ -110,10 +110,12 @@ export const likePost = (postId) => {
         config
       );
       if (res.status === 200) {
+        console.log("SUC", res.data);
         await dispatch(likePostSuccess(res.data));
       }
     } catch (err) {
-      await dispatch(setNotify(err.response.status));
+      console.log("res", err.response);
+      // await dispatch(setNotify(err.response.status));
     }
   };
 };
@@ -124,7 +126,6 @@ const likePostSuccess = (data) => {
     payload: data,
   };
 };
-
 
 const detelePostAction = (data) => {
   return {

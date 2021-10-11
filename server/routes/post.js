@@ -158,8 +158,13 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
   const io = req.io;
   try {
     let post = await Post.findById(id).populate("like.user");
-    if (post.like.length > 0) {
-      console.log("a");
+    const { _id, avatar, fullName, username } = await User.findById(req.userId);
+    if (
+      post.like.some(
+        (item) => item.user._id == req.userId || item.user == req.userId
+      )
+    ) {
+      // console.log("a");
       post.like = post.like.filter((e) => e.user._id.toString() !== req.userId);
       await post.save();
       const notiDelete = await UserNotification.findOneAndDelete({
@@ -169,13 +174,12 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
         type: 1,
       });
       io.sockets
-      .to(`user_${post.poster.toString()}`)
-      .emit("notification", "you have new notification");
+        .to(`user_${post.poster.toString()}`)
+        .emit("notification", "you have new notification");
       return res.json({
-        success: true,
-        like:false,
-        data: { postId: post._id },
-        message: "delete successfully",
+        like: false,
+        postId: post._id,
+        user: { _id, avatar, fullName, username },
       });
     } else {
       let like = {
@@ -184,7 +188,7 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
       };
       post.like.push(like);
       await post.save();
-      
+
       const noti = await UserNotification({
         user: post.poster,
         type: 1,
@@ -196,10 +200,10 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
         .to(`user_${post.poster.toString()}`)
         .emit("notification", "you have new notification");
       return res.json({
-        success: true,
-        like:true,
-        data: { postId: post._id, likePost: like },
-        message: "create successfully",
+        like: true,
+        postId: post._id,
+        user: { _id, avatar, fullName, username },
+        createAt: Date.now(),
       });
     }
   } catch (err) {

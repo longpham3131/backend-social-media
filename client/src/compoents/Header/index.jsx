@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "store/user/user.action";
 import { SocketContext } from "service/socket/SocketContext";
 import { getUrlImage } from "util/index";
-import { getNotifications } from "store/notifications/notifications.action"
+import { getNotifications } from "store/notifications/notifications.action";
 function useOutsideAvatar(ref) {
   useEffect(() => {
     /**
@@ -37,23 +37,25 @@ const Header = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getUserProfile(localStorage.getItem("userId")));
+    dispatch(getNotifications());
   }, []);
   const profileReducer = useSelector((state) => state.userReducer.profile);
-  const notifications = useSelector((state) => state.notificationReducer.notifications ?? []);
+  const notifications = useSelector(
+    (state) => state.notificationReducer.notifications ?? []
+  );
   const socket = useContext(SocketContext);
 
-
   useEffect(() => {
-    console.log(notifications)
-  }, [notifications])
+    console.log(notifications);
+  }, [notifications]);
 
   useEffect(() => {
     if (profileReducer !== null && profileReducer._id) {
       console.log(profileReducer);
       socket.emit("join-room", "user_" + profileReducer?._id);
       socket.on("notification", (msg) => {
-        console.log(msg);
-        dispatch(getNotifications())
+        console.log("messs-notify", msg);
+        dispatch(getNotifications());
       });
     }
   }, [profileReducer]);
@@ -100,7 +102,7 @@ const Header = () => {
             <i className="fa fa-comments "></i>
           </div>
 
-          <Notifications />
+          <Notifications noti={notifications.reverse()} />
           <div className="listTab__avatar">
             <img
               src={

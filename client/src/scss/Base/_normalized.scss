@@ -7,6 +7,9 @@ form {
     }
   }
 }
+.btn:focus {
+  box-shadow: unset !important;
+}
 
 // ANTD
 

@@ -57,10 +57,14 @@ export const postReducer = (state = initialState, { type, payload }) => {
         ...state,
       };
     case LIKE_POST_SUCCESS:
-      console.log(payload.data);
+      const { like, user, postId } = payload;
       let listNewPosts = state.postList.map((post) => {
-        if (payload.data.postId == post._id) {
-          post.like = [...post.like, payload.data.likePost];
+        if (postId === post._id) {
+          if (like) {
+            post.like.push({ user: user });
+          } else {
+            post.like = post.like.filter((item) => item.user._id !== user._id);
+          }
         }
         return post;
       });

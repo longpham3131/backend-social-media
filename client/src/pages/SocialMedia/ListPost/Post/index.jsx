@@ -13,13 +13,26 @@ import {
 import { getUrlImage, getUrlVideo } from "util/index";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { likePost } from "store/post/post.action"
+import { likePost } from "store/post/post.action";
+import {
+  LikeOutlined,
+  CommentOutlined,
+  ShareAltOutlined,
+  LikeFilled,
+} from "@ant-design/icons";
+import { useState } from "react";
 moment.locale("vi");
 
 const Post = (props) => {
   const { post, onEdit, onDelete } = props;
+  //State
+  const [isShowPreviewLike, setIsShowPreviewLike] = useState(false);
+  //
   const dispatch = useDispatch();
   let history = useHistory();
+  // GET DATA FROM REDUCER
+  const profileReducer = useSelector((state) => state.userReducer.profile);
+  //
   const handleSettings = ({ key }) => {
     switch (key) {
       case "1":
@@ -37,7 +50,7 @@ const Post = (props) => {
   };
   const handleLike = () => {
     dispatch(likePost(post._id));
-  }
+  };
   const menu = (
     <Menu onClick={handleSettings}>
       <Menu.Item key={1} icon={<ExclamationCircleOutlined />}>
@@ -127,15 +140,46 @@ const Post = (props) => {
           </Carousel>
         </div>
       </div>
+      {/* Số like, bình luận, chia sẽ */}
+      <div className="post__countReact">
+        <p>
+          {post?.like.length} lượt thích
+          <div className="post__countReact--preview">
+            {post?.like.map((item, index) => {
+              return <p key={index}>{item.user.fullName}</p>;
+            })}
+          </div>
+        </p>
+        <p>{post?.comments.length} bình luận</p>
+        <p>0 lượt chia sẻ</p>
+      </div>
       <div
         className="post__react"
         style={{
           display: props && Object.keys(props).length !== 0 ? "flex" : "none",
         }}
       >
-        <button className="btn w-100" onClick={() => handleLike()}>Thích</button>
-        <button className="btn w-100">Bình luận</button>
-        <button className="btn w-100">Chia sẻ</button>
+        <button className="btn w-100" onClick={() => handleLike()}>
+          {post?.like.some((item) => item?.user?._id === profileReducer._id) ? (
+            <>
+              <LikeFilled style={{ color: "#2078f4" }} />
+              <span style={{ color: "#2078f4" }}>Thích</span>
+            </>
+          ) : (
+            <>
+              <LikeOutlined />
+              <span>Thích</span>
+            </>
+          )}
+        </button>
+        <button className="btn w-100">
+          <CommentOutlined />
+          <span>Bình luận</span>
+        </button>
+        <button className="btn w-100">
+          <ShareAltOutlined />
+          <span>Chia sẻ</span>
+        </button>
       </div>
     </div>
   );
