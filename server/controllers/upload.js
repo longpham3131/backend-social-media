@@ -2,6 +2,7 @@ const SingleFile = require("../models/SingleFile");
 const MultipleFile = require("../models/MultipleFile");
 const { error500, error400 } = require("../util/res");
 const { cloudinary } = require("../util/cloudinary");
+var fs = require("fs");
 const singleFileUpload = async (req, res, next) => {
   try {
     console.log(req.file);
@@ -51,8 +52,9 @@ const singleFileUpload = async (req, res, next) => {
       fileType: req.file.mimetype,
       fileSize: fileSizeFormatter(req.file.size, 2), // 0.00
     };
-   
+    var filePathDelete = "uploads\\" + req.file.path.split("\\")[1];
     console.log(file);
+    await fs.unlinkSync(filePathDelete);
     res.status(200).send({ message: "File upload successfully", data: file });
   } catch (er) {
     console.log(er);
@@ -132,5 +134,5 @@ module.exports = {
   multipleFileUpload,
   getAllFiles,
   getAllMultiFiles,
-  fileSizeFormatter
+  fileSizeFormatter,
 };
