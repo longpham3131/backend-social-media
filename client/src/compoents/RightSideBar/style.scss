@@ -2,7 +2,7 @@
   flex-grow: 1;
   max-height: 100vh;
   margin-left: 30px;
-  .rightSidebar__position {
+  &__position {
     position: fixed;
     // width: calc(100% - 20px);
     width: 300px;
@@ -10,11 +10,11 @@
   .card {
     width: 100% !important;
   }
-  .rightSidebar__title {
+  &__cardTitle {
     font-weight: bold;
     padding-bottom: 10px;
   }
-  .rightSidebar__content {
+  &__cardContent {
     // position: fixed;
   }
 }

@@ -114,21 +114,21 @@ const Notifications = ({ noti }) => {
       <div className="position-relative">
         <i className="fa fa-heart"></i>
         <span
-          className="countNoti"
+          className="tabNotify__countNoti"
           style={{ display: countNoti > 0 ? "block" : "none" }}
         >
           {countNoti}
         </span>
       </div>
 
-      <div ref={wrapperRef} className="tabNotify__boxTab">
-        <p className="boxTab__header">Thông báo</p>
+      <div ref={wrapperRef} className="tabNotify__boxItems">
+        <p className="tabNotify__headerBox">Thông báo</p>
 
         {/* Notify */}
         {notifications.data &&
           notifications.data.map((item, index) => {
             return (
-              <div className="noti" key={index}>
+              <div className="tabNotify__item" key={index}>
                 <div className="position-relative">
                   <img
                     src={
@@ -139,7 +139,7 @@ const Notifications = ({ noti }) => {
                     alt="avatar"
                     className="avatar"
                   />
-                  <div className="noti--iconReact">
+                  <div className="tabNotify__iconReact">
                     {item.type === 1 ? (
                       <LikeFilled style={{ color: "#2078f4" }} />
                     ) : item.type === 2 ? (

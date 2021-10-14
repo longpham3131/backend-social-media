@@ -8,6 +8,7 @@ import Header from "./compoents/Header";
 
 //SCSS
 import "./scss/index.scss";
+import PostDetail from "pages/PostDetail";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
             path="/login"
             render={(props) => <LoginAndRegister {...props} />}
           />
+          <AuthRoute path="/post" Component={PostDetail} />
           <AuthRoute path="/profile/:id" Component={Profile} />
           <AuthRoute path="/" Component={SocialMedia} />
         </Switch>

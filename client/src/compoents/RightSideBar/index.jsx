@@ -30,8 +30,8 @@ const RightSideBar = ({ user }) => {
         </div> */}
         {/* Danh sách bạn bè */}
         <div className="card">
-          <p className="rightSidebar__title">Danh sách bạn bè</p>
-          <div className="rightSidebar__content">
+          <p className="rightSidebar__cardTitle">Danh sách bạn bè</p>
+          <div className="rightSidebar__cardContent">
             {array.map((item, index) => {
               return (
                 <div

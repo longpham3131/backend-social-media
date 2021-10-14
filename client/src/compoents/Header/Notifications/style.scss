@@ -1,7 +1,7 @@
 @import "~scss/index.scss";
 .tabNotify {
   position: relative;
-  .countNoti {
+  &__countNoti {
     position: absolute;
     top: -5px;
     right: -10px;
@@ -14,7 +14,7 @@
     text-align: center;
     line-height: 20px;
   }
-  .tabNotify__boxTab {
+  &__boxItems {
     display: none;
     position: absolute;
     width: 350px;
@@ -26,38 +26,38 @@
     background-color: white;
     overflow-y: scroll;
     cursor: pointer;
-    .boxTab__header {
-      font-weight: bold;
-      background-color: $color-gray;
-      padding: 10px 0;
-      padding-left: 10px;
-      margin: 0;
-    }
-    .noti {
-      display: flex;
-      margin-top: 5px;
-      border-bottom: 1px solid black;
-      p {
-        &:first-child {
-          height: 50px;
-        }
-      }
-      img {
-        margin: 0 5px;
-        width: 40px;
-        height: 40px;
-      }
-      .noti--iconReact {
-        position: absolute;
-        bottom: 25px;
-        right: 0;
-        background-color: white;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        text-align: center;
-        line-height: 10px;
+  }
+  &__headerBox {
+    font-weight: bold;
+    background-color: $color-gray;
+    padding: 10px 0;
+    padding-left: 10px;
+    margin: 0;
+  }
+  &__item {
+    display: flex;
+    margin-top: 5px;
+    border-bottom: 1px solid black;
+    p {
+      &:first-child {
+        height: 50px;
       }
     }
+    img {
+      margin: 0 5px;
+      width: 40px;
+      height: 40px;
+    }
+  }
+  &__iconReact {
+    position: absolute;
+    bottom: 25px;
+    right: 0;
+    background-color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 10px;
   }
 }
