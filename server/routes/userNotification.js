@@ -5,7 +5,7 @@ const UserNotification = require("../models/UserNotification");
 const { error500, error400 } = require("../util/res");
 const verifyToken = require("../middleware/auth");
 
-router.get("", verifyToken, async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   const cound = await UserNotification.countDocuments({ user: req.userId });
   UserNotification.find({ user: req.userId })
     .limit(10)

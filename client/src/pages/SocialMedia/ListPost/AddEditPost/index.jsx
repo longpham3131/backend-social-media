@@ -81,6 +81,8 @@ const AddEditPost = React.forwardRef(({ avatar, fullName }, ref) => {
         let newAttachments = attachments.map((item) => ({
           file: item.file ? item.file : item.response.data.filePath,
           type: item.type ? item.type : item.response.data.fileType,
+          name: item.name ? item.name : item.response.data.fileName,
+          size: item.size ? item.size : item.response.data.fileSize,
         }));
         const post = {
           postId: selectedPost,
