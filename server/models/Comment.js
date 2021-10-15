@@ -20,6 +20,11 @@ const CommentSchema = new Schema({
     type: String,
     default: "",
   },
+  file:{
+    type: Schema.Types.ObjectId,
+    ref: "SingleFile",
+    default:null
+  },
   like: [
     {
       user: {

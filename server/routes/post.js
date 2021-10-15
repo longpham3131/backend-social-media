@@ -211,7 +211,7 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
     return error500(res);
   }
 
-  res.json({ code: 200, message: "successfully" });
+  
 });
 
 router.get("/deleteall", verifyToken, async (req, res) => {
