@@ -52,58 +52,56 @@ const Header = () => {
   };
   return (
     <div className="header">
-      <div className="header__content">
+      <div
+        className="logo"
+        onClick={() => {
+          history.push("/");
+        }}
+      >
+        Social
+      </div>
+      <div className="header__searchInput">
+        <Search
+          placeholder="Tìm kiếm"
+          onSearch={onSearch}
+          style={{ width: 200 }}
+        />
+      </div>
+      <div className="header__listTab">
         <div
-          className="logo"
+          className="header__tabHome"
           onClick={() => {
             history.push("/");
           }}
         >
-          Social
+          <i className="fa fa-home"></i>
         </div>
-        <div className="searchInput">
-          <Search
-            placeholder="Tìm kiếm"
-            onSearch={onSearch}
-            style={{ width: 200 }}
-          />
+        <div className="header__tabMessages">
+          <i className="fa fa-comments "></i>
         </div>
-        <div className="listTab">
-          <div
-            className="listTab__tabHome"
-            onClick={() => {
-              history.push("/");
-            }}
-          >
-            <i className="fa fa-home"></i>
-          </div>
-          <div className="listTab__tabMessages">
-            <i className="fa fa-comments "></i>
-          </div>
 
-          <Notifications />
-          <div className="listTab__avatar">
-            <img
-              src={
-                profileReducer?.avatar
-                  ? getUrlImage(profileReducer?.avatar)
-                  : _defaultAvatar
-              }
-              alt="avatar"
-              className="avatar"
-              onClick={handleShow}
-            />
-            <div className="box" ref={wrapperRefAva}>
-              <Link
-                to={`/profile/${localStorage.getItem("userId")}`}
-                onClick={() => {
-                  wrapperRefAva.current.style.display = "none";
-                }}
-              >
-                Trang cá nhân
-              </Link>
-              <Link to="/login">Đăng xuất</Link>
-            </div>
+        <Notifications />
+        <div className="header__avatar">
+          <img
+            src={
+              profileReducer?.avatar
+                ? getUrlImage(profileReducer?.avatar)
+                : _defaultAvatar
+            }
+            alt="avatar"
+            className="avatar"
+            onClick={handleShow}
+          />
+          <div className="header__box" ref={wrapperRefAva}>
+            <Link
+              to={`/profile/${localStorage.getItem("userId")}`}
+              onClick={() => {
+                wrapperRefAva.current.style.display = "none";
+              }}
+            >
+              Trang cá nhân
+            </Link>
+            <Link to="/login">Đăng xuất</Link>
           </div>
         </div>
       </div>

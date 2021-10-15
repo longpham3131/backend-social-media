@@ -21,12 +21,15 @@ import {
   LikeFilled,
 } from "@ant-design/icons";
 import { useState } from "react";
+import CommentList from "./CommentList";
 moment.locale("vi");
 
 const Post = (props) => {
   const { post, onEdit, onDelete } = props;
   //State
   const [isShowPreviewLike, setIsShowPreviewLike] = useState(false);
+  const [isShowCommentList, setIsShowCommentList] = useState(false);
+  const [isFocusInput, setIsFocusInput] = useState(false);
   //
   const dispatch = useDispatch();
   let history = useHistory();
@@ -66,8 +69,8 @@ const Post = (props) => {
   );
 
   return (
-    <div className="card">
-      <div className="post__header">
+    <div className="post card">
+      <div className="post__owner">
         <img
           src={getUrlImage(post?.poster.avatar)}
           alt=""
@@ -77,8 +80,8 @@ const Post = (props) => {
           <p
             className={
               post?.poster.username
-                ? "header__userName"
-                : "header__userName  skeleton skeleton-username"
+                ? "post__userName"
+                : "post__userName  skeleton skeleton-username"
             }
             onClick={() => {
               history.push(`/profile/${post?.poster._id}`);
@@ -89,8 +92,8 @@ const Post = (props) => {
           <p
             className={
               post?.audience
-                ? "header__permission"
-                : "header__permission  skeleton skeleton-audience"
+                ? "post__permission"
+                : "post__permission  skeleton skeleton-audience"
             }
           >
             {post?.audience}{" "}
@@ -100,51 +103,50 @@ const Post = (props) => {
           </p>
         </div>
         <Dropdown overlay={menu} placement="bottomRight" trigger={["click"]}>
-          <p className="header__settings">
+          <p className="post__settings">
             <EllipsisOutlined />
           </p>
         </Dropdown>
       </div>
-      <div className="post__content">
-        {post?.text ? (
-          <p className="post__content--text">{post?.text}</p>
-        ) : (
-          <div className="w-100 py-3">
-            <p className="skeleton skeleton-text"></p>
-            <p className="skeleton skeleton-text"></p>
-            <p className="skeleton skeleton-text"></p>
-            <p className="skeleton skeleton-text"></p>
-          </div>
-        )}
-
-        <div
-          className="post__content--attachments"
-          style={{ display: post?.attachments?.length > 0 ? "block" : "none" }}
-        >
-          <Carousel dotPosition={"bottom"}>
-            {post?.attachments?.length > 0 &&
-              post?.attachments.map((item, index) => {
-                if (item.type === "video/mp4") {
-                  return (
-                    <video controls key={index}>
-                      <source src={getUrlVideo(item.file)} />
-                    </video>
-                  );
-                }
-                return (
-                  <div key={index}>
-                    <img src={getUrlImage(item.file)} alt="attachments" />
-                  </div>
-                );
-              })}
-          </Carousel>
+      {/*Post content include text and attachments */}
+      {post?.text ? (
+        <p className="post__text">{post?.text}</p>
+      ) : (
+        <div className="w-100 py-3">
+          <p className="skeleton skeleton-text"></p>
+          <p className="skeleton skeleton-text"></p>
+          <p className="skeleton skeleton-text"></p>
+          <p className="skeleton skeleton-text"></p>
         </div>
+      )}
+
+      <div
+        className="post__attachments"
+        style={{ display: post?.attachments?.length > 0 ? "block" : "none" }}
+      >
+        <Carousel dotPosition={"bottom"}>
+          {post?.attachments?.length > 0 &&
+            post?.attachments.map((item, index) => {
+              if (item.type === "video/mp4") {
+                return (
+                  <video controls key={index}>
+                    <source src={getUrlVideo(item.file)} />
+                  </video>
+                );
+              }
+              return (
+                <div key={index}>
+                  <img src={getUrlImage(item.file)} alt="attachments" />
+                </div>
+              );
+            })}
+        </Carousel>
       </div>
       {/* Số like, bình luận, chia sẽ */}
       <div className="post__countReact">
         <p>
           {post?.like.length} lượt thích
-          <div className="post__countReact--preview">
+          <div className="post__previewReact">
             {post?.like.map((item, index) => {
               return (
                 <span key={index} className="d-block">
@@ -154,13 +156,21 @@ const Post = (props) => {
             })}
           </div>
         </p>
-        <p>{post?.comments.length} bình luận</p>
+        <p
+          onClick={() => {
+            setIsShowCommentList(!isShowCommentList);
+            setIsFocusInput(false);
+          }}
+        >
+          {post?.comments.length} bình luận
+        </p>
         <p>0 lượt chia sẻ</p>
       </div>
       <div
         className="post__react"
         style={{
           display: props && Object.keys(props).length !== 0 ? "flex" : "none",
+          borderBottom: isShowCommentList ? "1px solid black" : "",
         }}
       >
         <button className="btn w-100" onClick={() => handleLike()}>
@@ -176,7 +186,13 @@ const Post = (props) => {
             </>
           )}
         </button>
-        <button className="btn w-100">
+        <button
+          className="btn w-100"
+          onClick={() => {
+            setIsShowCommentList(true);
+            setIsFocusInput(true);
+          }}
+        >
           <CommentOutlined />
           <span>Bình luận</span>
         </button>
@@ -185,6 +201,8 @@ const Post = (props) => {
           <span>Chia sẻ</span>
         </button>
       </div>
+      {/* Comment list */}
+      <CommentList isShow={isShowCommentList} isFocusInput={isFocusInput} />
     </div>
   );
 };
