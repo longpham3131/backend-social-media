@@ -8,7 +8,7 @@ const verifyToken = require("../middleware/auth");
 router.get("/", verifyToken, async (req, res) => {
   const { index = 1, pageSize = 10 } = req.query;
   const result = await Promise.all([
-    UserNotification.find({ user: req.userId }).populate("fromUser"),
+    UserNotification.find({ user: req.userId }).populate("fromUser").lean(),
     UserNotification.find({ user: req.userId })
       .skip(index * pageSize)
       .limit(pageSize)
@@ -27,5 +27,20 @@ router.get("/", verifyToken, async (req, res) => {
     data: result[1],
   });
 });
+
+router.get("/notificationSeen/:id", verifyToken, async (req, res) => {
+  try{
+    const { id } = req.params;
+    await UserNotification.findOneAndUpdate({_id:id},{status:1})
+    return res.json({
+      success: true,
+    });
+  }
+  catch(err){
+    
+    error500(res)
+  }
+});
+
 
 module.exports = router;

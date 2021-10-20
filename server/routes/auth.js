@@ -69,7 +69,7 @@ router.post("/login", async (req, res) => {
       return error400(res, "Tài khoản hoặc mật khẩu không đúng");
 
     const date = new Date();
-    date.setDate(date.getDate() + 3);
+    date.setDate(date.getDate() + 300000);
     const accessToken = jwt.sign(
       { userId: user._id, expired: date },
       process.env.ACCESS_TOKEN_SECRET

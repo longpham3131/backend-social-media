@@ -17,6 +17,10 @@ const UserNotification = new Schema({
     type:String,
     default:0
   },
+  status:{
+    type: Number,
+    default: 0,//0:Not Seen 1:Seen
+  },
   createAt: {
     type: Date,
     default: Date.now,
