@@ -152,7 +152,7 @@ router.get("/", verifyToken, (req, res) => {
       });
   }
 });
-
+//LIKE POST
 router.get("/likepost/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   const io = req.io;

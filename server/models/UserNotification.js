@@ -7,7 +7,7 @@ const UserNotification = new Schema({
   },
   type: {
     type: Number,
-    default: 0,//1:Like 2:Comment 3:Tags
+    default: 0,//1:Like 2:Comment 3:Tags 4: Talking about you
   },
   fromUser: {
     type: Schema.Types.ObjectId,
