@@ -12,6 +12,7 @@ const commentRouter = require("./routes/comment");
 const usersRouter = require("./routes/users");
 const usersNotificationRouter = require("./routes/userNotification");
 const uploadRouter = require("./routes/upload");
+const groupRouter = require("./routes/group")
 const helmet = require("helmet");
 const path = require("path");
 const { cloudinary } = require("./util/cloudinary");
@@ -78,6 +79,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/post", postRouter);
 app.use("/api/comment", commentRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/group",groupRouter)
 app.use("/api/notification", usersNotificationRouter);
 app.use("/api/upload", uploadRouter.routes);
 app.use("/filemanager", express.static(path.join(__dirname, "uploads")));
