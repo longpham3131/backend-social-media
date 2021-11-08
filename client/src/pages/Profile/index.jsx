@@ -1,6 +1,7 @@
 import RightSideBar from "compoents/RightSideBar";
 import DefaultAvatar from "assets/images/default-avatar.jpg";
 import DefaultImage from "assets/images/default-image.jpg";
+import { Button } from "antd";
 import "./style.scss";
 import ListPost from "pages/SocialMedia/ListPost";
 import { useSelector } from "react-redux";
@@ -16,13 +17,17 @@ const Profile = () => {
   const dispatch = useDispatch();
   const [limitPost, setLimitPost] = useState(10);
   const { id } = useParams();
+  const profileUserReducer = useSelector((state) => state.userReducer.profileCurentUser);
   const profileReducer = useSelector((state) => state.userReducer.profile);
-
   useEffect(() => {
     dispatch(getPostList(limitPost));
     dispatch(getUserProfile(id));
   }, []);
 
+  useEffect(() => {
+   console.log("profileUserReducer",profileUserReducer)
+   console.log("profileReducer",profileReducer)
+  }, [profileReducer]);
   const postListReducer = useSelector(
     (state) => state.postReducer.postList ?? []
   );
@@ -53,6 +58,9 @@ const Profile = () => {
             />
           </div>
           <h3 className="text-center py-4">{profileReducer?.fullName}</h3>
+          <div className="actions-wrapper d-flex justify-content-end pe-1 pb-1">
+            <Button>Kết bạn</Button>
+          </div>
         </div>
         {/* Center */}
         <div className="profile__content bodyPage">

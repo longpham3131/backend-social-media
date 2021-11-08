@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const {
+  FriendRequest,
+  FriendRequestRespone,
+} = require("../controllers/friend");
 const { error500, error400 } = require("../util/res");
 const verifyToken = require("../middleware/auth");
 const argon2 = require("argon2");
@@ -102,13 +106,11 @@ router.put("/", verifyToken, async (req, res) => {
 
 // DETELE USER
 // router.put
-
-//GET USER DETAIL
-router.get("/:id", verifyToken, (req, res) => {
-  const userId = req.params.id;
-  User.findById(userId).then((user) => {
+router.get("/profile", verifyToken, (req, res) => {
+  console.log("profile");
+  User.findById(req.userId).then((user) => {
     try {
-      res.json(user);
+      res.json({ success: true, data: user });
     } catch (error) {
       return error500(res);
     }
@@ -125,6 +127,18 @@ router.get("/notification", verifyToken, (req, res) => {
     }
   });
 });
+//GET USER DETAIL
+router.get("/:id", verifyToken, (req, res) => {
+  const userId = req.params.id;
+  User.findById(userId).then((user) => {
+    try {
+      res.json(user);
+    } catch (error) {
+      return error500(res);
+    }
+  });
+});
+
 // router.get("/fi", verifyToken, (req, res) => {
 //   const userId = req.params.id;
 //   User.findById(userId).then((user) => {
@@ -136,4 +150,6 @@ router.get("/notification", verifyToken, (req, res) => {
 //   });
 // });
 
+router.post("/friendRequest", verifyToken, FriendRequest);
+router.post("/friendRespone", verifyToken, FriendRequestRespone);
 module.exports = router;

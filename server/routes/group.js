@@ -35,6 +35,22 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 
-
+router.put("/", verifyToken, async (req, res) => {
+  try{
+    const data = req.body;
+    let groupUpdate = {...data}
+    delete groupUpdate._id
+    const group = Group.findByIdAndUpdate(data._id,groupUpdate,{
+      new:true
+    })
+    return res.json({
+      success: true,
+      data:group
+    });
+  }
+  catch(err){
+    error500(res)
+  }
+});
 
 module.exports = router;

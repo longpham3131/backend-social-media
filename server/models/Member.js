@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const PostSchema = new Schema({
+const MemberSchema = new Schema({
   role: {
     type: String,
     default: "member",
@@ -16,4 +16,4 @@ const PostSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("post", PostSchema);
+module.exports = mongoose.model("MemberSchema", MemberSchema);

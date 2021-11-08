@@ -210,51 +210,23 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
     console.log(err);
     return error500(res);
   }
-
-  
 });
 
 router.get("/deleteall", verifyToken, async (req, res) => {
   try {
-    //
-    // const data=new Comment({
-    //   user:req.userId,
-    //   content:'1',
-    // })
-    // const data2=new Comment({
-    //   user:req.userId,
-    //   content:'2',
-    // })
-    // const data3=new Comment({
-    //   user:req.userId,
-    //   content:'3',
-    // })
-    // const data4=new Comment({
-    //   user:req.userId,
-    //   content:'4',
-    // })
-
-    // await data.save();
-    // await data2.save();
-    // await data3.save();
-    // await data4.save();
-
-    // await Post.deleteMany({});
-    const found = await Post.findOne({ _id: "6163268f9f5bf69884135eed" });
-    found.comments = [
-      ObjectId("616321405fb8421f2f10eb37"),
-      ObjectId("616321405fb8421f2f10eb38"),
-      ObjectId("616321405fb8421f2f10eb39"),
-      ObjectId("616321405fb8421f2f10eb3a"),
-    ];
-    await found.save();
-    // console.log(found)
+    res.send("ok");
+    await performComplexTasks(req);
+    console.log("wait");
   } catch (err) {
     console.log(err);
     return error500(res);
   }
-  return res.json({ code: 200 });
-});
+}); 
+async function performComplexTasks(req) {
+  const post = new Post({ poster: req.userId });
+  await post.save();
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+}
 
 module.exports = router;
 // router.post("/likepost/:id", verifyToken, async (req, res) => {

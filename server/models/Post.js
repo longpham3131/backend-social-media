@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const PostSchema = new Schema({
   title: {
     type: String,
+    default:""
   },
   text: {
     type: String,
@@ -11,7 +12,7 @@ const PostSchema = new Schema({
   },
   audience: {
     type: String,
-    required: true,
+    default:"public"
   },
   poster: {
     type: Schema.Types.ObjectId,
@@ -39,6 +40,7 @@ const PostSchema = new Schema({
       ref: "Comment",
     },
   ],
+ 
   share: { type: Number, default: 0 },
   attachments: {
     type: Array,
@@ -48,6 +50,7 @@ const PostSchema = new Schema({
   createAt: {
     type: Date,
     default: Date.now,
+    unique: true,
   },
   updateAt: {
     type: Date,

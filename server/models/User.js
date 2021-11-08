@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const Schema = mongoose.Schema;
 const UserSchema = new mongoose.Schema(
   {
     username: {
@@ -50,6 +50,18 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    friends: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    friendsRequest: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     isAdmin: {
       type: Boolean,
       default: false,

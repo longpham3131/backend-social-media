@@ -36,7 +36,7 @@ const Header = () => {
   useEffect(() => {
     dispatch(getUserProfile(localStorage.getItem("userId")));
   }, []);
-  const profileReducer = useSelector((state) => state.userReducer.profile);
+  const profileReducer = useSelector((state) => state.userReducer.profileCurentUser);
 
   const onSearch = (value) => console.log(value);
 
