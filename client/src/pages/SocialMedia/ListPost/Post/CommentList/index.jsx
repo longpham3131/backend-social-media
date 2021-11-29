@@ -1,33 +1,29 @@
 import DefaultAvatar from "assets/images/default-avatar.jpg";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getUrlImage } from "util/index";
 import Comment from "./Comment";
 import { PlusOutlined, LoadingOutlined } from "@ant-design/icons";
 import "./style.scss";
 import { useEffect, useRef, useState } from "react";
 import { Upload } from "antd";
-
-const CommentList = ({ isShow, isFocusInput }) => {
+import { postComment, editComment } from "store/post/post.action";
+import { beforeUpload } from "util/index";
+import autosize from "autosize";
+const CommentList = ({ post, isShow, isFocusInput, comments }) => {
   //GENERATE
-  const profileReducer = useSelector((state) => state.userReducer.profile);
+  const profileReducer = useSelector(
+    (state) => state.userReducer.profileCurentUser
+  );
   const inputRef = useRef();
   const [isShowUpload, setIsShowUpload] = useState(false);
   const [errMessage, setErrMessage] = useState("");
   const [attachment, setAttachment] = useState(null);
   const [loadingAttach, setLoadingAttach] = useState(false);
+  const [comment, setComment] = useState("");
   //
-
-  const beforeUpload = (file) => {
-    setErrMessage("");
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      setErrMessage("You can only upload JPG/PNG file!");
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      setErrMessage("Image must smaller than 2MB!");
-    }
-    return isJpgOrPng && isLt2M;
+  const dispatch = useDispatch();
+  const beforeUploadFile = (file) => {
+    beforeUpload(file);
   };
 
   const uploadButton = (
@@ -44,16 +40,64 @@ const CommentList = ({ isShow, isFocusInput }) => {
     if (info.file.status === "done") {
       // Get this url from response in real world.
       setAttachment(info.file);
+      console.log(info.file);
       setLoadingAttach(false);
     }
   };
-
+  const handleSendComment = (event) => {
+    if (event.keyCode == 13 && event.shiftKey) {
+      return;
+    } else if (event.key === "Enter") {
+      let file = attachment.map((item) => ({
+        file: item.response.data.filePath,
+        type: item.response.data.fileType,
+        name: item.response.data.fileName,
+        size: item.response.data.fileSize,
+      }));
+      console.log({
+        content: event.target.value,
+        postId: post._id,
+        file
+      })
+      dispatch(
+        postComment({
+          content: event.target.value,
+          postId: post._id,
+          file
+        })
+      );
+      setComment("");
+      setAttachment(null)
+      setIsShowUpload(false)
+      autosize(inputRef.current);
+    }
+  };
+  const handleChangeComment = (event) => {
+    if (event.key === "Enter") console.log("sss");
+    setComment(event.target.value);
+  };
   useEffect(() => {
     if (isFocusInput) {
       inputRef.current.focus();
     }
   }, [isFocusInput]);
-
+  useEffect(() => {
+    autosize(inputRef.current);
+  }, [comment]);
+  const onPreview = async (file) => {
+    let src = file.url;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj);
+        reader.onload = () => resolve(reader.result);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow.document.write(image.outerHTML);
+  };
   return (
     <div className="commentList" style={{ display: isShow ? "block" : "none" }}>
       <p className="commentList__seeAll">Xem tất cả bình luận</p>
@@ -72,7 +116,13 @@ const CommentList = ({ isShow, isFocusInput }) => {
             type="text"
             placeholder="Viết bình luận..."
             className="commentList__inputComment"
-            ref={inputRef}
+            ref={(e) => (inputRef.current = e)}
+            value={comment}
+            onChange={(e) => {
+              handleChangeComment(e);
+              // autosize(inputRef.current);
+            }}
+            onKeyDown={handleSendComment}
           />
           <i
             class="fa fa-image commentList__iconAttach"
@@ -82,13 +132,15 @@ const CommentList = ({ isShow, isFocusInput }) => {
           {isShowUpload && (
             <>
               <Upload
-                name="avatar"
+                onPreview={onPreview}
                 listType="picture-card"
                 className="avatar-uploader"
-                showUploadList={false}
+                fileList={attachment}
                 action="http://localhost:4000/api/upload/singleFile"
-                beforeUpload={beforeUpload}
-                onChange={handleChange}
+                // beforeUpload={beforeUploadFile}
+                onChange={({ fileList: newFileList }) => {
+                  setAttachment(newFileList);
+                }}
               >
                 {attachment ? (
                   <img
@@ -106,8 +158,15 @@ const CommentList = ({ isShow, isFocusInput }) => {
         </div>
       </div>
       {/* Comments */}
-      {[0, 1, 2, 3, 4].map((item, index) => {
-        return <Comment />;
+      {comments?.map((item, index) => {
+        return (
+          <Comment
+            key={index}
+            profile={profileReducer}
+            comment={item}
+            postId={post._id}
+          />
+        );
       })}
     </div>
   );

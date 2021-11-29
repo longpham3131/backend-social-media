@@ -6,6 +6,7 @@ const {
   multipleFileUpload,
   getAllFiles,
   getAllMultiFiles,
+  getAllMediaByUserId
 } = require("../controllers/upload");
 const { error500, error400 } = require("../util/res");
 const { cloudinary } = require("../util/cloudinary");
@@ -34,6 +35,8 @@ router.get('file',async(req,res)=>{
     const publicIds = resource.map(file => file.public_id);
     res.send(publicIds)
 })
+router.get("/getAllMediaByUserId",getAllMediaByUserId)
+
 module.exports = {
   routes: router,
 };

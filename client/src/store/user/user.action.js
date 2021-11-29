@@ -6,7 +6,10 @@ import {
   GET_USER_CURRENT_PROFILE,
   UPDATE_PROFILE_SUCCESS,
   FRIEND_REQUEST_SUCCESS,
-  FRIEND_REQUEST_RESPONE_SUCCESS
+  FRIEND_REQUEST_RESPONE_SUCCESS,
+  GET_FRIEND_REQUEST_SUCCESS,
+  UNFRIEND_SUCCESS,
+  GET_IMAGE_USE_SUCCESS
 } from "store/user/user.constant";
 import { useSelector } from "react-redux";
 import { setNotify } from "../common/common.action";
@@ -69,10 +72,21 @@ const updateProfileAction = (data) => {
 };
 
 export const friendRequest = (data) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
-      const res = await axios.put(`${HTTP_CONNECT}/users/friendRequest`, data, config);
-      await dispatch(friendRequestAction(data));
+      const profile = getState().userReducer.profileCurentUser;
+      const res = await axios.post(
+        `${HTTP_CONNECT}/users/friendRequest`,
+        data,
+        config
+      );
+      await dispatch(
+        friendRequestAction({
+          ...data,
+          user: { _id: profile._id },
+          createAt: Date.now(),
+        })
+      );
     } catch (err) {
       dispatch(setNotify(err.response));
     }
@@ -81,23 +95,92 @@ export const friendRequest = (data) => {
 export const friendRequestRespone = (data) => {
   return async (dispatch) => {
     try {
-      const res = await axios.put(`${HTTP_CONNECT}/users/friendRespone`, data, config);
-      await dispatch(friendRequestResponeAction(data));
+      const res = await axios.post(
+        `${HTTP_CONNECT}/users/friendRespone`,
+        data,
+        config
+      );
+      if (res.status == 200) {
+        await dispatch(getUserCurrentProfile());
+      }
     } catch (err) {
       dispatch(setNotify(err.response));
     }
   };
 };
-const friendRequestAction = (data)=>{
+export const unfriend = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await axios.post(
+        `${HTTP_CONNECT}/users/unfriend`,
+        data,
+        config
+      );
+      if (res.status == 200) {
+        await dispatch(unfriendSuccess(data));
+      }
+    } catch (err) {
+      dispatch(setNotify(err.response));
+    }
+  };
+};
+const unfriendSuccess = (data) => {
+  console.log(data);
+  return {
+    type: UNFRIEND_SUCCESS,
+    payload: data,
+  };
+};
+const friendRequestAction = (data) => {
+  console.log(data);
   return {
     type: FRIEND_REQUEST_SUCCESS,
-    payload:data
-  }
-}
-
-const friendRequestResponeAction = (data)=>{
+    payload: data,
+  };
+};
+export const getFriendsRequest = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await axios.get(
+        `${HTTP_CONNECT}/users/getFriendRequest`,
+        config
+      );
+      console.log(res, "res");
+      await dispatch(getFriendsRequestSuccess(res.data));
+    } catch (err) {
+      dispatch(setNotify(err.response));
+    }
+  };
+};
+const getFriendsRequestSuccess = (data) => {
   return {
-    type:FRIEND_REQUEST_RESPONE_SUCCESS,
+    type: GET_FRIEND_REQUEST_SUCCESS,
+    payload: data,
+  };
+};
+const friendRequestResponeAction = (data) => {
+  return {
+    type: FRIEND_REQUEST_RESPONE_SUCCESS,
+    payload: data,
+  };
+};
+export const getImageUser = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await axios.get(
+        `${HTTP_CONNECT}/upload/getAllMediaByUserId?userId=${data}`,
+        config
+      );
+      console.log(res, "res");
+      await dispatch(getImageUserSuccess(res.data));
+    } catch (err) {
+      dispatch(setNotify(err.response));
+    }
+  };
+};
+const getImageUserSuccess = (data)=>{
+  return{
+    type:GET_IMAGE_USE_SUCCESS,
     payload:data
   }
 }

@@ -1,6 +1,6 @@
 export const paths = {
-  getPostList(limit) {
-    return `/post?limitPost=${limit}`;
+  getPostList(data) {
+    return `/post?limitPost=${data.limitPost}&index=${data.index}&profile=${data.profile}&userId=${data.userId}`;
   },
   createPost() {
     return `/post`;

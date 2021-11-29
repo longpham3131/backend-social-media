@@ -1,0 +1,74 @@
+@import "~scss/index.scss";
+.tabNotify {
+  position: relative;
+  &__countNoti {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: red;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: white;
+    font-weight: 500;
+    text-align: center;
+    line-height: 20px;
+  }
+  &__boxItems {
+    display: none;
+    position: absolute;
+    width: 350px;
+    height: 400px;
+    max-height: 600px;
+    right: 0;
+    margin-top: 10px;
+    border: 1px solid black;
+    background-color: white;
+    overflow-y: scroll;
+    cursor: pointer;
+  }
+  &__headerBox {
+    font-weight: bold;
+    background-color: $color-gray;
+    padding: 10px 0;
+    padding-left: 10px;
+    margin: 0;
+  }
+  &__item {
+    display: flex;
+    margin-top: 5px;
+    border-bottom: 1px solid black;
+    p {
+      &:first-child {
+        height: 25px;
+      }
+    }
+    img {
+      margin: 0 5px;
+      width: 50px;
+      height: 50px;
+    }
+    .btn{
+      padding: 3px 10px;
+      background-color: rgb(187, 187, 187);
+      &:hover{
+        background-color: rgb(136, 136, 136);
+      }
+    }
+    .friend-respone__deny{
+      margin-left: 10px;
+    }
+  }
+  &__iconReact {
+    position: absolute;
+    bottom: 25px;
+    right: 0;
+    background-color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 10px;
+  }
+
+}

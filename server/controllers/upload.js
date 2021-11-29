@@ -1,5 +1,6 @@
 const SingleFile = require("../models/SingleFile");
 const MultipleFile = require("../models/MultipleFile");
+const { ObjectId } = require("mongodb");
 const { error500, error400 } = require("../util/res");
 const { cloudinary } = require("../util/cloudinary");
 var fs = require("fs");
@@ -104,6 +105,18 @@ const getAllFiles = async (req, res, next) => {
     error400("get file error");
   }
 };
+const getAllMediaByUserId = async (req, res, next) => {
+  try {
+    const {  userId } = req.query;
+    const files = await SingleFile.find({user:ObjectId(userId)});
+    res.json({
+      message: "success",
+      data: files,
+    });
+  } catch (er) {
+    error400("get file error");
+  }
+};
 const getAllMultiFiles = async (req, res, next) => {
   try {
     const files = await MultipleFile.find().populate("files");
@@ -135,4 +148,5 @@ module.exports = {
   getAllFiles,
   getAllMultiFiles,
   fileSizeFormatter,
+  getAllMediaByUserId
 };

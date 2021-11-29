@@ -79,6 +79,7 @@ router.delete("/delete/:id", verifyToken, (req, res) => {
 });
 
 //UPDATE POST
+
 router.put("/", verifyToken, async (req, res) => {
   const { postId, text, audience, attachments } = req.body;
   const date = new Date();
@@ -100,6 +101,7 @@ router.put("/", verifyToken, async (req, res) => {
       return error500(err);
     });
 });
+
 // GET POST
 // router.get("/", verifyToken, (req, res) => {
 //   const { limitPost } = req.query;
@@ -115,43 +117,87 @@ router.put("/", verifyToken, async (req, res) => {
 //     });
 // });
 // GET POST PROFILE
-router.get("/", verifyToken, (req, res) => {
-  const { limitPost, profile } = req.query;
-  if (profile == 1) {
-    Post.find({ poster: req.userId })
-      .limit(limitPost)
-      .populate({ path: "comments", perDocumentLimit: 10 })
-      .populate({
-        path: "like",
-        populate: { path: "user" },
-      })
-      .lean()
-      .then((result) => {
-        res.json(result.reverse());
-      })
-      .catch((err) => {
-        console.log(err);
-        return error500(res);
-      });
-  } else {
-    Post.find()
+router.get("/", verifyToken, async (req, res) => {
+  const { limitPost, index, profile, userId } = req.query;
+  try {
+    let data = {};
+    if (profile == 1) {
+      const userIdReq = userId != "0" ? userId : req.userId;
+      data = { poster: userIdReq };
+    }
+    const result = await Post.find(data)
+      .skip(index * limitPost)
       .limit(limitPost)
       .populate("poster")
-      .populate({ path: "comments", perDocumentLimit: 10 })
+      .populate({
+        path: "comments",
+        options: {
+          skip: 0,
+          perDocumentLimit: 10,
+          sort: { "createAt": "descending" }
+        },
+        populate: [
+          {
+            path: "user",
+            select: "username fullName avatar like",
+          },
+          {
+            path: "like.user",
+            select: "username fullName avatar like",
+          },
+          {
+            path: "file",
+          },
+        ],
+      })
       .populate({
         path: "like",
         populate: { path: "user", select: "username fullName avatar" },
       })
-      .lean()
-      .then((result) => {
-        res.json(result.reverse());
-      })
-      .catch((err) => {
-        console.log(err);
-        return error500(res);
-      });
+      .lean();
+    // result.comments=result.comments?.reverse()
+    return res.json(result.reverse());
+  } catch (err) {
+    console.log(err);
+    return error500(res);
   }
 });
+
+// const getPosts =async (limitPost, index, profile, userId,reqUserId) => {
+//   let data = {};
+//   let userIdReq = userId;
+//   if (profile == 1) {
+//     if (userId == "0")
+//       userIdReq = reqUserId;
+//     data = { poster: userIdReq };
+//   }
+//   let result = await Post.find({
+//     data: data,
+//     skip: index * limitPost,
+//     limit: limitPost,
+//   });
+//   result= result.reverse()
+//   return result;
+// };
+
+// router.get("/", verifyToken, async (req, res) => {
+//   const { limitPost, index, profile, userId } = req.query;
+//   try {
+//     let data = {};
+//     if (profile == 1) {
+//       const userIdReq = userId != "0" ? userId : req.userId;
+//       data = { poster: userIdReq };
+//     }
+//     const result = await Post.find(data)
+//       .skip(index * limitPost)
+//       .limit(limitPost);
+//     return res.json(result.reverse());
+//   } catch (err) {
+//     console.log(err);
+//     return error500(res);
+//   }
+// });
+
 //LIKE POST
 router.get("/likepost/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
@@ -221,7 +267,7 @@ router.get("/deleteall", verifyToken, async (req, res) => {
     console.log(err);
     return error500(res);
   }
-}); 
+});
 async function performComplexTasks(req) {
   const post = new Post({ poster: req.userId });
   await post.save();

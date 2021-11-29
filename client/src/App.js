@@ -20,7 +20,6 @@ const App = () => {
   }, [auth]);
 
   useEffect(()=>{
-console.log(profile,'profile')
   },[profile])
   return (
     <BrowserRouter>

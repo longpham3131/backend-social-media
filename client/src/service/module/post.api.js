@@ -1,8 +1,8 @@
 import baseApi from "../base.api";
 import { paths } from "../paths";
 
-export const getPostList = (limit) => {
-    return baseApi.get(paths.getPostList(limit));
+export const getPostList = (data) => {
+    return baseApi.get(paths.getPostList(data));
 };
 
 export const createPost = (post) => {

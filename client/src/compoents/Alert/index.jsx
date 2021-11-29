@@ -13,7 +13,6 @@ const Alert = ({ onSuccess, title }) => {
   const dispatch = useDispatch();
   const notifyReducer = useSelector((state) => state.commonReducer.notify);
   useEffect(() => {
-    console.log(notifyReducer);
   }, [notifyReducer]);
 
   useMemo(() => {

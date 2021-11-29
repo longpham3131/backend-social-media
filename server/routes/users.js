@@ -4,11 +4,16 @@ const User = require("../models/User");
 const {
   FriendRequest,
   FriendRequestRespone,
+  GetFriendsRequest,
+  UnFriend
 } = require("../controllers/friend");
 const { error500, error400 } = require("../util/res");
 const verifyToken = require("../middleware/auth");
 const argon2 = require("argon2");
-
+router.get("/getFriendRequest", verifyToken, GetFriendsRequest);
+router.post("/unfriend", verifyToken, UnFriend);
+router.post("/friendRequest", verifyToken, FriendRequest);
+router.post("/friendRespone", verifyToken, FriendRequestRespone);
 // GET ALL USER
 // router.get("/user/", verifyToken, (req, res) => {
 //   User.find().then((users) => {
@@ -108,13 +113,17 @@ router.put("/", verifyToken, async (req, res) => {
 // router.put
 router.get("/profile", verifyToken, (req, res) => {
   console.log("profile");
-  User.findById(req.userId).then((user) => {
-    try {
-      res.json({ success: true, data: user });
-    } catch (error) {
-      return error500(res);
-    }
-  });
+  User.findById(req.userId)
+    .populate({ path: "friends.user", select: "fullName avatar" })
+    .populate({ path: "friendsRequest.user", select: "fullName avatar" })
+    .lean()
+    .then((user) => {
+      try {
+        res.json({ success: true, data: user });
+      } catch (error) {
+        return error500(res);
+      }
+    });
 });
 
 router.get("/notification", verifyToken, (req, res) => {
@@ -129,14 +138,23 @@ router.get("/notification", verifyToken, (req, res) => {
 });
 //GET USER DETAIL
 router.get("/:id", verifyToken, (req, res) => {
-  const userId = req.params.id;
-  User.findById(userId).then((user) => {
-    try {
-      res.json(user);
-    } catch (error) {
-      return error500(res);
-    }
-  });
+  try{
+    const userId = req.params.id;
+    User.findById(userId)
+    .populate({ path: "friends.user", select: "fullName avatar" })
+    .populate({ path: "friendsRequest.user", select: "fullName avatar" })
+    .lean()
+    .then((user) => {
+      try {
+        res.json(user);
+      } catch (error) {
+        return error500(res);
+      }
+    });
+  }
+  catch(err){
+    return error500(res);
+  }
 });
 
 // router.get("/fi", verifyToken, (req, res) => {
@@ -148,8 +166,8 @@ router.get("/:id", verifyToken, (req, res) => {
 //       return error500(res);
 //     }
 //   });
-// });
+// }); 
 
-router.post("/friendRequest", verifyToken, FriendRequest);
-router.post("/friendRespone", verifyToken, FriendRequestRespone);
+
+
 module.exports = router;

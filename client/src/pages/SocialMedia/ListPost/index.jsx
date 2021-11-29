@@ -1,6 +1,7 @@
 import "./style.scss";
 import DefualtAvatar from "assets/images/default-avatar.jpg";
 import Dialog from "compoents/Dialog";
+import {  useHistory } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
 import Post from "./Post";
@@ -21,7 +22,10 @@ const ListPost = ({ postList }) => {
   const [btnSubmitDialog, setBtnSubmitDialog] = useState("Đăng");
 
   //Reducer
-  const profileReducer = useSelector((state) => state.userReducer.profile);
+  const profileReducer = useSelector(
+    (state) => state.userReducer.profileCurentUser
+  );
+  const profileOtherReducer = useSelector((state) => state.userReducer.profile);
   const notifyReducer = useSelector((state) => state.postReducer.notify);
 
   //Alert
@@ -33,6 +37,7 @@ const ListPost = ({ postList }) => {
   const [selectedPost, setSelectedPost] = useState(null);
 
   //set
+  const history = useHistory();
   const handleCreate = async () => {
     await setIsShowDialog(true);
 
@@ -43,7 +48,6 @@ const ListPost = ({ postList }) => {
     setBtnSubmitDialog("Đăng");
     await refAddEditPost?.current?.setInitState();
   };
-
   const handleEdit = async (postId) => {
     const { audience, text, attachments } = postList.filter(
       (item) => item._id === postId
@@ -101,44 +105,46 @@ const ListPost = ({ postList }) => {
         }}
       />
       {/* Post status */}
-      <div className="card postStatus">
-        <img
-          src={
-            profileReducer?.avatar
-              ? getUrlImage(profileReducer?.avatar)
-              : DefualtAvatar
-          }
-          alt="avatar"
-          className="avatar"
-        />
-        <div className="postStatus__placehoder" onClick={handleCreate}>
-          <p> Chia sẽ với mọi người về suy nghĩ của bạn hiện tại nào...</p>
+      {(profileOtherReducer._id === profileReducer._id||history.location.pathname=='/') && (
+        <div className="card postStatus">
+          <img
+            src={
+              profileReducer?.avatar
+                ? getUrlImage(profileReducer?.avatar)
+                : DefualtAvatar
+            }
+            alt="avatar"
+            className="avatar"
+          />
+          <div className="postStatus__placehoder" onClick={handleCreate}>
+            <p> Chia sẻ với mọi người về suy nghĩ của bạn hiện tại nào...</p>
+          </div>
+          <Dialog
+            isShow={isShowDialog}
+            handleHideDialog={() => {
+              setIsShowDialog(false);
+            }}
+            btnSubmitName={btnSubmitDialog}
+            title={titleDialog}
+            onSubmit={() => {
+              typeForm !== "delete"
+                ? refAddEditPost.current.handleSubmit(typeForm)
+                : dispatch(deletePost(selectedPost));
+            }}
+            content={
+              typeForm !== "delete" ? (
+                <AddEditPost
+                  ref={refAddEditPost}
+                  avatar={profileReducer?.avatar}
+                  fullName={profileReducer?.fullName}
+                />
+              ) : (
+                <p>Bạn có muốn xóa bài viết này ?</p>
+              )
+            }
+          />
         </div>
-        <Dialog
-          isShow={isShowDialog}
-          handleHideDialog={() => {
-            setIsShowDialog(false);
-          }}
-          btnSubmitName={btnSubmitDialog}
-          title={titleDialog}
-          onSubmit={() => {
-            typeForm !== "delete"
-              ? refAddEditPost.current.handleSubmit(typeForm)
-              : dispatch(deletePost(selectedPost));
-          }}
-          content={
-            typeForm !== "delete" ? (
-              <AddEditPost
-                ref={refAddEditPost}
-                avatar={profileReducer?.avatar}
-                fullName={profileReducer?.fullName}
-              />
-            ) : (
-              <p>Bạn có muốn xóa bài viết này ?</p>
-            )
-          }
-        />
-      </div>
+      )}
 
       {/* Render Post List */}
       {postList?.length > 0 ? (
@@ -155,10 +161,6 @@ const ListPost = ({ postList }) => {
         })
       ) : (
         <>
-          <Post />
-          <Post />
-          <Post />
-          <Post />
         </>
       )}
     </div>

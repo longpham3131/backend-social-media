@@ -12,14 +12,15 @@ const commentRouter = require("./routes/comment");
 const usersRouter = require("./routes/users");
 const usersNotificationRouter = require("./routes/userNotification");
 const uploadRouter = require("./routes/upload");
-const groupRouter = require("./routes/group")
+const groupRouter = require("./routes/group");
 const helmet = require("helmet");
 const path = require("path");
 const { cloudinary } = require("./util/cloudinary");
 const cors = require("cors");
 require("dotenv").config();
+
 const connectDB = async () => {
-  try { 
+  try {
     await mongoose.connect(
       `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.mkhxv.mongodb.net/SocialNetWork?retryWrites=true&w=majority`,
       (err) => {
@@ -27,24 +28,25 @@ const connectDB = async () => {
         console.log("connected to MongoDB");
       }
     );
+  
   } catch (error) {
     console.log(error.message);
     process.exit(1);
   }
 };
 
-connectDB();  
-  
+connectDB();
+
 const app = express();
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-app.use( 
+app.use(
   cors({
     origin: "*",
   })
 );
-app.use(helmet()); 
+app.use(helmet());
 
 const PORT = process.env.PORT || 4000;
 const userNotification = io.of("/notification");
@@ -53,7 +55,7 @@ userNotification.on("connection", (socket) => {
 });
 // userNotification.use((socket, next) => {
 //   if (socket.handshake.auth.token) {
-//     socket.username; 
+//     socket.username;
 //     next();
 //   } else {
 //     next(new Error("Error token"));
@@ -67,6 +69,11 @@ io.on("connection", (socket) => {
   // })
   // socket.to(room).emit("receive-noti",'noti')
   socket.on("join-room", (room) => {
+    var rooms = io.sockets.adapter.sids[socket.id];
+    for (var room in rooms) {
+      socket.leave(room);
+    }
+    console.log("join", room);
     socket.join(room);
   });
 });
@@ -79,7 +86,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/post", postRouter);
 app.use("/api/comment", commentRouter);
 app.use("/api/users", usersRouter);
-app.use("/api/group",groupRouter)
+app.use("/api/group", groupRouter);
 app.use("/api/notification", usersNotificationRouter);
 app.use("/api/upload", uploadRouter.routes);
 app.use("/filemanager", express.static(path.join(__dirname, "uploads")));

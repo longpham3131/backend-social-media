@@ -16,7 +16,7 @@ export const getNotifications = () => {
         await dispatch(getNotificationsSuccess(res));
       }
     } catch (err) {
-      await dispatch(setNotify(err.response.status));
+      await dispatch(setNotify(err.status));
     }
   };
 };

@@ -18,6 +18,12 @@
     flex-grow: 3;
     cursor: pointer;
   }
+  .header__listTab{
+    img{
+      margin-left: 15px;
+      margin-bottom: 5px;
+    }
+  }
   &__searchInput {
     flex-grow: 2;
     text-align: center;

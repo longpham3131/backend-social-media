@@ -22,10 +22,10 @@ import {
 } from "@ant-design/icons";
 import { useState } from "react";
 import CommentList from "./CommentList";
+import { formatMinutes } from "util/index";
 moment.locale("vi");
 
-const Post = (props) => {
-  const { post, onEdit, onDelete } = props;
+const Post = ({post, onEdit, onDelete}) => {
   //State
   const [isShowPreviewLike, setIsShowPreviewLike] = useState(false);
   const [isShowCommentList, setIsShowCommentList] = useState(false);
@@ -39,7 +39,6 @@ const Post = (props) => {
   const handleSettings = ({ key }) => {
     switch (key) {
       case "1":
-        console.log("Báo cáo");
         break;
       case "2":
         onEdit();
@@ -81,7 +80,7 @@ const Post = (props) => {
             className={
               post?.poster.username
                 ? "post__userName"
-                : "post__userName  skeleton skeleton-username"
+                : "post__userName "
             }
             onClick={() => {
               history.push(`/profile/${post?.poster._id}`);
@@ -93,12 +92,12 @@ const Post = (props) => {
             className={
               post?.audience
                 ? "post__permission"
-                : "post__permission  skeleton skeleton-audience"
+                : "post__permission  "
             }
           >
             {post?.audience}{" "}
             {post?.createAt
-              ? " - " + moment(post?.createAt).startOf("hour").fromNow()
+              ? " - " +formatMinutes(post?.createAt)
               : ""}
           </p>
         </div>
@@ -169,7 +168,8 @@ const Post = (props) => {
       <div
         className="post__react"
         style={{
-          display: props && Object.keys(props).length !== 0 ? "flex" : "none",
+          display:"flex",
+          // display: post && Object.keys(post._id).length !== 0 ? "flex" : "flex",
           borderBottom: isShowCommentList ? "1px solid black" : "",
         }}
       >
@@ -202,7 +202,7 @@ const Post = (props) => {
         </button>
       </div>
       {/* Comment list */}
-      <CommentList isShow={isShowCommentList} isFocusInput={isFocusInput} />
+      <CommentList isShow={isShowCommentList} post={post} isFocusInput={isFocusInput} comments={post?.comments??[]} />
     </div>
   );
 };

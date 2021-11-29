@@ -1,12 +1,15 @@
 import "./style.scss";
 import { Input } from "antd";
+import friend from "assets/images/add-friend.svg";
 import _defaultAvatar from "assets/images/default-avatar.jpg";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useContext } from "react";
 import Notifications from "./Notifications";
+import Friends from "./Friends";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserProfile } from "store/user/user.action";
+import { getUserCurrentProfile } from "store/user/user.action";
 import { getUrlImage } from "util/index";
+import { SocketContext } from "service/socket/SocketContext";
 function useOutsideAvatar(ref) {
   useEffect(() => {
     /**
@@ -32,11 +35,19 @@ function useOutsideAvatar(ref) {
 }
 const { Search } = Input;
 const Header = () => {
+  const profileReducer = useSelector(
+    (state) => state.userReducer.profileCurentUser
+  );
+  const socket = useContext(SocketContext);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getUserProfile(localStorage.getItem("userId")));
+    dispatch(getUserCurrentProfile());
   }, []);
-  const profileReducer = useSelector((state) => state.userReducer.profileCurentUser);
+  useEffect(() => {
+    if (profileReducer !== null && profileReducer._id) {
+      socket.emit("join-room", "user_" + profileReducer?._id);
+    }
+  }, [profileReducer]);
 
   const onSearch = (value) => console.log(value);
 
@@ -76,10 +87,11 @@ const Header = () => {
         >
           <i className="fa fa-home"></i>
         </div>
+
         <div className="header__tabMessages">
           <i className="fa fa-comments "></i>
         </div>
-
+        <Friends />
         <Notifications />
         <div className="header__avatar">
           <img

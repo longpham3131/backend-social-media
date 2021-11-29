@@ -52,14 +52,26 @@ const UserSchema = new mongoose.Schema(
     },
     friends: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "User",
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+        createAt: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
     friendsRequest: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "User",
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+        createAt: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
     isAdmin: {

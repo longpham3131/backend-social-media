@@ -5,6 +5,7 @@
   .wrapper-content {
     box-shadow: $boxShadow;
     border-radius: $radius;
+    
   }
   .profile {
     flex-grow: 2;
@@ -28,7 +29,9 @@
         padding: 0;
       }
     }
-
+    .actions-wrapper{
+      height: 40px;
+    }
     .profile__content {
       // height: 500px;
       padding-top: 0;

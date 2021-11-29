@@ -8,7 +8,7 @@ const SocialMedia = () => {
   const dispatch = useDispatch();
   const [limitPost, setLimitPost] = useState(10);
   useEffect(() => {
-    dispatch(getPostList(limitPost));
+    dispatch(getPostList({limitPost,index:0,profile:0,userId:0}));
   }, []);
   const postListReducer = useSelector(
     (state) => state.postReducer.postList ?? []
