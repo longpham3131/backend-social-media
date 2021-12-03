@@ -2,6 +2,7 @@ import "./style.scss";
 import { useSelector } from "react-redux";
 import { getUrlImage } from "util/index";
 import { Link, useHistory } from "react-router-dom";
+import defaultAvatar from "assets/images/default-avatar.jpg";
 const RightSideBar = ({ user }) => {
   const array = [1, 2, 3, 4, 5];
   const profileReducer = useSelector(
@@ -49,7 +50,7 @@ const RightSideBar = ({ user }) => {
                   key={`friend-${friend.user._id}`}
                 >
                   <img
-                    src={getUrlImage(friend?.user.avatar)}
+                    src={friend?.user.avatar!=""?getUrlImage(friend?.user.avatar):defaultAvatar}
                     alt=""
                     className={friend?.user.avatar ? "avatar" : "avatar skeleton"}
                   />

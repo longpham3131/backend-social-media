@@ -2,7 +2,7 @@ const express = require("express");
 const { instrument } = require("@socket.io/admin-ui");
 const io = require("socket.io")(4001, {
   cors: {
-    origin: ["http://localhost:3000", "https://admin.socket.io"],
+    origin: "*",
   },
 });
 const mongoose = require("mongoose");
@@ -13,6 +13,7 @@ const usersRouter = require("./routes/users");
 const usersNotificationRouter = require("./routes/userNotification");
 const uploadRouter = require("./routes/upload");
 const groupRouter = require("./routes/group");
+const adminRouter =  require("./routes/admin");
 const helmet = require("helmet");
 const path = require("path");
 const { cloudinary } = require("./util/cloudinary");
@@ -28,7 +29,6 @@ const connectDB = async () => {
         console.log("connected to MongoDB");
       }
     );
-  
   } catch (error) {
     console.log(error.message);
     process.exit(1);
@@ -88,6 +88,7 @@ app.use("/api/comment", commentRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/group", groupRouter);
 app.use("/api/notification", usersNotificationRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/upload", uploadRouter.routes);
 app.use("/filemanager", express.static(path.join(__dirname, "uploads")));
 

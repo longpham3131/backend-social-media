@@ -11,9 +11,14 @@ export const getUrlVideo = (videoId) => {
 export const getUrlRaw = (fileId) => {
   return "https://res.cloudinary.com/lth/raw/upload/v1632552198/" + fileId;
 };
-
 export const friendRelate = (a, b) => {
   return symmetricDifference(a, b);
+};
+
+export const getConfig = () => {
+  return {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  };
 };
 function difference(a1, a2) {
   let a2Set = new Set(a2);

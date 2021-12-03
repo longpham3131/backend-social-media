@@ -10,22 +10,29 @@ const Dialog = ({
   content = "",
   btnSubmitName = "Xác nhận",
   onSubmit,
+  btnSubmit = true,
+  btnClose = true,
+  useFooter = true,
+  width = undefined,
 }) => {
   const customFooter = () => {
     return (
-      <div>
-        <Button
-          danger
-          onClick={() => {
-            handleHideDialog();
-          }}
-        >
-          Đóng
-        </Button>
-        <Button type="primary" onClick={onSubmit} htmlType="submit">
-          {btnSubmitName}
-        </Button>
-      </div>
+      <>
+        <div>
+          <Button
+            danger
+            onClick={() => {
+              handleHideDialog();
+            }}
+          >
+            Đóng
+          </Button>
+
+          <Button type="primary" onClick={onSubmit} htmlType="submit">
+            {btnSubmitName}
+          </Button>
+        </div>
+      </>
     );
   };
 
@@ -35,7 +42,8 @@ const Dialog = ({
       title={title}
       closable={false}
       centered={true}
-      footer={type === "file" ? null : customFooter()}
+      width={width}
+      footer={type === "file" || useFooter == false ? null : customFooter()}
       onCancel={() => {
         handleHideDialog();
       }}

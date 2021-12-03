@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
 import { friendRelate } from "util/index";
+import Dialog from "compoents/Dialog/index";
 import {
   friendRequest,
   getUserProfile,
@@ -18,8 +19,8 @@ import EditProfile from "./EditProfile";
 import { getUrlImage } from "util/index";
 import { getPostList } from "store/post/post.action";
 import { getImageUser } from "store/user/user.action";
-
-const Profile = () => {
+import PostDialog from "pages/SocialMedia/ListPost/Post/PostDialog";
+const Profile = (props) => {
   const quantityImage = [1, 2, 3, 4, 5];
   const dispatch = useDispatch();
   const [limitPost, setLimitPost] = useState(10);
@@ -27,18 +28,22 @@ const Profile = () => {
   const [isFriendRequest, setFriendRequest] = useState(false);
   const [isFriend, setFriend] = useState(false);
   const [friendRelate, setFriendRelate] = useState(0);
-
+  const [isShowPost, setShowPost] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null);
   useEffect(() => {
     dispatch(getPostList({ limitPost: 10, index: 0, profile: 1, userId: id }));
     dispatch(getUserProfile(id));
     dispatch(getImageUser(id));
-  }, []);
-  const profileUserReducer = useSelector((state) => state.userReducer.profileCurentUser);
+  }, [props.match.params]);
+
+  const profileUserReducer = useSelector(
+    (state) => state.userReducer.profileCurentUser
+  );
   const profileReducer = useSelector((state) => state.userReducer.profile);
   const imagesUser = useSelector((state) => state.userReducer.imagesUser);
-  useEffect(()=>{
-    console.log('listimg',imagesUser)
-  },[imagesUser]) 
+  useEffect(() => {
+    console.log("listimg", imagesUser);
+  }, [imagesUser]);
   useEffect(() => {
     if (!profileReducer.friendsRequest) return;
     const isAFriend =
@@ -162,7 +167,21 @@ const Profile = () => {
               <p className="card--title-left">Ảnh</p>
               <div className="listPicture">
                 {imagesUser.map((item, index) => {
-                  return <img width={100} style={{objectFit:"cover"}} height={100} src={getUrlImage(item.filePath)} alt="" className="picture" />;
+                  return (
+                    <img
+                      key={index}
+                      width={100}
+                      style={{ objectFit: "cover" }}
+                      height={100}
+                      src={getUrlImage(item.filePath)}
+                      alt=""
+                      className="picture"
+                      onClick={() => {
+                        setCurrentImage(item);
+                        setShowPost(true);
+                      }}
+                    />
+                  );
                 })}
               </div>
             </div>
@@ -170,6 +189,16 @@ const Profile = () => {
           <ListPost postList={postListReducer} />
         </div>
       </div>
+      <Dialog
+        isShow={isShowPost}
+        handleHideDialog={() => {
+          setShowPost(false);
+        }}
+        width={1100}
+        title={null}
+        useFooter={false}
+        content={<PostDialog image={currentImage} />}
+      />
     </div>
   );
 };

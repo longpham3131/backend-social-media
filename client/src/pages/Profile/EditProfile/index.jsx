@@ -106,7 +106,7 @@ const EditProfile = () => {
           >
             <Form.Item label={"Ảnh đại diện"}>
               <Upload
-                action="http://localhost:4000/api/upload/singleFile"
+                action="https://uploadfile0510.herokuapp.com/api/upload/singleFile"
                 listType="picture-card"
                 beforeUpload={beforeUpload}
                 onPreview={onPreview}
@@ -132,7 +132,7 @@ const EditProfile = () => {
             </Form.Item>
             <Form.Item label={"Ảnh nền"}>
               <Upload
-                action="http://localhost:4000/api/upload/singleFile"
+                action="https://uploadfile0510.herokuapp.com/api/upload/singleFile"
                 listType="picture-card"
                 beforeUpload={beforeUpload}
                 onPreview={onPreview}

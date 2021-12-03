@@ -5,7 +5,7 @@ const {
   FriendRequest,
   FriendRequestRespone,
   GetFriendsRequest,
-  UnFriend
+  UnFriend,
 } = require("../controllers/friend");
 const { error500, error400 } = require("../util/res");
 const verifyToken = require("../middleware/auth");
@@ -24,7 +24,6 @@ router.post("/friendRespone", verifyToken, FriendRequestRespone);
 //     }
 //   });
 // });
-
 // GET USER PER PAGE
 router.get("/", verifyToken, (req, res) => {
   const page = Number.parseInt(req.query.page);
@@ -138,21 +137,20 @@ router.get("/notification", verifyToken, (req, res) => {
 });
 //GET USER DETAIL
 router.get("/:id", verifyToken, (req, res) => {
-  try{
+  try {
     const userId = req.params.id;
     User.findById(userId)
-    .populate({ path: "friends.user", select: "fullName avatar" })
-    .populate({ path: "friendsRequest.user", select: "fullName avatar" })
-    .lean()
-    .then((user) => {
-      try {
-        res.json(user);
-      } catch (error) {
-        return error500(res);
-      }
-    });
-  }
-  catch(err){
+      .populate({ path: "friends.user", select: "fullName avatar" })
+      .populate({ path: "friendsRequest.user", select: "fullName avatar" })
+      .lean()
+      .then((user) => {
+        try {
+          res.json(user);
+        } catch (error) {
+          return error500(res);
+        }
+      });
+  } catch (err) {
     return error500(res);
   }
 });
@@ -166,7 +164,9 @@ router.get("/:id", verifyToken, (req, res) => {
 //       return error500(res);
 //     }
 //   });
-// }); 
+// });
+
+/////////////////////////////ADMIN/////////////////////////////////////
 
 
 

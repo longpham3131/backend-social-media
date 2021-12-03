@@ -26,11 +26,7 @@ const loginAction = (res) => {
 export const register = (registerInfo) => {
   return async (dispatch) => {
     try {
-      const res = await axios.post(`${HTTP_CONNECT}/auth/register`, {
-        username: registerInfo.username,
-        password: registerInfo.password,
-        email: registerInfo.email,
-      });
+      const res = await axios.post(`${HTTP_CONNECT}/auth/register`,registerInfo);
 
       await dispatch(registerAction(res));
     } catch (err) {

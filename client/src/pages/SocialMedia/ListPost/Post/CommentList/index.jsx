@@ -136,7 +136,7 @@ const CommentList = ({ post, isShow, isFocusInput, comments }) => {
                 listType="picture-card"
                 className="avatar-uploader"
                 fileList={attachment}
-                action="http://localhost:4000/api/upload/singleFile"
+                action="https://uploadfile0510.herokuapp.com/api/upload/singleFile"
                 // beforeUpload={beforeUploadFile}
                 onChange={({ fileList: newFileList }) => {
                   setAttachment(newFileList);

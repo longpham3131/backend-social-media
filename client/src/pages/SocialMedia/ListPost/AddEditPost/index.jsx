@@ -170,7 +170,7 @@ const AddEditPost = React.forwardRef(({ avatar, fullName }, ref) => {
               labelCol={{ span: 24 }}
             >
               <Upload
-                action="http://localhost:4000/api/upload/singleFile"
+                action="https://uploadfile0510.herokuapp.com/api/upload/singleFile"
                 listType="picture-card"
                 fileList={attachments}
                 onChange={({ fileList: newFileList }) => {

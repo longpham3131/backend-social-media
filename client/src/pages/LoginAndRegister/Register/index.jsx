@@ -21,6 +21,7 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
 
   const [messageErr, setMessageErr] = useState("");
   const [loading, setLoading] = useState(false);
@@ -51,8 +52,7 @@ const Register = () => {
     //   setMessageErr("Vui lòng chọn ảnh đại diện !");
     //   return;
     // }
-
-    dispatch(register({ username, password, email }));
+    dispatch(register({ username, password, email, fullName }));
   };
 
   const handleChange = (info) => {
@@ -111,6 +111,7 @@ const Register = () => {
         onSubmit={handleSubmit}
         content={
           <Form
+            type="form"
             name="register"
             form={formRegister}
             labelCol={{ span: 9 }}
@@ -162,6 +163,13 @@ const Register = () => {
               rules={[{ required: true, message: "Vui lòng nhập email" }]}
             >
               <Input onChange={(e) => setEmail(e.target.value)} />
+            </Form.Item>
+            <Form.Item
+              label="Tên đầy đủ"
+              name="fullName"
+              rules={[{ required: true, message: "Vui lòng tên" }]}
+            >
+              <Input onChange={(e) => setFullName(e.target.value)} />
             </Form.Item>
 
             <Form.Item

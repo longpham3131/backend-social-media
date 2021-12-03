@@ -22,9 +22,36 @@ router.get("/getPostByIdImage/:id", verifyToken, async (req, res) => {
         id: ObjectId(id),
       },
     },
-  }).then((rs) => {
-    res.json({ success: true, data: rs, message: "true" });
-  });
+  })
+    .populate("poster")
+    .populate({
+      path: "comments",
+      options: {
+        skip: 0,
+        perDocumentLimit: 10,
+        sort: { createAt: "descending" },
+      },
+      populate: [
+        {
+          path: "user",
+          select: "username fullName avatar like",
+        },
+        {
+          path: "like.user",
+          select: "username fullName avatar like",
+        },
+        {
+          path: "file",
+        },
+      ],
+    })
+    .populate({
+      path: "like",
+      populate: { path: "user", select: "username fullName avatar" },
+    })
+    .then((rs) => {
+      res.json({ success: true, data: rs, message: "true" });
+    });
 });
 
 // CREATE POST
@@ -134,7 +161,7 @@ router.get("/", verifyToken, async (req, res) => {
         options: {
           skip: 0,
           perDocumentLimit: 10,
-          sort: { "createAt": "descending" }
+          sort: { createAt: "descending" },
         },
         populate: [
           {

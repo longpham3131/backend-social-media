@@ -25,7 +25,7 @@ import CommentList from "./CommentList";
 import { formatMinutes } from "util/index";
 moment.locale("vi");
 
-const Post = ({post, onEdit, onDelete}) => {
+const Post = ({ post, onEdit, onDelete, type = "default" }) => {
   //State
   const [isShowPreviewLike, setIsShowPreviewLike] = useState(false);
   const [isShowCommentList, setIsShowCommentList] = useState(false);
@@ -35,6 +35,9 @@ const Post = ({post, onEdit, onDelete}) => {
   let history = useHistory();
   // GET DATA FROM REDUCER
   const profileReducer = useSelector((state) => state.userReducer.profile);
+  const profileCurentReducer = useSelector(
+    (state) => state.userReducer.profileCurentUser
+  );
   //
   const handleSettings = ({ key }) => {
     switch (key) {
@@ -71,16 +74,18 @@ const Post = ({post, onEdit, onDelete}) => {
     <div className="post card">
       <div className="post__owner">
         <img
-          src={getUrlImage(post?.poster.avatar)}
+          src={
+            post?.poster.avatar != ""
+              ? getUrlImage(post?.poster.avatar)
+              : DefaultAvatar
+          }
           alt=""
-          className={post?.poster.avatar ? "avatar" : "avatar skeleton"}
+          className={post?.poster.avatar != "" ? "avatar" : "avatar skeleton"}
         />
         <div className="w-100">
           <p
             className={
-              post?.poster.username
-                ? "post__userName"
-                : "post__userName "
+              post?.poster.username ? "post__userName" : "post__userName "
             }
             onClick={() => {
               history.push(`/profile/${post?.poster._id}`);
@@ -90,22 +95,20 @@ const Post = ({post, onEdit, onDelete}) => {
           </p>
           <p
             className={
-              post?.audience
-                ? "post__permission"
-                : "post__permission  "
+              post?.audience ? "post__permission" : "post__permission  "
             }
           >
             {post?.audience}{" "}
-            {post?.createAt
-              ? " - " +formatMinutes(post?.createAt)
-              : ""}
+            {post?.createAt ? " - " + formatMinutes(post?.createAt) : ""}
           </p>
         </div>
-        <Dropdown overlay={menu} placement="bottomRight" trigger={["click"]}>
-          <p className="post__settings">
-            <EllipsisOutlined />
-          </p>
-        </Dropdown>
+        {profileCurentReducer._id === post.poster._id && (
+          <Dropdown overlay={menu} placement="bottomRight" trigger={["click"]}>
+            <p className="post__settings">
+              <EllipsisOutlined />
+            </p>
+          </Dropdown>
+        )}
       </div>
       {/*Post content include text and attachments */}
       {post?.text ? (
@@ -118,29 +121,31 @@ const Post = ({post, onEdit, onDelete}) => {
           <p className="skeleton skeleton-text"></p>
         </div>
       )}
-
-      <div
-        className="post__attachments"
-        style={{ display: post?.attachments?.length > 0 ? "block" : "none" }}
-      >
-        <Carousel dotPosition={"bottom"}>
-          {post?.attachments?.length > 0 &&
-            post?.attachments.map((item, index) => {
-              if (item.type === "video/mp4") {
+      {type !== "dialog" && (
+        <div
+          className="post__attachments"
+          style={{ display: post?.attachments?.length > 0 ? "block" : "none" }}
+        >
+          <Carousel dotPosition={"bottom"}>
+            {post?.attachments?.length > 0 &&
+              post?.attachments.map((item, index) => {
+                if (item.type === "video/mp4") {
+                  return (
+                    <video controls key={index}>
+                      <source src={getUrlVideo(item.file)} />
+                    </video>
+                  );
+                }
                 return (
-                  <video controls key={index}>
-                    <source src={getUrlVideo(item.file)} />
-                  </video>
+                  <div key={index}>
+                    <img src={getUrlImage(item.file)} alt="attachments" />
+                  </div>
                 );
-              }
-              return (
-                <div key={index}>
-                  <img src={getUrlImage(item.file)} alt="attachments" />
-                </div>
-              );
-            })}
-        </Carousel>
-      </div>
+              })}
+          </Carousel>
+        </div>
+      )}
+
       {/* Số like, bình luận, chia sẽ */}
       <div className="post__countReact">
         <p>
@@ -168,13 +173,13 @@ const Post = ({post, onEdit, onDelete}) => {
       <div
         className="post__react"
         style={{
-          display:"flex",
+          display: "flex",
           // display: post && Object.keys(post._id).length !== 0 ? "flex" : "flex",
           borderBottom: isShowCommentList ? "1px solid black" : "",
         }}
       >
         <button className="btn w-100" onClick={() => handleLike()}>
-          {post?.like.some((item) => item?.user?._id === profileReducer._id) ? (
+          {post?.like.some((item) => item?.user?._id == profileCurentReducer._id) ? (
             <>
               <LikeFilled style={{ color: "#2078f4" }} />
               <span style={{ color: "#2078f4" }}>Thích</span>
@@ -202,7 +207,12 @@ const Post = ({post, onEdit, onDelete}) => {
         </button>
       </div>
       {/* Comment list */}
-      <CommentList isShow={isShowCommentList} post={post} isFocusInput={isFocusInput} comments={post?.comments??[]} />
+      <CommentList
+        isShow={isShowCommentList}
+        post={post}
+        isFocusInput={isFocusInput}
+        comments={post?.comments ?? []}
+      />
     </div>
   );
 };
