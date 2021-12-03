@@ -168,6 +168,22 @@ router.get("/:id", verifyToken, (req, res) => {
 
 /////////////////////////////ADMIN/////////////////////////////////////
 
-
+router.get("/search/:keySearch", verifyToken, (req, res) => {
+  try {
+    const keySearch = req.params.keySearch;
+    const regex = new RegExp(keySearch, "i");
+    User.find({ fullName: { $regex: regex } })
+      .lean()
+      .then((user) => {
+        try {
+          res.json(user);
+        } catch (error) {
+          return error500(res);
+        }
+      });
+  } catch (err) {
+    return error500(res);
+  }
+});
 
 module.exports = router;

@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import AuthRoute from "./guard/auth.guard";
 import LoginAndRegister from "./pages/LoginAndRegister";
 import Profile from "./pages/Profile";
+import Search from "./pages/SocialMedia/Search"
 import SocialMedia from "./pages/SocialMedia";
 import Header from "./compoents/Header";
 import { useSelector,useDispatch} from "react-redux";
@@ -32,7 +33,10 @@ const App = () => {
           />
           <AuthRoute path="/post" Component={PostDetail} />
           <AuthRoute path="/profile/:id" Component={Profile} />
+          <AuthRoute path="/search/:keySearch" Component={Search} />
           <AuthRoute path="/" Component={SocialMedia} />
+    
+          
         </Switch>
       </>
     </BrowserRouter>

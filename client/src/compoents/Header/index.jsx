@@ -52,7 +52,7 @@ const Header = () => {
     }
   }, [profileReducer]);
 
-  const onSearch = (value) => console.log(value);
+  const onSearch = (value) => history.push(`/search/${value}`);
 
   let history = useHistory();
   const wrapperRefAva = useRef(null);
