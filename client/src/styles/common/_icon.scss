@@ -1,0 +1,24 @@
+.web-icon {
+  @apply w-[1.4rem] h-[1.4rem] min-w-[1.4rem] min-h-[1.4rem];
+  &.web-icon-sm {
+    @apply w-[1.2rem] h-[1.2rem] min-w-[1.2rem] min-h-[1.2rem];
+  }
+  &.web-icon-md {
+    @apply w-[2rem] h-[2rem] min-w-[2rem] min-h-[2rem];
+  }
+  &.web-icon-xl {
+    @apply w-[4rem] h-[4rem] min-w-[4rem] min-h-[4rem];
+  }
+  &.web-icon-big {
+    @apply w-[2.2rem] h-[2.2rem] min-w-[2.2rem] min-h-[2.2rem];
+  }
+  &.web-icon-24px {
+    @apply w-[2.4rem] h-[2.4rem] min-w-[2.4rem] min-h-[2.4rem];
+  }
+  &.web-icon-18px {
+    @apply w-[1.8rem] h-[1.8rem] min-w-[1.8rem] min-h-[1.8rem];
+  }
+  &.web-icon-16px {
+    @apply w-[1.6rem] h-[1.6rem] min-w-[1.6rem] min-h-[1.6rem];
+  }
+}

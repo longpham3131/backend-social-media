@@ -1,0 +1,22 @@
+/* width */
+::-webkit-scrollbar {
+  @apply w-[6px] h-[6px];
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  @apply bg-gray-1 rounded-[0.4rem];
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-2 rounded-[0.4rem];
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-2;
+}
+.table--hidden-scroll-y::-webkit-scrollbar {
+  @apply hidden;
+}

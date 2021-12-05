@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: "Quicksand";
+    font-weight: 300;
+    src: url("../assets/font/Quicksand-Light.ttf") format("truetype");
+  }
+  @font-face {
+    font-family: "Quicksand";
+    font-weight: 400;
+    src: url("../assets/font/Quicksand-Regular.ttf") format("truetype");
+  }
+  @font-face {
+    font-family: "Quicksand";
+    font-weight: 500;
+    src: url("../assets/font/Quicksand-Medium.ttf") format("truetype");
+  }
+  @font-face {
+    font-family: "Quicksand";
+    font-weight: 600;
+    src: url("../assets/font/Quicksand-SemiBold.ttf") format("truetype");
+  }
+  @font-face {
+    font-family: "Quicksand";
+    font-weight: 700;
+    src: url("../assets/font/Quicksand-Bold.ttf") format("truetype");
+  }
+}
+
+@import "./common/general.scss";
