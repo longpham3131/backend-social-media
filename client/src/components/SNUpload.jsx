@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Upload, message } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { getUrlImage } from "util";
+import { getUrlImage } from "util/index";
 
 export default function SNUpload({ isList = false, onUploadSuccess }) {
   const beforeUpload = (file) => {
@@ -36,7 +36,6 @@ export default function SNUpload({ isList = false, onUploadSuccess }) {
   );
   return (
     <Upload
-      name="avatar"
       listType="picture-card"
       className="avatar-uploader"
       showUploadList={false}
@@ -45,7 +44,7 @@ export default function SNUpload({ isList = false, onUploadSuccess }) {
       onChange={handleChangeAvatar}
     >
       {avatar ? (
-        <img src={getUrlImage(avatar)} alt="avatar" style={{ width: "100%" }} />
+        <img src={getUrlImage(avatar)} alt="avatar" className="w-full h-full" />
       ) : (
         uploadButton
       )}
