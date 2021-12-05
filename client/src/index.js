@@ -11,6 +11,8 @@ import { Provider } from "react-redux";
 import store from "./store/index";
 import SocketService from "./service/socket/SocketService";
 
+import './App.less'
+import './styles/styles.scss'
 
 ReactDOM.render(
   <Provider store={store}>

@@ -4,15 +4,10 @@ import AuthRoute from "./guard/auth.guard";
 import { useSelector,useDispatch} from "react-redux";
 import userAPI from "apis/userAPI";
 //SCSS
-import "./styles/styles.scss";
+
 import AuthPage from "pages/Auth";
 
 const App = () => {
-  const auth = useSelector((state) => state.authReducer.auth);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(userAPI.getMyProfile())
-  }, [auth]);
 
   return (
     <BrowserRouter>
@@ -20,7 +15,7 @@ const App = () => {
         {/* <Header /> */}
         <Switch>
           <Route
-            path="/login"
+            path=""
             render={(props) => <AuthPage {...props} />}
           />
           {/* <AuthRoute path="/post" Component={PostDetail} />
