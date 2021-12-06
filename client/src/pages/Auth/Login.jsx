@@ -2,43 +2,22 @@ import { Form, Input, Button, Checkbox, message } from "antd";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "store/auth/auth.action";
+import { login, loginAction } from "store/auth/auth.action";
 import jwt_decode from "jwt-decode";
 import authAPI from "apis/authAPI";
+import userAPI from "apis/userAPI";
+import { getMyProfileAction } from "store/user/user.action";
 const Login = () => {
-  const dispatch = useDispatch();
+  
   let history = useHistory();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-  //   useEffect(() => {
-  //     setNotifyForm("");
-  //     if (loginReducer?.status === 200) {
-  //       localStorage.setItem("token", loginReducer?.data?.accessToken);
-
-  //       const decodeJWT = jwt_decode(loginReducer?.data?.accessToken);
-
-  //       localStorage.setItem("userId", decodeJWT?.userId);
-
-  //       dispatch(userAPI.getProfile(decodeJWT?.userId));
-
-  //       history.push("/");
-
-  //       window.location.reload();
-  //     } else if (loginReducer?.status === 400) {
-  //       setNotifyForm(loginReducer?.data?.message);
-  //     }
-  //   }, [loginReducer]);
-
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   dispatch(login(username, password));
-  // };
 
   const onFinish = async (values) => {
     try {
-      await authAPI.login(values);
-      message.success("Đăng nhập thành công");
+      const res = await authAPI.login(values);
+      await localStorage.setItem("token", res.data.accessToken);
+      history.push("/newsfeed")
+      window.location.reload();
+      
     } catch (error) {
       message.error(error.response);
     }

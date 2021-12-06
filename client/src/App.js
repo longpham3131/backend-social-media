@@ -6,6 +6,7 @@ import userAPI from "apis/userAPI";
 //SCSS
 
 import AuthPage from "pages/Auth";
+import Social from "pages/Social";
 
 const App = () => {
 
@@ -15,11 +16,11 @@ const App = () => {
         {/* <Header /> */}
         <Switch>
           <Route
-            path=""
+            path="/login"
             render={(props) => <AuthPage {...props} />}
           />
-          {/* <AuthRoute path="/post" Component={PostDetail} />
-          <AuthRoute path="/profile/:id" Component={Profile} />
+          <AuthRoute path="/newsfeed" Component={Social} />
+          {/* <AuthRoute path="/profile/:id" Component={Profile} />
           <AuthRoute path="/search/:keySearch" Component={Search} />
           <AuthRoute path="/" Component={SocialMedia} /> */}
     

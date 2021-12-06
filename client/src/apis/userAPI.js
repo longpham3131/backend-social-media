@@ -1,9 +1,10 @@
 import { HTTP_CONNECT } from "config";
 import axios from "axios";
+import { useSelector } from "react-redux";
 const BASE_URL = `${HTTP_CONNECT}/users`;
 const config = {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-  };
+};
 
 const userAPI = {
     getProfile(userId){
@@ -11,8 +12,11 @@ const userAPI = {
         return axios.get(url, config);
     },
     getMyProfile() {
+
         const url = `${BASE_URL}/profile`;
-        return axios.get(url, config);
+        return axios.get(url, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
     },
     updateProfile(newProfile){
         const url = `${BASE_URL}`;
