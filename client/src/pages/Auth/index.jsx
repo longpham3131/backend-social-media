@@ -1,7 +1,7 @@
 import { Card } from "antd";
 import { useState } from "react";
 import Login from "./Login";
-
+import React from 'react';
 import Register from "./Register";
 const AuthPage = () => {
   const tabList = [

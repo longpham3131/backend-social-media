@@ -1,18 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import App from "./App";
+import App from "./App.jsx";
 //Ant design
 import "../node_modules/antd/dist/antd.css";
 
-
 //Redux
 import { Provider } from "react-redux";
-import store from "./store/index";
-import SocketService from "./service/socket/SocketService";
+import store from "./store/store";
+import SocketService from "./service/socket/SocketService.jsx";
 
-import './App.less'
-import './styles/styles.scss'
+import "./App.less";
+import "./styles/styles.scss";
 
 ReactDOM.render(
   <Provider store={store}>

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { HTTP_CONNECT } from "config";
+import { HTTP_CONNECT } from "@/config";
 const BASE_URL = `${HTTP_CONNECT}/auth`;
 const authAPI = {
     login(data){

@@ -1,9 +1,6 @@
 module.exports = {
   mode: "jit",
-  purge: [
-    './public/**/*.html',
-    './src/**/*.{js,jsx,ts,tsx,vue}',
-  ],
+  purge: ["./public/**/*.html", "./src/**/*.{js,jsx,ts,tsx,vue}"],
   darkMode: false, // or 'media' or 'class'
   theme: {
     debugScreens: {
@@ -145,14 +142,14 @@ module.exports = {
             transform: "translateX(200%)",
           },
         },
-        "spin" : {
+        spin: {
           "0%": {
             transform: "rotate(0deg)",
           },
           "100%": {
             transform: "rotate(360deg)",
-          }
-        }
+          },
+        },
       },
       zIndex: {
         "action-modal": "16",
@@ -171,4 +168,4 @@ module.exports = {
     require("tailwindcss-debug-screens"),
     // require("@tailwindcss/line-clamp"),
   ],
-}
+};

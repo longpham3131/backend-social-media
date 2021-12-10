@@ -18,9 +18,14 @@ import {
 } from "@ant-design/icons";
 import SNUpload from "./SNUpload";
 import { useState } from "react";
+import getAudience from "@/util/getAudience";
+import { getUrlImage } from "@/util/index";
+import getFirstLetter from "@/util/getFirstLetter";
+import React from 'react';
 const { Meta } = Card;
-const SNPost = () => {
+const SNPost = ({ post }) => {
   const [avatar, setAvatar] = useState("");
+  const { poster, comments } = post;
   const menu = (
     <Menu>
       <Menu.Item>
@@ -52,20 +57,6 @@ const SNPost = () => {
       </Menu.Item>
     </Menu>
   );
-  const data = [
-    {
-      title: "Ant Design Title 1",
-    },
-    {
-      title: "Ant Design Title 2",
-    },
-    {
-      title: "Ant Design Title 3",
-    },
-    {
-      title: "Ant Design Title 4",
-    },
-  ];
   const onSubmitCmt = (values) => {
     console.log("value commet", values);
   };
@@ -97,9 +88,9 @@ const SNPost = () => {
     </Form>
   );
   return (
-    <div className="flex items-center justify-center">
-      <div className="flex items-start justify-center mt-[1.6rem] border w-fit-content">
-        <Badge.Ribbon text="Công khai" placement="start">
+    <div className="flex items-center justify-center p-4">
+      <div className="flex flex-col items-start justify-center mt-[1.6rem] border w-fit-content">
+        <Badge.Ribbon text={getAudience(post.audience)} placement="start">
           <Card
             style={{ width: 600 }}
             className="border-r"
@@ -110,27 +101,34 @@ const SNPost = () => {
             ]}
             bordered={false}
             extra={
-              <Dropdown overlay={menu} placement="bottomRight" arrow>
+              <Dropdown overlay={menu} placement="bottomRight">
                 <MoreOutlined />
               </Dropdown>
             }
           >
             <Meta
               style={{ height: 300, marginTop: "25px" }}
-              avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-              title="Card title"
-              description="This is the description"
+              avatar={
+                <Avatar src={getUrlImage(poster.avatar)}>
+                  {getFirstLetter(poster.fullName)}
+                </Avatar>
+              }
+              title={poster.fullName}
+              description={post.text}
             />
           </Card>
         </Badge.Ribbon>
-
+        {/* Card Bình luận */}
         <Card
-          title="Bình luận"
+          title={`Bình luận ${
+            comments.length > 0 ? `- ${comments.length} lượt bình luận` : ""
+          }`}
           style={{ width: 450 }}
           bodyStyle={{
             padding: "1.6rem",
             overflow: "auto",
             maxHeight: "35rem",
+            minHeight: "35rem",
           }}
           bordered={false}
           actions={[
@@ -147,13 +145,17 @@ const SNPost = () => {
         >
           <List
             itemLayout="horizontal"
-            dataSource={data}
+            dataSource={comments}
             renderItem={(item) => (
               <List.Item>
                 <List.Item.Meta
-                  avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                  title={<a href="https://ant.design">{item.title}</a>}
-                  description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                  avatar={
+                    <Avatar src={getUrlImage(item.user?.avatar)}>
+                      {getFirstLetter(item.user?.fullName)}
+                    </Avatar>
+                  }
+                  title={<a href="https://ant.design">{item.user?.fullName}</a>}
+                  description={item.content}
                 />
               </List.Item>
             )}

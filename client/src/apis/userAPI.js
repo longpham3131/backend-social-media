@@ -1,4 +1,4 @@
-import { HTTP_CONNECT } from "config";
+import { HTTP_CONNECT } from "@/config";
 import axios from "axios";
 import { useSelector } from "react-redux";
 const BASE_URL = `${HTTP_CONNECT}/users`;

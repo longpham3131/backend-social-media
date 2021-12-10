@@ -1,23 +1,16 @@
-import { Form, Input, Button, Checkbox, message } from "antd";
-import { useEffect, useState } from "react";
+import { Form, Input, Button, message } from "antd";
 import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { login, loginAction } from "store/auth/auth.action";
-import jwt_decode from "jwt-decode";
-import authAPI from "apis/authAPI";
-import userAPI from "apis/userAPI";
-import { getMyProfileAction } from "store/user/user.action";
+import authAPI from "@/apis/authAPI";
+import React from "react";
 const Login = () => {
-  
   let history = useHistory();
 
   const onFinish = async (values) => {
     try {
       const res = await authAPI.login(values);
       await localStorage.setItem("token", res.data.accessToken);
-      history.push("/newsfeed")
+      history.push("/newsfeed");
       window.location.reload();
-      
     } catch (error) {
       message.error(error.response);
     }

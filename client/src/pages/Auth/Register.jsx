@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Input, Button, Checkbox, message, Upload } from "antd";
-import SNUpload from "components/SNUpload";
-import authAPI from "apis/authAPI";
+import SNUpload from "@/components/SNUpload";
+import authAPI from "@/apis/authAPI";
+import React from 'react';
 const Register = ({ onSuccess }) => {
   const [avatar, setAvatar] = useState("");
   const handleSubmit = async (values) => {

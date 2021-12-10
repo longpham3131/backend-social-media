@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Upload, message } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { getUrlImage } from "util/index";
+import { getUrlImage } from "@/util/index";
 
 export default function SNUpload({ isList = false, onUploadSuccess }) {
   const beforeUpload = (file) => {
