@@ -8,9 +8,30 @@ const post = createSlice({
       state = action.payload;
       return state;
     },
+    createPost: (state, action) => {
+      state.unshift(action.payload);
+    },
+    editPost: (state, action) => {
+      const index = state.findIndex((item) => item._id === action.payload._id);
+      state[index] = action.payload;
+      return state;
+    },
+    deletePost: (state, action) => {
+      state = state.filter((item) => item._id !== action.payload);
+      return state;
+    },
+    //comment
+    createComment: (state, action) => {
+      const index = state.findIndex(
+        (item) => item._id === action.payload.postId
+      );
+      state[index].comments.unshift(action.payload.comment);
+      return state;
+    },
   },
 });
 
 const { reducer, actions } = post;
-export const { setPostList } = actions;
+export const { setPostList, createPost, editPost, deletePost, createComment } =
+  actions;
 export default reducer;

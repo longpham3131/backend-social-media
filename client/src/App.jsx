@@ -12,7 +12,7 @@ const App = () => {
       {/* <Header /> */}
       <Switch>
         <Route path="/login" render={(props) => <AuthPage {...props} />} />
-        <AuthRoute path="/" render={(props) => <Social {...props} />} />
+        <AuthRoute path="" Component={Social} />
         {/* <AuthRoute path="/profile/:id" Component={Profile} />
           <AuthRoute path="/search/:keySearch" Component={Search} />
           <AuthRoute path="/" Component={SocialMedia} /> */}

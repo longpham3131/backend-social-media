@@ -1,7 +1,17 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { Avatar, Badge, Dropdown, Layout, List, Menu, Popover } from "antd";
-import React from "react";
+import {
+  Avatar,
+  Badge,
+  Button,
+  Dropdown,
+  Layout,
+  List,
+  Menu,
+  message,
+  Popover,
+} from "antd";
+import React, { useRef, useState } from "react";
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -10,10 +20,16 @@ import {
 } from "@ant-design/icons";
 import { getUrlImage } from "@/util/index";
 import getFirstLetter from "@/util/getFirstLetter";
+import SNCreateEditPost from "@/components/SNCreateEditPost";
+import postAPI from "@/apis/postAPI";
+import { createPost } from "@/store/postSlice";
 const { Header } = Layout;
 const Headerbar = ({ collapsed, onToggle }) => {
   let history = useHistory();
+  const refAddEditPost = useRef(null);
+  const dispatch = useDispatch();
   const myProfile = useSelector((state) => state?.profile);
+  const [showCreatePost, setShowCreatePost] = useState(false);
   const data = [
     {
       title: "Ant Design Title 1",
@@ -47,6 +63,19 @@ const Headerbar = ({ collapsed, onToggle }) => {
     history.push("/login");
     window.location.reload();
   };
+  const handleCreatePost = async (values) => {
+    try {
+      const res = await postAPI.createPost(values);
+      console.log("success", res.data);
+      dispatch(createPost(res.data));
+      message.success("Đăng bài viết thành công.");
+      refAddEditPost.current.resetFields();
+      setShowCreatePost(false);
+    } catch {
+      message.error("Đăng bài viết thất bại!");
+    }
+    console.log("Submit values", values);
+  };
   const menu = (
     <Menu>
       <Menu.Item>
@@ -68,6 +97,19 @@ const Headerbar = ({ collapsed, onToggle }) => {
           }
         )}
         <div className="flex items-center gap-[2rem]">
+          {/* Tạo bài viết */}
+          <Button type="primary" onClick={() => setShowCreatePost(true)}>
+            Tạo bài viết
+          </Button>
+          <SNCreateEditPost
+            ref={refAddEditPost}
+            visible={showCreatePost}
+            title="Tạo bài viết"
+            okText="Đăng bài viết"
+            onClose={() => setShowCreatePost(false)}
+            onSubmit={handleCreatePost}
+          />
+          {/* Danh sách yêu cầu kết bạn */}
           <Popover
             placement="bottom"
             title={"Kết bạn"}
@@ -105,6 +147,7 @@ const Headerbar = ({ collapsed, onToggle }) => {
               </Badge>
             </div>
           </Popover>
+          {/* Danh sách thông báo */}
           <Popover
             placement="bottom"
             title={"Thông báo"}

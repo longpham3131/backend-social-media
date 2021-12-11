@@ -3,7 +3,11 @@ import { Upload, message } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { getUrlImage } from "@/util/index";
 
-export default function SNUpload({ isList = false, onUploadSuccess }) {
+export default function SNUpload({
+  isList = false,
+  onUploadSuccess,
+  fileProp,
+}) {
   const beforeUpload = (file) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
@@ -15,13 +19,13 @@ export default function SNUpload({ isList = false, onUploadSuccess }) {
     }
     return isJpgOrPng && isLt2M;
   };
-  const [avatar, setAvatar] = useState("");
+  // const [avatar, setAvatar] = useState(fileProp);
   const [loading, setLoading] = useState(false);
   const handleChangeAvatar = ({ file }) => {
     setLoading(true);
     if (file.status === "done") {
-      setAvatar(file?.response?.data?.filePath);
-      onUploadSuccess(file?.response?.data?.filePath);
+      // setAvatar(file?.response?.data?.filePath);
+      onUploadSuccess(file?.response?.data);
       setLoading(false);
     } else if (file.status === "error") {
       setLoading(false);
@@ -43,8 +47,12 @@ export default function SNUpload({ isList = false, onUploadSuccess }) {
       beforeUpload={beforeUpload}
       onChange={handleChangeAvatar}
     >
-      {avatar ? (
-        <img src={getUrlImage(avatar)} alt="avatar" className="w-full h-full" />
+      {fileProp ? (
+        <img
+          src={getUrlImage(fileProp.file ?? fileProp.filePath)}
+          alt="avatar"
+          className="w-full h-full"
+        />
       ) : (
         uploadButton
       )}
