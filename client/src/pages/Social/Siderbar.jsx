@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
 import {
@@ -7,9 +7,11 @@ import {
   UploadOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 const { Sider } = Layout;
 const Siderbar = ({ collapsed }) => {
   //   const [, setCollapsed] = useState(false);
+  const myId = useSelector((state) => state.profile._id);
   return (
     <Sider
       trigger={null}
@@ -21,13 +23,13 @@ const Siderbar = ({ collapsed }) => {
       <div className="logo" />
       <Menu mode="inline" defaultSelectedKeys={["1"]}>
         <Menu.Item key="1" icon={<UserOutlined />}>
-          <Link to="/newsfeed">Bảng tin</Link>
+          <Link to="/">Bảng tin</Link>
         </Menu.Item>
         <Menu.Item key="2" icon={<VideoCameraOutlined />}>
-          <Link to="/newsfeed/profile">Trang cá nhân</Link>
+          <Link to={`/profile/${myId}`}>Trang cá nhân</Link>
         </Menu.Item>
         <Menu.Item key="3" icon={<UploadOutlined />}>
-          <Link to="/newsfeed/search-friend">Tìm kiếm bạn bè</Link>
+          <Link to="/search-friend">Tìm kiếm bạn bè</Link>
         </Menu.Item>
       </Menu>
     </Sider>

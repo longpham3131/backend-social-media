@@ -9,11 +9,13 @@ import { Route } from "react-router";
 import Newsfeed from "./Newsfeed";
 import SearchFriend from "./SearchFriend";
 
-import Profile from "./Profile";
+import Profile from "./Profile/Profile";
 import Siderbar from "./Siderbar";
 import Header from "./Header";
 import { setProfile } from "@/store/profileSlice";
 import getFirstLetter from "@/util/getFirstLetter";
+import { Link } from "react-router-dom";
+import SNAvatar from "@/components/SNAvatar";
 
 const { Content } = Layout;
 
@@ -50,14 +52,14 @@ const Social = () => {
           }}
         >
           <div className="flex justify-between w-full h-full">
-            <div className="h-full w-[75%] p-[2.4rem]">
-              <Route path="/newsfeed" render={() => <Newsfeed />} exact />
+            <div className="h-full w-[75%] ">
+              <Route path="/" render={() => <Newsfeed />} exact />
               <Route
-                path="/newsfeed/profile"
+                path="/profile/:userId"
                 render={(props) => <Profile {...props} />}
               />
               <Route
-                path="/newsfeed/search-friend"
+                path="/search-friend"
                 render={(props) => <SearchFriend {...props} />}
               />
             </div>
@@ -120,14 +122,15 @@ const Social = () => {
                         <List.Item>
                           <List.Item.Meta
                             avatar={
-                              <Avatar src={item.user.avatar}>
-                                {getFirstLetter(item.user.fullName)}
-                              </Avatar>
+                              <SNAvatar
+                                src={item.user.avatar}
+                                fullName={item.user.fullName}
+                              />
                             }
                             title={
-                              <a href="https://ant.design">
+                              <Link to={`/profile/${item.user._id}`}>
                                 {item.user.fullName}
-                              </a>
+                              </Link>
                             }
                           />
                         </List.Item>

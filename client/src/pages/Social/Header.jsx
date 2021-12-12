@@ -23,6 +23,7 @@ import getFirstLetter from "@/util/getFirstLetter";
 import SNCreateEditPost from "@/components/SNCreateEditPost";
 import postAPI from "@/apis/postAPI";
 import { createPost } from "@/store/postSlice";
+import SNAvatar from "@/components/SNAvatar";
 const { Header } = Layout;
 const Headerbar = ({ collapsed, onToggle }) => {
   let history = useHistory();
@@ -184,9 +185,12 @@ const Headerbar = ({ collapsed, onToggle }) => {
 
           <Dropdown overlay={menu}>
             <div className="flex items-center gap-[0.8rem]">
-              <Avatar size={40} src={getUrlImage(myProfile?.avatar)}>
-                {getFirstLetter(myProfile?.fullName)}
-              </Avatar>
+              <SNAvatar
+                size={40}
+                src={myProfile?.avatar}
+                fullName={myProfile?.fullName}
+              />
+
               <span className=" text-base text-gray-500">
                 {myProfile?.fullName}
               </span>

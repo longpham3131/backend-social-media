@@ -8,9 +8,15 @@ const profile = createSlice({
       state = action.payload;
       return state;
     },
+    editProfile: (state, action) => {
+      const { coverPicture, avatar, fullName, email, dateOfBirth } =
+        action.payload;
+      state = { ...state, coverPicture, avatar, fullName, email, dateOfBirth };
+      return state;
+    },
   },
 });
 
 const { reducer, actions } = profile;
-export const { setProfile } = actions;
+export const { setProfile, editProfile } = actions;
 export default reducer;

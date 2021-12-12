@@ -1,18 +1,17 @@
 .newsfeed {
-    .trigger {
-        @apply py-0 px-[2.4rem] text-md leading-[1.8rem] cursor-pointer;
-        transition: color 0.3s;
-       
-    }
-    .logo {
-        height: 32px;
-        margin: 16px;
-        background: rgba(255, 255, 255, 0.3);
-    }
-    .site-layout .site-layout-background {
-        background: #fff;
-    }
+  .trigger {
+    @apply py-0 px-[2.4rem] text-md leading-[1.8rem] cursor-pointer;
+    transition: color 0.3s;
+  }
+  .logo {
+    height: 32px;
+    margin: 16px;
+    background: rgba(255, 255, 255, 0.3);
+  }
+  .site-layout .site-layout-background {
+    background: #fff;
+  }
+  .ant-image {
+    @apply w-full;
+  }
 }
-
-
-  

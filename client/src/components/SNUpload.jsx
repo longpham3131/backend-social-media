@@ -4,7 +4,7 @@ import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { getUrlImage } from "@/util/index";
 
 export default function SNUpload({
-  isList = false,
+  isImagePost = true,
   onUploadSuccess,
   fileProp,
 }) {
@@ -49,7 +49,11 @@ export default function SNUpload({
     >
       {fileProp ? (
         <img
-          src={getUrlImage(fileProp.file ?? fileProp.filePath)}
+          src={
+            isImagePost
+              ? getUrlImage(fileProp.file ?? fileProp.filePath)
+              : getUrlImage(fileProp)
+          }
           alt="avatar"
           className="w-full h-full"
         />

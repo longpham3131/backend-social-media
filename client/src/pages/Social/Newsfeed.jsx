@@ -9,6 +9,7 @@ import {
   deletePost,
   editPost,
   createComment,
+  likePost,
 } from "@/store/postSlice";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 
@@ -102,8 +103,16 @@ const Newsfeed = () => {
       message.error("Đăng bình luận thất bại!");
     }
   };
+  const handleLikePost = async (postId) => {
+    try {
+      const res = await postAPI.likePost(postId);
+      dispatch(likePost(res.data));
+    } catch {
+      message.error("Thích bài viết thất bại");
+    }
+  };
   return (
-    <div className="h-full overflow-auto section--hidden-scroll-y">
+    <div className="h-full overflow-auto section--hidden-scroll-y py-[2.4rem] px-[25rem] w-full">
       {postList.map((post) => (
         <SNPost
           post={post}
@@ -111,6 +120,7 @@ const Newsfeed = () => {
           onDelete={handleDeletePost}
           onEdit={showEdit}
           onCommentPost={handleComment}
+          onLike={handleLikePost}
         />
       ))}
       <CreateEditPost

@@ -28,10 +28,31 @@ const post = createSlice({
       state[index].comments.unshift(action.payload.comment);
       return state;
     },
+    //like
+    likePost: (state, action) => {
+      const { like, postId, user } = action.payload;
+
+      const index = state.findIndex((item) => item._id === postId);
+      if (like) {
+        state[index].like.unshift({ user });
+      } else {
+        state[index].like = state[index].like.filter(
+          (item) => item.user._id !== user._id
+        );
+      }
+
+      return state;
+    },
   },
 });
 
 const { reducer, actions } = post;
-export const { setPostList, createPost, editPost, deletePost, createComment } =
-  actions;
+export const {
+  setPostList,
+  createPost,
+  editPost,
+  deletePost,
+  createComment,
+  likePost,
+} = actions;
 export default reducer;
