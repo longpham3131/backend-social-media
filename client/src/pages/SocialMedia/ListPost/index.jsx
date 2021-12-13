@@ -1,7 +1,7 @@
 import "./style.scss";
 import DefualtAvatar from "assets/images/default-avatar.jpg";
 import Dialog from "compoents/Dialog";
-import {  useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
 import Post from "./Post";
@@ -105,46 +105,52 @@ const ListPost = ({ postList }) => {
         }}
       />
       {/* Post status */}
-      {(profileOtherReducer._id === profileReducer._id||history.location.pathname=='/') && (
-        <div className="card postStatus">
-          <img
-            src={
-              profileReducer?.avatar
-                ? getUrlImage(profileReducer?.avatar)
-                : DefualtAvatar
-            }
-            alt="avatar"
-            className="avatar"
-          />
-          <div className="postStatus__placehoder" onClick={handleCreate}>
-            <p> Chia sẻ với mọi người về suy nghĩ của bạn hiện tại nào...</p>
-          </div>
-          <Dialog
-            isShow={isShowDialog}
-            handleHideDialog={() => {
-              setIsShowDialog(false);
-            }}
-            btnSubmitName={btnSubmitDialog}
-            title={titleDialog}
-            onSubmit={() => {
-              typeForm !== "delete"
-                ? refAddEditPost.current.handleSubmit(typeForm)
-                : dispatch(deletePost(selectedPost));
-            }}
-            content={
-              typeForm !== "delete" ? (
-                <AddEditPost
-                  ref={refAddEditPost}
-                  avatar={profileReducer?.avatar}
-                  fullName={profileReducer?.fullName}
-                />
-              ) : (
-                <p>Bạn có muốn xóa bài viết này ?</p>
-              )
-            }
-          />
-        </div>
-      )}
+      <div className="card postStatus">
+        {(profileOtherReducer._id === profileReducer._id ||
+          history.location.pathname == "/") && (
+          <>
+            {" "}
+            <img
+              src={
+                profileReducer?.avatar
+                  ? getUrlImage(profileReducer?.avatar)
+                  : DefualtAvatar
+              }
+              alt="avatar"
+              className="avatar"
+            />
+            <div className="postStatus__placehoder" onClick={handleCreate}>
+              <p> Chia sẻ với mọi người về suy nghĩ của bạn hiện tại nào...</p>
+            </div>
+          </>
+        )}
+
+        <Dialog
+          isShow={isShowDialog}
+          handleHideDialog={() => {
+            setIsShowDialog(false);
+          }}
+          btnSubmitName={btnSubmitDialog}
+          title={titleDialog}
+          onSubmit={() => {
+            typeForm !== "delete"
+              ? refAddEditPost.current.handleSubmit(typeForm)
+              : dispatch(deletePost(selectedPost));
+            setIsShowDialog(false);
+          }}
+          content={
+            typeForm !== "delete" ? (
+              <AddEditPost
+                ref={refAddEditPost}
+                avatar={profileReducer?.avatar}
+                fullName={profileReducer?.fullName}
+              />
+            ) : (
+              <p>Bạn có muốn xóa bài viết này ?</p>
+            )
+          }
+        />
+      </div>
 
       {/* Render Post List */}
       {postList?.length > 0 ? (
@@ -160,8 +166,7 @@ const ListPost = ({ postList }) => {
           );
         })
       ) : (
-        <>
-        </>
+        <></>
       )}
     </div>
   );

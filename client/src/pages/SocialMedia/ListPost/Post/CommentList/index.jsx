@@ -48,27 +48,31 @@ const CommentList = ({ post, isShow, isFocusInput, comments }) => {
     if (event.keyCode == 13 && event.shiftKey) {
       return;
     } else if (event.key === "Enter") {
-      let file = attachment.map((item) => ({
-        file: item.response.data.filePath,
-        type: item.response.data.fileType,
-        name: item.response.data.fileName,
-        size: item.response.data.fileSize,
-      }));
+      let file = [];
+      if (attachment?.length > 0) {
+        file = attachment.map((item) => ({
+          file: item.response.data.filePath,
+          type: item.response.data.fileType,
+          name: item.response.data.fileName,
+          size: item.response.data.fileSize,
+        }));
+      }
+
       console.log({
         content: event.target.value,
         postId: post._id,
-        file
-      })
+        file,
+      });
       dispatch(
         postComment({
           content: event.target.value,
           postId: post._id,
-          file
+          file,
         })
       );
       setComment("");
-      setAttachment(null)
-      setIsShowUpload(false)
+      setAttachment(null);
+      setIsShowUpload(false);
       autosize(inputRef.current);
     }
   };

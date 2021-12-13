@@ -67,6 +67,7 @@ const Post = ({ post, onEdit, onDelete, type = "default" }) => {
       <Menu.Item key={3} icon={<CloseCircleOutlined />}>
         Xóa bài viết
       </Menu.Item>
+     
     </Menu>
   );
 

@@ -14,6 +14,11 @@ const ReportPost = new Schema({
     type: Schema.Types.ObjectId,
     ref: "post",
   },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    require: true,
+  },
   status:{
     type:Number,
     default:0 // 0:pending  1:unconfirm 2:confirm

@@ -27,7 +27,7 @@ const EditProfile = () => {
   const [coverPicture, setCoverPicture] = useState(
     profileReducer?.coverPicture
   );
-  const [dateOfBirth, setDateOfBirth] = useState(profileReducer?.dateOfBirth);
+  const [dateOfBirth, setDateOfBirth] = useState(profileReducer?.dateOfBirth?? moment());
 
   const [message, setMessage] = useState("");
 
@@ -179,7 +179,7 @@ const EditProfile = () => {
             >
               <DatePicker
                 format={"DD/MM/YYYY"}
-                defaultValue={moment(dateOfBirth, "DD/MM/YYYY")}
+                defaultValue={moment(dateOfBirth)}
                 onChange={(date, dateString) => {
                   setDateOfBirth(dateString);
                 }}
