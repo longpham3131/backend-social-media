@@ -80,12 +80,14 @@ router.post("/", verifyToken, async (req, res) => {
     const newPost = new Post({
       title,
       text,
-      poster: await User.findById(req.userId).then((user) => user),
+      poster: ObjectId(req.userId),
       audience,
       attachments: attachFile,
       postParent,
     });
     await newPost.save();
+    const newPoster = await User.findById(req.userId)
+    newPost.poster=newPoster
     res.json(newPost);
   } catch (error) {
     console.log(error);

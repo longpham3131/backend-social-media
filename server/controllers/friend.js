@@ -6,7 +6,7 @@ const FriendRequest = async (req, res) => {
     const io = req.io;
     const { userId, type } = req.body;
     let user = await User.findById(userId);
-    if (type == 1) {
+    if (type === 1) {
       const findUser = user.friendsRequest.find(
         (e) => e.user.toString() == req.userId
       );
@@ -23,7 +23,7 @@ const FriendRequest = async (req, res) => {
     console.log("alo");
     io.sockets
       .to(`user_${userId}`)
-      .emit("friendRequest", "you have new notification");
+      .emit("friendRequest", { type: 1, userRequest: user });
     return res.json({ success: true, message: "save success" });
   } catch (error) {
     console.log(error);
@@ -36,7 +36,10 @@ const UnFriend = async (req, res) => {
     const { userId } = req.body;
     let user = await User.findById(userId);
     user.friends = user.friends.filter((e) => e.user != req.userId);
+    let user2 = await User.findById(req.userId);
+    user2.friends = user2.friends.filter((e) => e.user != userId);
     await user.save();
+    await user2.save();
     return res.json({ success: true, message: "save success" });
   } catch (err) {
     return error500(res);
@@ -62,6 +65,9 @@ const FriendRequestRespone = async (req, res) => {
     }
     user.friendsRequest = user.friendsRequest.filter(
       (e) => e.user.toString() != userId
+    );
+    user2.friendsRequest = user2.friendsRequest.filter(
+      (e) => e.user.toString() != req.userId
     );
     await user.save();
     await user2.save();

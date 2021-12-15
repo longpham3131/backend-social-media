@@ -69,6 +69,11 @@ io.on("connection", (socket) => {
   // })
   // socket.to(room).emit("receive-noti",'noti')
   socket.on("join-room", (room) => {
+ 
+    console.log("join", room);
+    socket.join(room);
+  });
+  socket.on("leave-all-and-join-room", (room) => {
     var rooms = io.sockets.adapter.sids[socket.id];
     for (var room in rooms) {
       socket.leave(room);
