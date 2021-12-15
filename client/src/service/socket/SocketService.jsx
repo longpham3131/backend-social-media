@@ -8,7 +8,7 @@ class SocketService extends React.Component {
   constructor(props) {
     super(props);
 
-    this.socket = io(props.uri);
+    this.socket = io(props.uri, {transports: ['websocket']});
 
     this.socket.status = "initialized";
 

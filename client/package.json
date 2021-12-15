@@ -28,6 +28,7 @@
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^4.2.0",
     "tailwindcss-debug-screens": "^2.2.0",
+    "use-deep-compare-effect": "^1.8.1",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 import {
   Avatar,
   Badge,
@@ -11,22 +12,27 @@ import {
   message,
   Popover,
 } from "antd";
-import React, { useRef, useState } from "react";
+import React, { useRef, useContext, useEffect, useState } from "react";
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   NotificationOutlined,
   UsergroupAddOutlined,
 } from "@ant-design/icons";
+import { SocketContext } from "@/service/socket/SocketContext.jsx";
+import defaultAvatar from "@/assets/images/default-avatar.jpg";
 import { getUrlImage } from "@/util/index";
 import getFirstLetter from "@/util/getFirstLetter";
 import SNCreateEditPost from "@/components/SNCreateEditPost";
+import { setProfile } from "@/store/profileSlice";
 import postAPI from "@/apis/postAPI";
+import userAPI from "@/apis/userAPI";
 import { createPost } from "@/store/postSlice";
 import SNAvatar from "@/components/SNAvatar";
 const { Header } = Layout;
 const Headerbar = ({ collapsed, onToggle }) => {
   let history = useHistory();
+  const socket = useContext(SocketContext);
   const refAddEditPost = useRef(null);
   const dispatch = useDispatch();
   const myProfile = useSelector((state) => state?.profile);
@@ -45,20 +51,14 @@ const Headerbar = ({ collapsed, onToggle }) => {
       title: "Ant Design Title 4",
     },
   ];
-  const dataFriendResquest = [
-    {
-      title: "Ant Design Title 1",
-    },
-    {
-      title: "Ant Design Title 2",
-    },
-    {
-      title: "Ant Design Title 3",
-    },
-    {
-      title: "Ant Design Title 4",
-    },
-  ];
+  const handleFriendRequestRespone = async ({ userId, type }) => {
+    let result = await userAPI.friendRespone({
+      userId,
+      type,
+    });
+    const myProfile = await userAPI.getMyProfile();
+    dispatch(setProfile(myProfile.data.data));
+  };
   const logOut = () => {
     localStorage.clear();
     history.push("/login");
@@ -87,6 +87,19 @@ const Headerbar = ({ collapsed, onToggle }) => {
       </Menu.Item>
     </Menu>
   );
+
+  useEffect(() => {
+    console.log('1')
+    if (myProfile == null && !myProfile._id) return;
+    console.log('2')
+    socket.emit("leave-all-and-join-room", "user_" + myProfile?._id);
+   
+  }, [myProfile]);
+  useEffect(() => {
+    socket.on("friendRequest", (msg) => {
+      console.log("messs-notify", msg);
+    });
+  }, []);
   return (
     <Header className="site-layout-background" style={{ padding: 0 }}>
       <div className="flex items-center justify-between mx-[1.6rem]">
@@ -122,20 +135,52 @@ const Headerbar = ({ collapsed, onToggle }) => {
             content={
               <List
                 itemLayout="horizontal"
-                dataSource={dataFriendResquest}
+                dataSource={myProfile?.friendsRequest ?? []}
                 renderItem={(item) => (
                   <List.Item
                     actions={[
-                      <a key="list-loadmore-edit">Chấp nhận</a>,
-                      <a key="list-loadmore-more">Hủy</a>,
+                      <a
+                        key="list-loadmore-edit"
+                        onClick={() =>
+                          handleFriendRequestRespone({
+                            userId: item.user._id,
+                            type: 1,
+                          })
+                        }
+                      >
+                        Chấp nhận
+                      </a>,
+                      <a
+                        key="list-loadmore-more"
+                        onClick={() =>
+                          handleFriendRequestRespone({
+                            userId: item.user._id,
+                            type: 0,
+                          })
+                        }
+                      >
+                        Hủy
+                      </a>,
                     ]}
                   >
-                    <List.Item.Meta
-                      avatar={
-                        <Avatar src="https://joeschmoe.io/api/v1/random" />
-                      }
-                      title={<a href="https://ant.design">{item.title}</a>}
-                    />
+                    <Link to={`/profile/${item.user._id}`}>
+                      <List.Item.Meta
+                        avatar={
+                          <SNAvatar
+                            src={
+                              item.user.avatar != ""
+                                ? getUrlImage(item.user.avatar)
+                                : defaultAvatar
+                            }
+                          />
+                        }
+                        title={
+                          <p className="overflow-hidden overflow-ellipsis whitespace-nowrap w-[200px] mt-2">
+                            {item.user.fullName}
+                          </p>
+                        }
+                      />
+                    </Link>
                   </List.Item>
                 )}
               />
@@ -143,7 +188,7 @@ const Headerbar = ({ collapsed, onToggle }) => {
             trigger="click"
           >
             <div>
-              <Badge count={5}>
+              <Badge count={myProfile?.friendsRequest?.length ?? 0}>
                 <UsergroupAddOutlined style={{ fontSize: "20px" }} />
               </Badge>
             </div>

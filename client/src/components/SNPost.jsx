@@ -34,7 +34,7 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
   const { poster, comments, like } = post;
   const [form] = Form.useForm();
 
-  const isPoster = myProfile._id === poster._id;
+  const isPoster = myProfile?._id === poster?._id??false;
 
   const menu = (
     <Menu>

@@ -25,9 +25,9 @@ const Register = ({ onSuccess }) => {
       labelAlign={"left"}
       onFinish={handleSubmit}
     >
-      <Form.Item label="Ảnh đại diện" name="avatar">
-        <SNUpload onUploadSuccess={(value) => setAvatar(value)} />
-      </Form.Item>
+      {/* <Form.Item label="Ảnh đại diện" name="avatar">
+        <SNUpload fileProp={avatar} onUploadSuccess={(value) => setAvatar(value)} />
+      </Form.Item> */}
       <Form.Item
         label="Tài khoản"
         name="username"

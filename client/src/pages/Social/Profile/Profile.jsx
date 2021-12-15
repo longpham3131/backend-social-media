@@ -11,6 +11,7 @@ import {
   createComment,
   likePost,
 } from "@/store/postSlice";
+
 import SNAvatar from "@/components/SNAvatar";
 import { getUrlImage } from "@/util/index";
 import "./styles/profile.scss";
@@ -19,7 +20,6 @@ import { ExclamationCircleOutlined } from "@ant-design/icons";
 import CreateEditPost from "@/components/SNCreateEditPost";
 import EditProfile from "./EditProfile";
 import { editProfile } from "@/store/profileSlice";
-
 const { confirm } = Modal;
 
 const Profile = () => {
@@ -32,8 +32,27 @@ const Profile = () => {
   const [selectedPostId, setSelectedPostId] = useState("");
   const refAddEditPost = useRef(null);
   const isMyProfile = myProfile._id === userId;
-
+  const [isFriend, setFriend] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [isFriendRequest, setFriendRequest] = useState(false);
+  useEffect(() => {
+    console.log("change");
+    if (profile === null || !myProfile._id) return;
+    if (!profile?.friendsRequest) return;
+    const isAFriend =
+      !!profile.friends?.find((e) => e.user._id === myProfile._id) ?? false;
+    console.log(isAFriend);
+    setFriend(isAFriend);
+    if (!isAFriend) {
+      if (profile?.friendsRequest?.length <= 0) setFriendRequest(false);
+      else {
+        const find = profile.friendsRequest.find(
+          (e) => e.user._id == myProfile._id
+        );
+        find ? setFriendRequest(true) : setFriendRequest(false);
+      }
+    }
+  }, [profile, myProfile]);
 
   useEffect(() => {
     if (isMyProfile) {
@@ -154,6 +173,36 @@ const Profile = () => {
       message.error("Thích bài viết thất bại");
     }
   };
+
+  const handleFriendRequest = async (type) => {
+    let data = {
+      userId: profile._id,
+      type,
+    };
+    const res = await userAPI.friendRequest(data);
+    let newFriendsRequest = profile;
+    if (type == 0) {
+      newFriendsRequest.friendsRequest =
+        newFriendsRequest.friendsRequest.filter(
+          (e) => e.user._id != myProfile._id
+        );
+      setFriendRequest(false);
+    }
+    if (type == 1) {
+      newFriendsRequest.friendsRequest = [
+        ...newFriendsRequest.friendsRequest,
+        { user: { _id: myProfile._id } },
+      ];
+      setFriendRequest(true);
+    }
+
+    setProfile(newFriendsRequest);
+  };
+
+  const Unfriend = async () => {
+    let result = await userAPI.unfriend({ userId: profile._id });
+    let rs = await userAPI.getProfile();
+  };
   return (
     <div className="flex flex-col px-[4rem] profile-user h-full overflow-auto section--hidden-scroll-y">
       {profile && (
@@ -177,6 +226,34 @@ const Profile = () => {
               <p className="text-xl font-quicksand mb-0 mt-[2rem]">
                 {profile.fullName}
               </p>
+            </div>
+            <div className="text-right m-6">
+              {!isMyProfile && (
+                <>
+                  {isFriend ? (
+                    <div>
+                      <Button onClick={() => Unfriend()}>Huỷ kết bạn</Button>
+                    </div>
+                  ) : (
+                    <>
+                      {!isFriendRequest && (
+                        <div>
+                          <Button onClick={() => handleFriendRequest(1)}>
+                            Kết bạn
+                          </Button>
+                        </div>
+                      )}
+                      {!!isFriendRequest && (
+                        <div>
+                          <Button onClick={() => handleFriendRequest(0)}>
+                            Huỷ yêu cầu kết bạn
+                          </Button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
             </div>
           </div>
 

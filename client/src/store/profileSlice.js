@@ -2,7 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const profile = createSlice({
   name: "profile",
-  initialState: {},
+  initialState: {
+   
+  },
   reducers: {
     setProfile: (state, action) => {
       state = action.payload;
@@ -14,6 +16,22 @@ const profile = createSlice({
       state = { ...state, coverPicture, avatar, fullName, email, dateOfBirth };
       return state;
     },
+    friendRequestRespone:(state,action)=>{
+      return async (dispatch) => {
+        try {
+          const res = await axios.post(
+            `${HTTP_CONNECT}/users/friendRespone`,
+            data,
+            config
+          );
+          if (res.status == 200) {
+            await dispatch(getUserCurrentProfile());
+          }
+        } catch (err) {
+          dispatch(setNotify(err.response));
+        }
+      };
+    }
   },
 });
 

@@ -29,6 +29,10 @@ const Newsfeed = () => {
     fetchPostList();
   }, []);
 
+  useEffect(() => {
+    console.log(postList);
+  }, [postList]);
+
   const fetchPostList = async () => {
     try {
       const postList = await postAPI.getPostList({
@@ -37,6 +41,7 @@ const Newsfeed = () => {
       });
       await dispatch(setPostList(postList.data));
     } catch (error) {
+      console.log(error);
       message.error("Lấy danh sách bài viết thất bại!");
     }
   };
@@ -112,17 +117,18 @@ const Newsfeed = () => {
     }
   };
   return (
-    <div className="h-full overflow-auto section--hidden-scroll-y py-[2.4rem] px-[25rem] w-full">
-      {postList.map((post) => (
-        <SNPost
-          post={post}
-          key={post._id}
-          onDelete={handleDeletePost}
-          onEdit={showEdit}
-          onCommentPost={handleComment}
-          onLike={handleLikePost}
-        />
-      ))}
+    <div className="h-full overflow-auto section--hidden-scroll-y py-[2.4rem] px-[15rem] min-w-[600px]">
+      {postList.length > 0 &&
+        postList.map((post) => (
+          <SNPost
+            post={post}
+            key={post._id}
+            onDelete={handleDeletePost}
+            onEdit={showEdit}
+            onCommentPost={handleComment}
+            onLike={handleLikePost}
+          />
+        ))}
       <CreateEditPost
         ref={refAddEditPost}
         visible={showEditPost}
