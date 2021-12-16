@@ -86,8 +86,8 @@ router.post("/", verifyToken, async (req, res) => {
       postParent,
     });
     await newPost.save();
-    const newPoster = await User.findById(req.userId)
-    newPost.poster=newPoster
+    const newPoster = await User.findById(req.userId);
+    newPost.poster = newPoster;
     res.json(newPost);
   } catch (error) {
     console.log(error);
@@ -149,10 +149,10 @@ router.put("/", verifyToken, async (req, res) => {
 router.get("/", verifyToken, async (req, res) => {
   const { limitPost, index, profile, userId } = req.query;
   try {
-    let data = {};
+    let data = {status: 1};
     if (profile == 1) {
       const userIdReq = userId != "0" ? userId : req.userId;
-      data = { poster: userIdReq };
+      data = { poster: userIdReq, status: 1 }; 
     }
     const result = await Post.find(data)
       .skip(index * limitPost)

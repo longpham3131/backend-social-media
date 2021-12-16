@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/User");
 const ReportUser = require("../models/ReportUser");
 const ReportPost = require("../models/ReportPost");
+
 const Post = require("../models/Post");
 const { ObjectId } = require("mongodb");
 const { error500, error400 } = require("../util/res");
@@ -29,7 +30,7 @@ router.post("/createReportUser", verifyToken, async (req, res) => {
     const { type, content } = req.body;
     let ru = new ReportUser({
       type,
-      content, 
+      content,
       user: ObjectId(req.userId),
     });
     await ru.save();
@@ -97,6 +98,74 @@ router.get("/getUsers2/:keySearch", verifyToken, async (req, res) => {
     return error500(res);
   }
 });
+
+router.post("/editUser", verifyToken, async (req, res) => {
+  try {
+    const { userId, data } = req.body;
+    await User.findOneAndUpdate({ _id: ObjectId(userId) }, data);
+    return res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
+
+router.post("/editStatusUser", verifyToken, async (req, res) => {
+  try {
+    const { userId, status } = req.body;
+    await User.findOneAndUpdate({ _id: ObjectId(userId) }, { status });
+    await Post.updateMany({ poster: ObjectId(userId) }, { status });
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
+router.post("/editStatusUser2", verifyToken, async (req, res) => {
+  try {
+    await Post.updateMany({}, { status: 1 });
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
+
+router.post("/editReportPost", verifyToken, async (req, res) => {
+  try {
+    const { userId, data } = req.body;
+    await ReportUser.findOneAndUpdate({ _id: ObjectId(userId) }, data);
+    return res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
+
+router.post("/editReportUser", verifyToken, async (req, res) => {
+  try {
+    const { userId, data } = req.body;
+    await ReportUser.findOneAndUpdate({ _id: ObjectId(userId) }, data);
+    return res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
+
+router.post("/editPost", verifyToken, async (req, res) => {
+  try {
+    const { userId, data } = req.body;
+    await Post.findOneAndUpdate({ _id: ObjectId(userId) }, data);
+    return res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
+
 router.get("/getPosts", verifyToken, async (req, res) => {
   try {
     const result = await Post.find()
