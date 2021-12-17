@@ -5,7 +5,8 @@ const FriendRequest = async (req, res) => {
   try {
     const io = req.io;
     const { userId, type } = req.body;
-    let user = await User.findById(userId);
+    let user = await User.findById(userId).populate({ path: "friends.user", select: "fullName avatar" })
+    .populate({ path: "friendsRequest.user", select: "fullName avatar" });
     if (type === 1) {
       const findUser = user.friendsRequest.find(
         (e) => e.user.toString() == req.userId

@@ -67,6 +67,7 @@ router.post("/likeComment", verifyToken, async (req, res) => {
     commentFound.like = commentFound.like.filter(
       (comment) => comment._id != commentId
     );
+    
     await commentFound.save();
     return res.json({ success: true });
   } catch (err) {
