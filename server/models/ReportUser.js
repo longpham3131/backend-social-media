@@ -10,6 +10,11 @@ const ReportUser = new Schema({
     type: String,
     default: "public",
   },
+  userReport: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    require: true,
+  },
   user: {
     type: Schema.Types.ObjectId,
     ref: "User",

@@ -23,13 +23,15 @@ const PostDialog = ({ image, isShowPost, setShowPost }) => {
     setPost(res.data.data[0]);
   };
   return (
-    <div className="PostDialog">
+    <div className="PostDialog" style={{justifyContent: post==undefined?"center":"unset"}}>
       <div className="PostDialog__left">
         <img width={600} height={500} src={getUrlImage(image.filePath)} />
       </div>
-      <div className="PostDialog__right">
-        {post?.poster && <Post post={post} type="dialog"/>}
-      </div>
+      {post != undefined && (
+        <div className="PostDialog__right">
+          {post?.poster && <Post post={post} type="dialog" />}
+        </div>
+      )}
     </div>
   );
 };

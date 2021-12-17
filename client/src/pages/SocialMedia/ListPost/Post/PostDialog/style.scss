@@ -4,13 +4,14 @@
   display: flex;
   &__left {
     width: 650px;
-    border-right: solid 1px black;
+   
     img {
       object-fit: contain;
     }
   }
   &__right {
     width: 250px;
+    border-left: solid 1px black;
     .card {
       width: 420px !important;
       box-shadow: none;

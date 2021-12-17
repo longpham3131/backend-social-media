@@ -14,7 +14,7 @@ const ReportPost = new Schema({
     type: Schema.Types.ObjectId,
     ref: "post",
   },
-  user: {
+  userReport: {
     type: Schema.Types.ObjectId,
     ref: "User",
     require: true,

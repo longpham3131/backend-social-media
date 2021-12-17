@@ -57,7 +57,7 @@ router.post("/createReportPost", verifyToken, async (req, res) => {
 
 router.get("/getRepostsPost", verifyToken, async (req, res) => {
   try {
-    let result = await ReportPost.find().populate("user").populate("postId");
+    let result = await ReportPost.find().populate("userReport").populate("postId");
     return res.json({ success: true, data: result });
   } catch (err) {
     return error500(res);
@@ -65,7 +65,7 @@ router.get("/getRepostsPost", verifyToken, async (req, res) => {
 });
 router.get("/getRepostsUser", verifyToken, async (req, res) => {
   try {
-    let result = await ReportUser.find().populate("user");
+    let result = await ReportUser.find().populate("userReport").populate("user");
     return res.json({ success: true, data: result });
   } catch (err) {
     return error500(res);
@@ -157,8 +157,8 @@ router.post("/editReportUser", verifyToken, async (req, res) => {
 
 router.post("/editPost", verifyToken, async (req, res) => {
   try {
-    const { userId, data } = req.body;
-    await Post.findOneAndUpdate({ _id: ObjectId(userId) }, data);
+    const { postId, data } = req.body;
+    await Post.findOneAndUpdate({ _id: ObjectId(postId) }, data);
     return res.json({ success: true });
   } catch (err) {
     console.log(err);
