@@ -18,7 +18,7 @@ const FriendRequest = async (req, res) => {
         });
     } else
       user.friendsRequest = user.friendsRequest.filter(
-        (e) => e.user.toString() != req.userId
+        (e) => e.user._id.toString() != req.userId
       );
     await user.save();
     console.log("alo");
