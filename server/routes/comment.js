@@ -86,6 +86,7 @@ router.post("/", verifyToken, async (req, res) => {
         filePath: file[0].file,
         fileType: file[0].type,
         fileSize: file[0].size, // 0.00
+        type:"comment",
         user: req.userId,
       });
       await newFile.save();

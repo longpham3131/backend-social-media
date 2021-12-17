@@ -95,16 +95,18 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 // DELETE POST
-router.delete("/delete/:id", verifyToken, (req, res) => {
-  const { id } = req.params;
-  Post.findByIdAndDelete(id)
-    .then(() => {
-      res.json({ success: true, message: "Xóa thành công", postId: id });
-    })
-    .catch((err) => {
-      console.log(err);
-      return error500({ success: false, message: "Xóa thất bại" });
-    });
+router.delete("/delete/:id", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    let post = await Post.findById(id);
+    post.attachments.forEach(
+      async(file) => await SingleFile.findByIdAndDelete(file.id)
+    );
+    await Post.findByIdAndDelete(id);
+  } catch (err) {
+    console.log(err);
+    return error500({ success: false, message: "Xóa thất bại" });
+  }
 });
 
 //UPDATE POST
@@ -149,10 +151,10 @@ router.put("/", verifyToken, async (req, res) => {
 router.get("/", verifyToken, async (req, res) => {
   const { limitPost, index, profile, userId } = req.query;
   try {
-    let data = {status: 1};
+    let data = { status: 1 };
     if (profile == 1) {
       const userIdReq = userId != "0" ? userId : req.userId;
-      data = { poster: userIdReq, status: 1 }; 
+      data = { poster: userIdReq, status: 1 };
     }
     const result = await Post.find(data)
       .skip(index * limitPost)

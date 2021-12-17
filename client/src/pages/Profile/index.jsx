@@ -166,7 +166,7 @@ const Profile = (props) => {
             <div className="card">
               <p className="card--title-left">Ảnh</p>
               <div className="listPicture">
-                {imagesUser.map((item, index) => {
+                {imagesUser.reverse().map((item, index) => {
                   return (
                     <img
                       key={index}
