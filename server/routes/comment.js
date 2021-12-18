@@ -67,7 +67,7 @@ router.post("/likeComment", verifyToken, async (req, res) => {
     commentFound.like = commentFound.like.filter(
       (comment) => comment._id != commentId
     );
-    
+
     await commentFound.save();
     return res.json({ success: true });
   } catch (err) {
@@ -87,7 +87,7 @@ router.post("/", verifyToken, async (req, res) => {
         filePath: file[0].file,
         fileType: file[0].type,
         fileSize: file[0].size, // 0.00
-        type:"comment",
+        type: "comment",
         user: req.userId,
       });
       await newFile.save();
@@ -102,13 +102,14 @@ router.post("/", verifyToken, async (req, res) => {
     let rs = await Promise.all([comment.save(), Post.findById(postId)]);
     rs[1].comments = [comment._id, ...rs[1].comments];
     await rs[1].save();
-
-    const noti = await UserNotification({
+    let queryData = {
       user: rs[1].poster,
       type: 2,
       postId: postId,
       fromUser: req.userId,
-    });
+    };
+    await UserNotification.findByIdAndDelete(queryData);
+    const noti = await UserNotification(queryData);
     await noti.save();
     if (req.userId !== rs[1].poster.toString()) {
       const io = req.io;

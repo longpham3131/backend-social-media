@@ -42,14 +42,18 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    followers: {
-      type: Array,
-      default: [],
-    },
-    followings: {
-      type: Array,
-      default: [],
-    },
+    followers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    followings: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ], 
     friends: [
       {
         user: {
@@ -82,10 +86,10 @@ const UserSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    status:{
-      type:Number,
-      default:1
-    }
+    status: {
+      type: Number,
+      default: 1,
+    },
   },
   { timestamps: true }
 );

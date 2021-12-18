@@ -21,6 +21,7 @@ const FriendRequest = async (req, res) => {
         (e) => e.user._id.toString() != req.userId
       );
     await user.save();
+    user = await User.findById(userId).populate({ path: "friends.user", select: "fullName avatar" })
     console.log("alo");
     io.sockets
       .to(`user_${userId}`)
@@ -88,6 +89,10 @@ const GetFriendsRequest = async (req, res) => {
     return error500(res);
   }
 };
+///Follow
+
+
+
 
 module.exports = {
   FriendRequest,

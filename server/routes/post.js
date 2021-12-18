@@ -100,7 +100,7 @@ router.delete("/delete/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
     let post = await Post.findById(id);
     post.attachments.forEach(
-      async(file) => await SingleFile.findByIdAndDelete(file.id)
+      async (file) => await SingleFile.findByIdAndDelete(file.id)
     );
     await Post.findByIdAndDelete(id);
   } catch (err) {
@@ -245,8 +245,8 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
       post.like = post.like.filter((e) => e.user._id.toString() !== req.userId);
       await post.save();
       const notiDelete = await UserNotification.findOneAndDelete({
-        user: post.poster,
-        postId: ObjectId(post._id),
+        user: ObjectId(post.poster),
+        postId: post._id,
         fromUser: ObjectId(req.userId),
         type: 1,
       });
