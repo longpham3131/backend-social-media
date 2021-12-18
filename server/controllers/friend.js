@@ -5,8 +5,9 @@ const FriendRequest = async (req, res) => {
   try {
     const io = req.io;
     const { userId, type } = req.body;
-    let user = await User.findById(userId).populate({ path: "friends.user", select: "fullName avatar" })
-    .populate({ path: "friendsRequest.user", select: "fullName avatar" });
+    let user = await User.findById(userId)
+      .populate({ path: "friends.user", select: "fullName avatar" })
+      .populate({ path: "friendsRequest.user", select: "fullName avatar" });
     if (type === 1) {
       const findUser = user.friendsRequest.find(
         (e) => e.user.toString() == req.userId
@@ -21,7 +22,9 @@ const FriendRequest = async (req, res) => {
         (e) => e.user._id.toString() != req.userId
       );
     await user.save();
-    user = await User.findById(userId).populate({ path: "friends.user", select: "fullName avatar" })
+    user = await User.findById(userId)
+      .populate({ path: "friends.user", select: "fullName avatar" })
+      .populate({ path: "friendsRequest.user", select: "fullName avatar" });
     console.log("alo");
     io.sockets
       .to(`user_${userId}`)
@@ -90,9 +93,6 @@ const GetFriendsRequest = async (req, res) => {
   }
 };
 ///Follow
-
-
-
 
 module.exports = {
   FriendRequest,
