@@ -18,11 +18,9 @@ import {
   CommentOutlined,
   LikeFilled,
 } from "@ant-design/icons";
-import SNUpload from "./SNUpload";
 import { useState } from "react";
 import getAudience from "@/util/getAudience";
 import { getUrlImage, getUrlVideo } from "@/util/index";
-import getFirstLetter from "@/util/getFirstLetter";
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -34,7 +32,7 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
   const { poster, comments, like } = post;
   const [form] = Form.useForm();
 
-  const isPoster = myProfile?._id === poster?._id??false;
+  const isPoster = myProfile?._id === poster?._id ?? false;
 
   const menu = (
     <Menu>
