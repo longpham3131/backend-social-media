@@ -11,7 +11,7 @@ import {
   createComment,
   likePost,
 } from "@/store/postSlice";
-
+import { setProfile } from "@/store/profileSlice";
 import SNAvatar from "@/components/SNAvatar";
 import { getUrlImage } from "@/util/index";
 import "./styles/profile.scss";
@@ -33,7 +33,7 @@ const Profile = () => {
   const refAddEditPost = useRef(null);
   const isMyProfile = myProfile._id === userId;
   const [isFriend, setFriend] = useState(false);
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfileUser] = useState(null);
   const [isFriendRequest, setFriendRequest] = useState(false);
   useEffect(() => {
     console.log("change");
@@ -56,7 +56,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (isMyProfile) {
-      setProfile(myProfile);
+      setProfileUser(myProfile);
     } else {
       fetchOtherUserProfile();
     }
@@ -65,14 +65,14 @@ const Profile = () => {
 
   useEffect(() => {
     if (isMyProfile) {
-      setProfile(myProfile);
+      setProfileUser(myProfile);
     }
   }, [myProfile]);
 
   const fetchOtherUserProfile = async () => {
     try {
       const res = await userAPI.getProfile(userId);
-      setProfile(res.data);
+      setProfileUser(res.data);
     } catch {
       message.error("Lấy thông tin chi tiết thất bại!");
     }
@@ -196,12 +196,16 @@ const Profile = () => {
       setFriendRequest(true);
     }
 
-    setProfile(newFriendsRequest);
+    setProfileUser(newFriendsRequest);
   };
 
   const Unfriend = async () => {
-    let result = await userAPI.unfriend({ userId: profile._id });
-    let rs = await userAPI.getProfile();
+    await userAPI.unfriend({ userId: profile._id });
+  
+    const res = await Promise.all([userAPI.getMyProfile(), userAPI.getProfile( profile._id)]) ;
+    console.log(res)
+    dispatch(setProfile(res[0].data.data));
+    setProfileUser(res[1].data);
   };
   return (
     <div className="flex flex-col px-[4rem] profile-user h-full overflow-auto section--hidden-scroll-y">
