@@ -102,7 +102,7 @@ const Notification = () => {
   return (
     <Popover
       id="scrollableDiv"
-      placement="bottom"
+      placement="top"
       title={"Thông báo"}
       overlayInnerStyle={{
         minWidth: "30rem",
