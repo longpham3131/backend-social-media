@@ -18,7 +18,7 @@ router.get("/", verifyToken, async (req, res) => {
   const listNoti = result[0];
   let countNoti = 0;
   listNoti.forEach((noti) => {
-    if (noti.status === 1) countNoti++;
+    if (noti.status === 0) countNoti++;
   });
   return res.json({
     success: true,

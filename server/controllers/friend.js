@@ -43,7 +43,7 @@ const UnFriend = async (req, res) => {
     user.friends = user.friends.filter((e) => e.user.toString() != req.userId);
     let user2 = await User.findById(req.userId);
     user2.friends = user2.friends.filter((e) => e.user.toString() != userId);
-    await user.save();
+    await user.save(); 
     await user2.save();
     return res.json({ success: true, message: "save success" });
   } catch (err) {
