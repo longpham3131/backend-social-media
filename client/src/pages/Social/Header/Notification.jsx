@@ -105,6 +105,7 @@ const Notification = () => {
       placement="top"
       title={"Thông báo"}
       overlayInnerStyle={{
+        maxWidth: "30rem",
         minWidth: "30rem",
         maxHeight: "50rem",
         overflow: "auto",
@@ -120,7 +121,7 @@ const Notification = () => {
             }
             loader={
               <Skeleton
-                className="max-w-[30rem]"
+                className="w-[30rem]"
                 avatar
                 paragraph={{ rows: 1 }}
                 active
