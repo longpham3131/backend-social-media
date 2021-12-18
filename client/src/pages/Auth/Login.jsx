@@ -9,10 +9,10 @@ const Login = () => {
     try {
       const res = await authAPI.login(values);
       await localStorage.setItem("token", res.data.accessToken);
-      history.push("/newsfeed");
+      history.push("/");
       window.location.reload();
     } catch (error) {
-      message.error(error.response);
+      message.error(error.response.data.message);
     }
   };
 

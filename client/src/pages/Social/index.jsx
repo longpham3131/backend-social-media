@@ -11,7 +11,7 @@ import SearchFriend from "./SearchFriend";
 
 import Profile from "./Profile/Profile";
 import Siderbar from "./Siderbar";
-import Header from "./Header";
+import Header from "./Header/Header";
 import { setProfile } from "@/store/profileSlice";
 import getFirstLetter from "@/util/getFirstLetter";
 import { Link } from "react-router-dom";
