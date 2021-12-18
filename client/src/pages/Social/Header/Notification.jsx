@@ -1,4 +1,12 @@
-import { Avatar, Badge, List, message, notification, Popover } from "antd";
+import {
+  Divider,
+  Badge,
+  List,
+  message,
+  notification,
+  Popover,
+  Skeleton,
+} from "antd";
 import React, { useState } from "react";
 import { NotificationOutlined } from "@ant-design/icons";
 import notificationAPI from "@/apis/notificationAPI";
@@ -6,9 +14,12 @@ import { useEffect } from "react";
 import SNAvatar from "@/components/SNAvatar";
 import { useContext } from "react";
 import { SocketContext } from "@/service/socket/SocketContext";
+import InfiniteScroll from "react-infinite-scroll-component";
 const Notification = () => {
   const [notificationState, setNotificationState] = useState({});
+  const [loading, setLoading] = useState(false);
   const socket = useContext(SocketContext);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const data = [
     {
       title: "Ant Design Title 1",
@@ -66,8 +77,31 @@ const Notification = () => {
         return "Đã chấp nhận lời mời kết bạn";
     }
   };
+
+  const loadMoreData = async () => {
+    console.log("loadmore");
+    if (loading) {
+      return;
+    }
+    setLoading(true);
+    setCurrentIndex(1);
+    notificationAPI
+      .getNotify({ index: currentIndex + 1, pageSize: 10 })
+      .then((rs) => {
+        setNotificationState({
+          ...rs.data,
+          data: [...notificationState.data, ...rs.data.data],
+        });
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
   return (
     <Popover
+      id="scrollableDiv"
       placement="bottom"
       title={"Thông báo"}
       overlayInnerStyle={{
@@ -77,24 +111,43 @@ const Notification = () => {
       }}
       content={
         notificationState && (
-          <List
-            itemLayout="horizontal"
-            dataSource={notificationState.data}
-            renderItem={(item) => (
-              <List.Item>
-                <List.Item.Meta
-                  avatar={
-                    <SNAvatar
-                      src={item.fromUser.avatar}
-                      fullName={item.fromUser.fullName}
-                    />
-                  }
-                  title={<span>{item.fromUser.fullName}</span>}
-                  description={descriptionNoti(item.type)}
-                />
-              </List.Item>
-            )}
-          />
+          <InfiniteScroll
+            dataLength={notificationState.data?.length ?? 0}
+            next={loadMoreData}
+            hasMore={
+              notificationState.data?.length <
+              notificationState.totalNotification
+            }
+            loader={
+              <Skeleton
+                className="max-w-[30rem]"
+                avatar
+                paragraph={{ rows: 1 }}
+                active
+              />
+            }
+            endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+            scrollableTarget="scrollableDiv"
+          >
+            <List
+              itemLayout="horizontal"
+              dataSource={notificationState.data}
+              renderItem={(item) => (
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={
+                      <SNAvatar
+                        src={item.fromUser.avatar}
+                        fullName={item.fromUser.fullName}
+                      />
+                    }
+                    title={<span>{item.fromUser.fullName}</span>}
+                    description={descriptionNoti(item.type)}
+                  />
+                </List.Item>
+              )}
+            />
+          </InfiniteScroll>
         )
       }
       trigger="click"
