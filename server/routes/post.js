@@ -252,7 +252,7 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
       });
       io.sockets
         .to(`user_${post.poster.toString()}`)
-        .emit("notification", "you have new notification");
+        .emit("notification",{data:notiDelete});
       return res.json({
         like: false,
         postId: post._id,

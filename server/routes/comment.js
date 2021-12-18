@@ -52,21 +52,16 @@ router.get("/", verifyToken, async (req, res) => {
 router.post("/likeComment", verifyToken, async (req, res) => {
   try {
     const { commentId, type, postId } = req.body;
+    const io = req.io;
     let commentFound = await comment.findById(commentId);
     commentFound.like = commentFound.like.filter((e) => {
       return e.user.toString() != req.userId;
     });
+   
     if (type == 1) {
       commentFound.like.push({ user: ObjectId(req.userId) });
-      await commentFound.save();
-      return res.json({
-        success: true,
-        data: commentFound.like[commentFound.like.length - 1],
-      });
     }
-    commentFound.like = commentFound.like.filter(
-      (comment) => comment._id != commentId
-    );
+
     let queryData = {
       user: commentFound.user,
       type: 4,
@@ -76,9 +71,16 @@ router.post("/likeComment", verifyToken, async (req, res) => {
     await UserNotification.findByIdAndDelete(queryData);
     const noti = await UserNotification(queryData);
     await noti.save();
-
     await commentFound.save();
-    return res.json({ success: true });
+    if (type == 1) {
+      io.sockets
+        .to(`user_${commentFound.user.toString()}`)
+        .emit("notification", { data: queryData });
+    }
+    return res.json({
+      success: true,
+      data: commentFound.like[commentFound.like.length - 1],
+    });
   } catch (err) {
     console.log(err);
     error500(res);
@@ -129,7 +131,7 @@ router.post("/", verifyToken, async (req, res) => {
       const io = req.io;
       io.sockets
         .to(`user_${rs[1].poster.toString()}`)
-        .emit("notification", comment);
+        .emit("notification", {data:queryData});
     }
     res.json({ success: true, data: rs[0], message: "true" });
   } catch (err) {
