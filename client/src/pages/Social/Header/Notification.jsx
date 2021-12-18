@@ -1,11 +1,14 @@
-import { Avatar, Badge, List, message, Popover } from "antd";
+import { Avatar, Badge, List, message, notification, Popover } from "antd";
 import React, { useState } from "react";
 import { NotificationOutlined } from "@ant-design/icons";
 import notificationAPI from "@/apis/notificationAPI";
 import { useEffect } from "react";
 import SNAvatar from "@/components/SNAvatar";
+import { useContext } from "react";
+import { SocketContext } from "@/service/socket/SocketContext";
 const Notification = () => {
-  const [notification, setNotification] = useState({});
+  const [notificationState, setNotificationState] = useState({});
+  const socket = useContext(SocketContext);
   const data = [
     {
       title: "Ant Design Title 1",
@@ -28,12 +31,24 @@ const Notification = () => {
   const fetchNoti = async () => {
     try {
       const res = await notificationAPI.getNotify();
-      setNotification(res.data);
+      setNotificationState(res.data);
       console.log("noti", res.data);
     } catch {
       message.error("Lấy thông báo thất bại");
     }
   };
+  useEffect(() => {
+    socket.on("notification", (msg) => {
+      console.log("messs-notify", msg);
+      fetchNoti();
+      notification.info({
+        message: `Thông báo`,
+        description:
+          "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+        placement: "bottomLeft",
+      });
+    });
+  }, []);
 
   const descriptionNoti = (type) => {
     switch (type) {
@@ -61,10 +76,10 @@ const Notification = () => {
         overflow: "auto",
       }}
       content={
-        notification && (
+        notificationState && (
           <List
             itemLayout="horizontal"
-            dataSource={notification.data}
+            dataSource={notificationState.data}
             renderItem={(item) => (
               <List.Item>
                 <List.Item.Meta
@@ -85,7 +100,7 @@ const Notification = () => {
       trigger="click"
     >
       <div>
-        <Badge count={notification.countNotification}>
+        <Badge count={notificationState.countNotification}>
           <NotificationOutlined style={{ fontSize: "20px" }} />
         </Badge>
       </div>
