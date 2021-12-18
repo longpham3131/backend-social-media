@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import SNAvatar from "@/components/SNAvatar";
 import { useContext } from "react";
 import { SocketContext } from "@/service/socket/SocketContext";
+import { formatMinutes } from "@/util/index";
 import InfiniteScroll from "react-infinite-scroll-component";
 const Notification = () => {
   const [notificationState, setNotificationState] = useState({});
@@ -134,7 +135,13 @@ const Notification = () => {
               itemLayout="horizontal"
               dataSource={notificationState.data}
               renderItem={(item) => (
-                <List.Item>
+                <List.Item
+                // actions={[
+                //   <a key="list-loadmore-edit">
+
+                //   </a>,
+                // ]}
+                >
                   <List.Item.Meta
                     avatar={
                       <SNAvatar
@@ -143,7 +150,12 @@ const Notification = () => {
                       />
                     }
                     title={<span>{item.fromUser.fullName}</span>}
-                    description={descriptionNoti(item.type)}
+                    description={
+                      <div className="">
+                        <div>{descriptionNoti(item.type)}</div>
+                        <div>{formatMinutes(item.createAt)}</div>
+                      </div>
+                    }
                   />
                 </List.Item>
               )}

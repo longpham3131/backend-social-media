@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { message, Modal } from "antd";
+import { message, Modal, Skeleton, Divider } from "antd";
 import postAPI from "@/apis/postAPI";
 import SNPost from "@/components/SNPost";
 import { useEffect } from "react";
@@ -12,9 +12,8 @@ import {
   likePost,
 } from "@/store/postSlice";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-
 import CreateEditPost from "@/components/SNCreateEditPost";
-
+import InfiniteScroll from "react-infinite-scroll-component";
 const { confirm } = Modal;
 
 const Newsfeed = () => {
@@ -24,6 +23,7 @@ const Newsfeed = () => {
   const [showEditPost, setShowEditPost] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState("");
   const refAddEditPost = useRef(null);
+  const [loadMore, setLoadMore] = useState(true);
   // const profile = useSelector((state) => state.profile);
   useEffect(() => {
     fetchPostList();
@@ -116,19 +116,58 @@ const Newsfeed = () => {
       message.error("Thích bài viết thất bại");
     }
   };
+
+  const loadMoreData = async () => {
+    console.log("loadmore");
+    // if (loading) {
+    //   return;
+    // }
+    // setLoading(true);
+    // setCurrentIndex(1);
+    // notificationAPI
+    //   .getNotify({ index: currentIndex + 1, pageSize: 10 })
+    //   .then((rs) => {
+    //     setNotificationState({
+    //       ...rs.data,
+    //       data: [...notificationState.data, ...rs.data.data],
+    //     });
+    //     setLoading(false);
+    //   })
+    //   .catch(() => {
+    //     setLoading(false);
+    //   });
+  };
+
   return (
-    <div className="h-full overflow-auto section--hidden-scroll-y py-[2.4rem] px-[15rem] min-w-[600px]">
-      {postList.length > 0 &&
-        postList.map((post) => (
-          <SNPost
-            post={post}
-            key={post._id}
-            onDelete={handleDeletePost}
-            onEdit={showEdit}
-            onCommentPost={handleComment}
-            onLike={handleLikePost}
+    <div id="scrollablePost" className="h-full overflow-auto section--hidden-scroll-y py-[2.4rem] px-[15rem] min-w-[600px]">
+      <InfiniteScroll
+        dataLength={postList?.length ?? 0}
+        next={loadMoreData}
+        hasMore={loadMore}
+        loader={
+          <Skeleton
+            className="w-[30rem]"
+            avatar
+            paragraph={{ rows: 1 }}
+            active
           />
-        ))}
+        }
+        endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+        scrollableTarget="scrollablePost"
+      >
+        {postList.length > 0 &&
+          postList.map((post) => (
+            <SNPost
+              post={post}
+              key={post._id}
+              onDelete={handleDeletePost}
+              onEdit={showEdit}
+              onCommentPost={handleComment}
+              onLike={handleLikePost}
+            />
+          ))}
+      </InfiniteScroll>
+
       <CreateEditPost
         ref={refAddEditPost}
         visible={showEditPost}
