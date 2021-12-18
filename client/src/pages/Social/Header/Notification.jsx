@@ -53,12 +53,15 @@ const Notification = () => {
     socket.on("notification", (msg) => {
       console.log("messs-notify", msg);
       fetchNoti();
-      notification.info({
-        message: `Thông báo`,
-        description:
-          "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
-        placement: "bottomLeft",
-      });
+      // Không hiện thông báo khi dislike (-2)
+      if (msg.type !== -2) {
+        notification.info({
+          message: `Thông báo`,
+          description:
+            "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+          placement: "bottomLeft",
+        });
+      }
     });
   }, []);
 

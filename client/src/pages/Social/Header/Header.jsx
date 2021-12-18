@@ -52,7 +52,7 @@ const Headerbar = ({ collapsed, onToggle }) => {
   const menu = (
     <Menu>
       <Menu.Item>
-        <p>Trang cá nhân</p>
+        <Link to={`/profile/${myProfile._id}`}>Trang cá nhân</Link>
       </Menu.Item>
       <Menu.Item>
         <p onClick={logOut}>Đăng xuất</p>
