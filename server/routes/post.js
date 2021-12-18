@@ -236,7 +236,7 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
   try {
     let post = await Post.findById(id).populate("like.user");
     const { _id, avatar, fullName, username } = await User.findById(req.userId);
-    let userForNoti = User.findById(req.userId).select("fullName avatar");
+    let userForNoti =await User.findById(req.userId).select("fullName avatar");
     if (
       post.like.some(
         (item) => item.user._id == req.userId || item.user == req.userId

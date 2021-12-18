@@ -53,6 +53,7 @@ router.post("/likeComment", verifyToken, async (req, res) => {
   try {
     const { commentId, type, postId } = req.body;
     const io = req.io;
+    let userForNoti = await User.findById(req.userId).select("fullName avatar");
     let commentFound = await comment.findById(commentId);
     commentFound.like = commentFound.like.filter((e) => {
       return e.user.toString() != req.userId;
@@ -75,7 +76,7 @@ router.post("/likeComment", verifyToken, async (req, res) => {
     if (type == 1) {
       io.sockets
         .to(`user_${commentFound.user.toString()}`)
-        .emit("notification", { data: queryData });
+        .emit("notification", { data: {...queryData,fromUser:userForNoti} });
     }
     return res.json({
       success: true,
@@ -96,7 +97,7 @@ router.post("/", verifyToken, async (req, res) => {
       parentComment = null,
     } = req.body;
 
-    let userForNoti = User.findById(req.userId).select("fullName avatar");
+    let userForNoti = await User.findById(req.userId).select("fullName avatar");
     let newFile = null;
     if (file[0]) {
       newFile = new SingleFile({
