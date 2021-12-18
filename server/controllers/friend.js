@@ -40,9 +40,9 @@ const UnFriend = async (req, res) => {
     console.log("UnFriend");
     const { userId } = req.body;
     let user = await User.findById(userId);
-    user.friends = user.friends.filter((e) => e.user != req.userId);
+    user.friends = user.friends.filter((e) => e.user.toString() != req.userId);
     let user2 = await User.findById(req.userId);
-    user2.friends = user2.friends.filter((e) => e.user != userId);
+    user2.friends = user2.friends.filter((e) => e.user.toString() != userId);
     await user.save();
     await user2.save();
     return res.json({ success: true, message: "save success" });
@@ -65,7 +65,7 @@ const FriendRequestRespone = async (req, res) => {
       if (!findUser2)
         user2.friends.push({
           user: ObjectId(req.userId),
-          createAt: Date.now(),
+          createAt: Date.now(),  
         });
     }
     user.friendsRequest = user.friendsRequest.filter(
