@@ -51,7 +51,7 @@ router.get("/", verifyToken, async (req, res) => {
 
 router.post("/likeComment", verifyToken, async (req, res) => {
   try {
-    const { commentId, type ,postId} = req.body;
+    const { commentId, type, postId } = req.body;
     let commentFound = await comment.findById(commentId);
     commentFound.like = commentFound.like.filter((e) => {
       return e.user.toString() != req.userId;
@@ -68,10 +68,10 @@ router.post("/likeComment", verifyToken, async (req, res) => {
       (comment) => comment._id != commentId
     );
     let queryData = {
-      user: rs[1].poster,
+      user: commentFound.user,
       type: 4,
       postId: postId,
-      fromUser: commentFound.user.toString(),
+      fromUser: ObjectId(req.userId),
     };
     await UserNotification.findByIdAndDelete(queryData);
     const noti = await UserNotification(queryData);
@@ -87,7 +87,12 @@ router.post("/likeComment", verifyToken, async (req, res) => {
 
 router.post("/", verifyToken, async (req, res) => {
   try {
-    const { postId=null, content, file = null, parentComment = null } = req.body;
+    const {
+      postId = null,
+      content,
+      file = null,
+      parentComment = null,
+    } = req.body;
 
     let newFile = null;
     if (file[0]) {
@@ -113,11 +118,11 @@ router.post("/", verifyToken, async (req, res) => {
     await rs[1].save();
     let queryData = {
       user: rs[1].poster,
-      type: parentComment==null?2:5,
+      type: parentComment == null ? 2 : 5,
       postId: postId,
       fromUser: req.userId,
     };
-    await UserNotification.findByIdAndDelete(queryData);
+    // await UserNotification.findByIdAndDelete(queryData);
     const noti = await UserNotification(queryData);
     await noti.save();
     if (req.userId !== rs[1].poster.toString()) {
