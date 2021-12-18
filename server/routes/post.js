@@ -150,6 +150,7 @@ router.put("/", verifyToken, async (req, res) => {
 // GET POST PROFILE
 router.get("/", verifyToken, async (req, res) => {
   const { limitPost, index, profile, userId } = req.query;
+  console.log(limitPost == 1, index, profile, userId);
   try {
     let data = { status: 1 };
     if (profile == 1) {
@@ -158,7 +159,7 @@ router.get("/", verifyToken, async (req, res) => {
     }
     const result = await Post.find(data)
       .skip(index * limitPost)
-      .limit(limitPost)
+      .limit(+limitPost)
       .populate("poster")
       .populate({
         path: "comments",
@@ -236,14 +237,14 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
   try {
     let post = await Post.findById(id).populate("like.user");
     const { _id, avatar, fullName, username } = await User.findById(req.userId);
-    let userForNoti =await User.findById(req.userId).select("fullName avatar");
+    let userForNoti = await User.findById(req.userId).select("fullName avatar");
     if (
       post.like.some(
         (item) => item.user._id == req.userId || item.user == req.userId
       )
     ) {
       // console.log("a");
-     
+
       post.like = post.like.filter((e) => e.user._id.toString() !== req.userId);
       await post.save();
       const notiDelete = await UserNotification.findOneAndDelete({
@@ -256,7 +257,7 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
         data: {
           ...notiDelete,
           fromUser: userForNoti,
-          type:-2
+          type: -2,
         },
       });
       return res.json({
@@ -281,8 +282,10 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
       await noti.save();
       io.sockets.to(`user_${post.poster.toString()}`).emit("notification", {
         data: {
-          ...notiDelete,
-          fromUser: userForNoti
+          user: post.poster,
+          type: 1,
+          postId: post._id,
+          fromUser: userForNoti,
         },
       });
       return res.json({

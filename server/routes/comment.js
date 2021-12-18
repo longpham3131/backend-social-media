@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const User = require("../models/User");
 const Comment = require("../models/comment");
 const UserNotification = require("../models/UserNotification");
 const { ObjectId } = require("mongodb");
@@ -7,7 +8,7 @@ const verifyToken = require("../middleware/auth");
 const router = express.Router();
 const SingleFile = require("../models/SingleFile");
 const {
-  singleFileUpload,
+  singleFileUpload, 
   multipleFileUpload,
   getAllFiles,
   getAllMultiFiles,

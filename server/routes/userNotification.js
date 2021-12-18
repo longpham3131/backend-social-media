@@ -6,10 +6,10 @@ const { error500, error400 } = require("../util/res");
 const verifyToken = require("../middleware/auth");
 
 router.get("/", verifyToken, async (req, res) => {
-  const { index = 1, pageSize = 10 } = req.query;
+  const { index = 0, pageSize = 10 } = req.query;
   const result = await Promise.all([
     UserNotification.find({ user: req.userId }).populate("fromUser").lean(),
-    UserNotification.find({ user: req.userId })
+    UserNotification.find({ user: req.userId }).sort({createAt:1})
       .skip(index * pageSize)
       .limit(pageSize)
       .populate("fromUser")
