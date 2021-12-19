@@ -7,6 +7,7 @@ const verifyToken = require("../middleware/auth");
 
 router.get("/", verifyToken, async (req, res) => {
   const { index = 0, pageSize = 10 } = req.query;
+  console.log(typeof pageSize === 'string','alo')
   const result = await Promise.all([
     UserNotification.find({ user: req.userId }).populate("fromUser").lean(),
     UserNotification.find({ user: req.userId }).sort({createAt:-1})

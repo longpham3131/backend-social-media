@@ -150,7 +150,7 @@ router.put("/", verifyToken, async (req, res) => {
 // GET POST PROFILE
 router.get("/", verifyToken, async (req, res) => {
   const { limitPost, index, profile, userId } = req.query;
-  console.log(limitPost == 1, index, profile, userId);
+  console.log(typeof limitPost === "string", index, profile, userId);
   try {
     let data = { status: 1 };
     if (profile == 1) {
@@ -158,6 +158,7 @@ router.get("/", verifyToken, async (req, res) => {
       data = { poster: userIdReq, status: 1 };
     }
     const result = await Post.find(data)
+      .sort({ createAt: -1 })
       .skip(index * limitPost)
       .limit(+limitPost)
       .populate("poster")
@@ -188,7 +189,7 @@ router.get("/", verifyToken, async (req, res) => {
       })
       .lean();
     // result.comments=result.comments?.reverse()
-    return res.json(result.reverse());
+    return res.json(result);
   } catch (err) {
     console.log(err);
     return error500(res);
