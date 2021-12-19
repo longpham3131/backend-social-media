@@ -10,6 +10,7 @@ import {
   editPost,
   createComment,
   likePost,
+  addMorePost,
 } from "@/store/postSlice";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import CreateEditPost from "@/components/SNCreateEditPost";
@@ -24,6 +25,8 @@ const Newsfeed = () => {
   const [selectedPostId, setSelectedPostId] = useState("");
   const refAddEditPost = useRef(null);
   const [loadMore, setLoadMore] = useState(true);
+  const [index, setIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
   // const profile = useSelector((state) => state.profile);
   useEffect(() => {
     fetchPostList();
@@ -117,29 +120,34 @@ const Newsfeed = () => {
     }
   };
 
-  const loadMoreData = async () => {
+  const loadMoreData = () => {
     console.log("loadmore");
-    // if (loading) {
-    //   return;
-    // }
-    // setLoading(true);
-    // setCurrentIndex(1);
-    // notificationAPI
-    //   .getNotify({ index: currentIndex + 1, pageSize: 10 })
-    //   .then((rs) => {
-    //     setNotificationState({
-    //       ...rs.data,
-    //       data: [...notificationState.data, ...rs.data.data],
-    //     });
-    //     setLoading(false);
-    //   })
-    //   .catch(() => {
-    //     setLoading(false);
-    //   });
+    if (loading) {
+      return;
+    }
+    setLoading(true);
+    postAPI
+      .getPostList({
+        limitPost: 10,
+        index: index + 1,
+      })
+      .then((postList) => {
+        console.log(postList.data.length==0);
+        if (postList.data ==0) {
+          setLoadMore(false);
+          return;
+        }
+        setIndex(index + 1);
+        dispatch(addMorePost(postList.data));
+        setLoading(false);
+      });
   };
 
   return (
-    <div id="scrollablePost" className="h-full overflow-auto section--hidden-scroll-y py-[2.4rem] px-[15rem] min-w-[600px]">
+    <div
+      id="scrollablePost"
+      className="h-full overflow-auto section--hidden-scroll-y py-[2.4rem] px-[15rem] min-w-[600px]"
+    >
       <InfiniteScroll
         dataLength={postList?.length ?? 0}
         next={loadMoreData}
