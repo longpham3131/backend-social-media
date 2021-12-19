@@ -8,6 +8,10 @@ const post = createSlice({
       state = action.payload;
       return state;
     },
+    addMorePost: (state, action) => {
+      state = [...state,...action.payload];
+      return state;
+    },
     createPost: (state, action) => {
       state.unshift(action.payload);
     },
@@ -54,5 +58,6 @@ export const {
   deletePost,
   createComment,
   likePost,
+  addMorePost
 } = actions;
 export default reducer;
