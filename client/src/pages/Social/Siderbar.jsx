@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
-import { UserOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  SearchOutlined,
+  AliwangwangOutlined,
+} from "@ant-design/icons";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
@@ -27,6 +31,9 @@ const Siderbar = ({ collapsed }) => {
         </Menu.Item>
         <Menu.Item key="/search-friend" icon={<SearchOutlined />}>
           <Link to="/search-friend">Tìm kiếm bạn bè</Link>
+        </Menu.Item>
+        <Menu.Item key="/message" icon={<AliwangwangOutlined />}>
+          <Link to="/message">Nhắn tin</Link>
         </Menu.Item>
       </Menu>
     </Sider>
