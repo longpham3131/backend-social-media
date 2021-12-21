@@ -27,11 +27,12 @@ router.get("/getUsers", verifyToken, async (req, res) => {
 });
 router.post("/createReportUser", verifyToken, async (req, res) => {
   try {
-    const { type, content } = req.body;
+    const { type, content ,user} = req.body;
     let ru = new ReportUser({
       type,
       content,
-      user: ObjectId(req.userId),
+      user: ObjectId(user),
+      userReport: ObjectId(req.userId),
     });
     await ru.save();
     return res.json({ success: true, data: ru });
@@ -45,8 +46,8 @@ router.post("/createReportPost", verifyToken, async (req, res) => {
     let rp = new ReportPost({
       type,
       content,
-      postId,
-      user: ObjectId(req.userId),
+      postId:ObjectId(postId),
+      userReport: ObjectId(req.userId),
     });
     await rp.save();
     return res.json({ success: true, data: rp });

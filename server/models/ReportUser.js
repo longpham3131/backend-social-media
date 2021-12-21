@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const ReportUser = new Schema({
   type: {
-    type: String,
-    default: "",
+    type: Array,
+    default: [],
   },
   content: {
     type: String,
