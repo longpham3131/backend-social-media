@@ -149,10 +149,10 @@ router.put("/", verifyToken, async (req, res) => {
 // });
 // GET POST PROFILE
 router.get("/", verifyToken, async (req, res) => {
-  const { limitPost, index, profile, userId } = req.query;
+  const { limitPost, index, profile, userId, postId = "" } = req.query;
   console.log(typeof limitPost === "string", index, profile, userId);
   try {
-    let data = { status: 1 };
+    let data = postId != "" ? { _id:ObjectId(postId) , status: 1 } : { status: 1 };
     if (profile == 1) {
       const userIdReq = userId != "0" ? userId : req.userId;
       data = { poster: userIdReq, status: 1 };
