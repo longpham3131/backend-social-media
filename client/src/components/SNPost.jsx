@@ -28,7 +28,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import SNAvatar from "./SNAvatar";
-import { formatMinutes } from "@/util/index";
+
 const { Meta } = Card;
 const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
   const [isShowComment, setIsShowComment] = useState(false);
