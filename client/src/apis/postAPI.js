@@ -13,6 +13,7 @@ const postAPI = {
         index: params.index,
         profile: params.profile,
         userId: params.userId,
+        postId: params?.postId??"",
       },
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });

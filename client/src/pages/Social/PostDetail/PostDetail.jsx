@@ -22,6 +22,7 @@ const { confirm } = Modal;
 
 const PostDetail = () => {
   const myProfile = useSelector((state) => state.profile);
+  const postList = useSelector((state) => state.posts[0]);
   const dispatch = useDispatch();
   const { postId } = useParams();
   const [showEditPost, setShowEditPost] = useState(false);
@@ -35,10 +36,17 @@ const PostDetail = () => {
   }, [postId]);
 
   const fetchPostListByProfile = async () => {
+    console.log(postId)
     try {
-      const post = await postAPI.getPostById(postId);
-      setPost(post.data);
+      const postList = await postAPI.getPostList({
+        limitPost: 10,
+        index: 0,
+        profile: 0,
+        postId: postId,
+      });
+      await dispatch(setPostList(postList.data));
     } catch (error) {
+      console.log(error)
       message.error("Lấy bài viết thất bại!");
     }
   };
@@ -87,7 +95,7 @@ const PostDetail = () => {
       onOk() {
         try {
           postAPI.deletePost(postId);
-          dispatch(deletePost(postId));
+          history.push("/");
           message.success("Xóa bài viết thành công.");
         } catch {
           message.error("Xóa bài viết thất bại!");
@@ -99,10 +107,35 @@ const PostDetail = () => {
     });
   };
 
-  return (
-    <div className="h-full overflow-auto section--hidden-scroll-y py-[2.4rem] px-[15rem] min-w-[600px]">
-      {post!=null && <SNPost post={post} onEdit={handleEditPost} />}
+  const handleLikePost = async (postId) => {
+    try {
+      const res = await postAPI.likePost(postId);
+      dispatch(likePost(res.data));
+    } catch {
+      message.error("Thích bài viết thất bại");
+    }
+  };
 
+  const showEdit = async (post) => {
+    await refAddEditPost.current.setFields(
+      post.audience,
+      post.text,
+      post.attachments[0]
+    );
+    setShowEditPost(true);
+    setSelectedPostId(post._id);
+  };
+  return (
+    <div className="flex flex-col px-[4rem] profile-user h-full overflow-auto section--hidden-scroll-y">
+      {postList && (
+        <SNPost
+          post={postList}
+          onDelete={handleDeletePost}
+          onEdit={showEdit}
+          onCommentPost={handleComment}
+          onLike={handleLikePost}
+        ></SNPost>
+      )}
       <CreateEditPost
         ref={refAddEditPost}
         visible={showEditPost}
