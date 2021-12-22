@@ -74,6 +74,7 @@ export function beforeUpload(file) {
 }
 export const formatMinutes = (dateString) => {
   var date = new Date(dateString);
+  console.log(date);
   var nowDate = new Date();
   var deltaTime = parseInt((nowDate.getTime() - date.getTime()) / 1000);
   var minutes = parseInt(deltaTime / 60);
@@ -96,5 +97,14 @@ export const formatMinutes = (dateString) => {
         }
       }
     }
+  }
+};
+export const getFirstWord = (string) => {
+  if (string) {
+    const words = string.trim().split(" ");
+    return (
+      words[words.length - 1].charAt(0).toUpperCase() +
+      words[words.length - 1].slice(1)
+    );
   }
 };

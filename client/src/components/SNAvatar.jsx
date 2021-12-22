@@ -3,9 +3,9 @@ import React from "react";
 import getFirstLetter from "@/util/getFirstLetter";
 import { getUrlImage } from "@/util/index";
 
-const SNAvatar = ({ src, fullName, size }) => {
+const SNAvatar = ({ src, fullName, size ,className=""}) => {
   return (
-    <Avatar size={size} src={getUrlImage(src)}>
+    <Avatar className={className} size={size} src={getUrlImage(src)}>
       {getFirstLetter(fullName)}
     </Avatar>
   );

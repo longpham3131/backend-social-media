@@ -17,6 +17,10 @@ const postAPI = {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
   },
+  getPostById(postId){
+    const url = `${BASE_URL}/getPostById/${postId}`;
+    return axios.get(url, config);
+  },
   createPost(data) {
     const url = `${BASE_URL}`;
     return axios.post(url, data, config);
