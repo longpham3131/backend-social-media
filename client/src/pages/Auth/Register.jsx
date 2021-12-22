@@ -3,12 +3,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { Form, Input, Button, Checkbox, message, Upload } from "antd";
 import SNUpload from "@/components/SNUpload";
 import authAPI from "@/apis/authAPI";
-import React from 'react';
+import React from "react";
+import chatAPI from "@/apis/chatAPI";
 const Register = ({ onSuccess }) => {
-  const [avatar, setAvatar] = useState("");
   const handleSubmit = async (values) => {
     try {
-      await authAPI.register(values);
+      const res = await authAPI.register(values);
+      console.log("res", res.data);
+      const dataRegisterChat = {
+        username: values.username,
+        first_name: "",
+        last_name: values.fullName,
+        secret: res.data.hash,
+      };
+      await chatAPI.registerUser(dataRegisterChat);
       message.success("Đăng ký thành công");
       onSuccess();
     } catch (error) {
@@ -25,9 +33,6 @@ const Register = ({ onSuccess }) => {
       labelAlign={"left"}
       onFinish={handleSubmit}
     >
-      {/* <Form.Item label="Ảnh đại diện" name="avatar">
-        <SNUpload fileProp={avatar} onUploadSuccess={(value) => setAvatar(value)} />
-      </Form.Item> */}
       <Form.Item
         label="Tài khoản"
         name="username"
