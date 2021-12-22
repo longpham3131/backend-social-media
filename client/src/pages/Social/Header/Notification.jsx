@@ -7,6 +7,7 @@ import {
   Popover,
   Skeleton,
 } from "antd";
+import { useHistory } from "react-router-dom";
 import React, { useState } from "react";
 import { NotificationOutlined } from "@ant-design/icons";
 import notificationAPI from "@/apis/notificationAPI";
@@ -14,9 +15,10 @@ import { useEffect } from "react";
 import SNAvatar from "@/components/SNAvatar";
 import { useContext } from "react";
 import { SocketContext } from "@/service/socket/SocketContext";
-import { formatMinutes } from "@/util/index";
+import { formatMinutes, getFirstWord } from "@/util/index";
 import InfiniteScroll from "react-infinite-scroll-component";
 const Notification = () => {
+  const history = useHistory();
   const [notificationState, setNotificationState] = useState({});
   const [loading, setLoading] = useState(false);
   const socket = useContext(SocketContext);
@@ -51,14 +53,23 @@ const Notification = () => {
   };
   useEffect(() => {
     socket.on("notification", (msg) => {
-      console.log("messs-notify", msg);
+      console.log("messs-notify", msg.data);
       fetchNoti();
       // Không hiện thông báo khi dislike (-2)
-      if (msg.type !== -2) {
+      if (msg.data.type !== -1 && msg.data.type !== -4) {
         notification.info({
           message: `Thông báo`,
-          description:
-            "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+          description: (
+            <div onClick={() => history.push(`/post/${msg.data.postId}`)}>
+              <SNAvatar
+                src={msg.data.fromUser.avatar}
+                className="mr-2"
+                // fullName={msg.data.fromUser.fullName}
+              />
+              <span>{getFirstWord(msg.data.fromUser.fullName)} </span>
+              {descriptionNoti(msg.data.type)}
+            </div>
+          ),
           placement: "bottomLeft",
         });
       }

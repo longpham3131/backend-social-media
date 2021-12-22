@@ -22,6 +22,7 @@ import {
 } from "@ant-design/icons";
 import { createElement, useState } from "react";
 import getAudience from "@/util/getAudience";
+import { formatMinutes } from "@/util/index";
 import { getUrlImage, getUrlVideo } from "@/util/index";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -147,7 +148,7 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
                   <LikeOutlined className="text-md" />
                 )}
               </div>,
-              <p
+              <div
                 className="flex justify-center items-center gap-[0.8rem]"
                 key={"viewComment"}
                 onClick={showCommentBox}
@@ -156,7 +157,7 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
                   {comments.length}
                 </span>
                 <CommentOutlined className="text-md" />
-              </p>,
+              </div>,
             ]}
             bordered={false}
             extra={
@@ -171,7 +172,15 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
                 <SNAvatar src={poster.avatar} fullName={poster.fullName} />
               }
               title={
-                <Link to={`/profile/${poster._id}`}>{poster.fullName}</Link>
+                <>
+                  {" "}
+                  <Link to={`/profile/${poster._id}`}>
+                    {poster.fullName}
+                  </Link>{" "}
+                  <div className="text-[12px] text-gray-400">
+                    {formatMinutes(post.createAt)}
+                  </div>
+                </>
               }
               description={post.text}
             />

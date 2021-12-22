@@ -10,6 +10,7 @@ import Newsfeed from "./Newsfeed";
 import SearchFriend from "./SearchFriend";
 
 import Profile from "./Profile/Profile";
+import PostDetail from "./PostDetail/PostDetail";
 import Siderbar from "./Siderbar";
 import Header from "./Header/Header";
 import { setProfile } from "@/store/profileSlice";
@@ -64,6 +65,10 @@ const Social = () => {
               <Route
                 path="/profile/:userId"
                 render={(props) => <Profile {...props} />}
+              />
+               <Route
+                path="/post/:postId"
+                render={(props) => <PostDetail {...props} />}
               />
               <Route
                 path="/search-friend"

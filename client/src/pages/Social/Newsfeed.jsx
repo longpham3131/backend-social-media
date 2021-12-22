@@ -39,7 +39,7 @@ const Newsfeed = () => {
   const fetchPostList = async () => {
     try {
       const postList = await postAPI.getPostList({
-        limitPost: 10,
+        limitPost: 6,
         index: 0,
       });
       await dispatch(setPostList(postList.data));
@@ -128,12 +128,12 @@ const Newsfeed = () => {
     setLoading(true);
     postAPI
       .getPostList({
-        limitPost: 10,
+        limitPost: 6,
         index: index + 1,
       })
       .then((postList) => {
-        console.log(postList.data.length==0);
-        if (postList.data ==0) {
+        console.log(postList.data.length == 0);
+        if (postList.data == 0) {
           setLoadMore(false);
           return;
         }
