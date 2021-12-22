@@ -100,7 +100,7 @@ const PostDetail = () => {
   };
 
   return (
-    <div className="flex flex-col px-[4rem] profile-user h-full overflow-auto section--hidden-scroll-y">
+    <div className="h-full overflow-auto section--hidden-scroll-y py-[2.4rem] px-[15rem] min-w-[600px]">
       {post!=null && <SNPost post={post} onEdit={handleEditPost} />}
 
       <CreateEditPost
