@@ -25,7 +25,8 @@ export default function SNUpload({
     setLoading(true);
     if (file.status === "done") {
       // setAvatar(file?.response?.data?.filePath);
-      onUploadSuccess(file?.response?.data);
+      console.log(file.originFileObj);
+      onUploadSuccess(file);
       setLoading(false);
     } else if (file.status === "error") {
       setLoading(false);

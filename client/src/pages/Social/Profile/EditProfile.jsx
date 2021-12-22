@@ -16,7 +16,10 @@ const EditProfile = ({ visible, onCancel, onEdit }) => {
 
     if (fullName && email && dateOfBirth) {
       const dataEmit = { fullName, email, dateOfBirth: dateOfBirth._i };
-      dataEmit.avatar = avatarEdit ? avatarEdit.filePath : myProfile.avatar;
+      dataEmit.avatar = avatarEdit
+        ? avatarEdit.response.data.filePath
+        : myProfile.avatar;
+      dataEmit.avatarForChat = avatarEdit ? avatarEdit.originFileObj : null;
       dataEmit.coverPicture = coverPictureEdit
         ? coverPictureEdit.filePath
         : myProfile.coverPicture;

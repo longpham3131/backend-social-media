@@ -20,6 +20,7 @@ import { ExclamationCircleOutlined } from "@ant-design/icons";
 import CreateEditPost from "@/components/SNCreateEditPost";
 import EditProfile from "./EditProfile";
 import { editProfile } from "@/store/profileSlice";
+import chatAPI from "@/apis/chatAPI";
 const { confirm } = Modal;
 
 const Profile = () => {
@@ -167,6 +168,7 @@ const Profile = () => {
     try {
       const res = await userAPI.updateProfile(dataSubmit);
       dispatch(editProfile(res.data));
+      await chatAPI.updateUser(res.data, dataSubmit.avatarForChat);
       message.success("Chỉnh sửa thông tin thành công.");
       setShowEditProfile(false);
     } catch {
@@ -201,9 +203,12 @@ const Profile = () => {
 
   const Unfriend = async () => {
     await userAPI.unfriend({ userId: profile._id });
-  
-    const res = await Promise.all([userAPI.getMyProfile(), userAPI.getProfile( profile._id)]) ;
-    console.log(res)
+
+    const res = await Promise.all([
+      userAPI.getMyProfile(),
+      userAPI.getProfile(profile._id),
+    ]);
+    console.log(res);
     dispatch(setProfile(res[0].data.data));
     setProfileUser(res[1].data);
   };
