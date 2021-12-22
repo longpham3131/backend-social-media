@@ -11,6 +11,8 @@ import {
   Input,
   Carousel,
   Image,
+  Comment,
+  Tooltip,
 } from "antd";
 import {
   LikeOutlined,
@@ -18,19 +20,30 @@ import {
   CommentOutlined,
   LikeFilled,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { createElement, useState } from "react";
 import getAudience from "@/util/getAudience";
 import { getUrlImage, getUrlVideo } from "@/util/index";
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import SNAvatar from "./SNAvatar";
+import { formatMinutes } from "@/util/index";
 const { Meta } = Card;
 const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const myProfile = useSelector((state) => state.profile);
   const { poster, comments, like } = post;
   const [form] = Form.useForm();
+  // Comment
+  const [likes, setLikes] = useState(0);
+  const [dislikes, setDislikes] = useState(0);
+  const [action, setAction] = useState(null);
+
+  const likeComment = () => {
+    setLikes(1);
+    setDislikes(0);
+    setAction("liked");
+  };
 
   const isPoster = myProfile?._id === poster?._id ?? false;
 
@@ -53,6 +66,18 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
       )}
     </Menu>
   );
+
+  const actionComment = [
+    <Tooltip key="comment-basic-like" title="Thích">
+      <div className="flex items-center gap-[0.8rem]" onClick={likeComment}>
+        {createElement(action === "liked" ? LikeFilled : LikeOutlined)}
+        <p className="comment-action">{likes}</p>
+      </div>
+    </Tooltip>,
+    <span className="ml-[1rem]" key="comment-basic-reply-to">
+      Trả lời
+    </span>,
+  ];
   const onSubmitCmt = (values) => {
     const data = {
       content: values.contentComment,
@@ -195,22 +220,34 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
               dataSource={comments}
               locale={{ emptyText: "Chưa có bình luận nào." }}
               renderItem={(item) => (
-                <List.Item>
-                  <List.Item.Meta
+                <li>
+                  <Comment
+                    actions={actionComment}
+                    author={item.user?.fullName}
                     avatar={
                       <SNAvatar
                         src={item.user?.avatar}
                         fullName={item.user?.fullName}
                       />
                     }
-                    title={
-                      <Link to={`/profile/${item.user?._id}`}>
-                        {item.user?.fullName}
-                      </Link>
-                    }
-                    description={item.content}
-                  />
-                </List.Item>
+                    content={item.content}
+                    datetime={formatMinutes(item.createAt)}
+                  >
+                    {/* Chổ này xử lý comment con */}
+                    {/* <Comment
+                      actions={actionComment}
+                      author={item.user?.fullName}
+                      avatar={
+                        <SNAvatar
+                          src={item.user?.avatar}
+                          fullName={item.user?.fullName}
+                        />
+                      }
+                      content={item.content}
+                      datetime={formatMinutes(item.createAt)}
+                    ></Comment> */}
+                  </Comment>
+                </li>
               )}
             />
           </Card>
