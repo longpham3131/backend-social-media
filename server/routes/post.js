@@ -196,6 +196,45 @@ router.get("/", verifyToken, async (req, res) => {
   }
 });
 
+router.get("/getPostById/:postId", verifyToken, async (req, res) => {
+  const { postId } = req.params;
+  try {
+    const result = await Post.findById(postId)
+      .populate("poster")
+      .populate({
+        path: "comments",
+        options: {
+          skip: 0,
+          perDocumentLimit: 10,
+          sort: { createAt: "descending" },
+        },
+        populate: [
+          {
+            path: "user",
+            select: "username fullName avatar like",
+          },
+          {
+            path: "like.user",
+            select: "username fullName avatar like",
+          },
+          {
+            path: "file",
+          },
+        ],
+      })
+      .populate({
+        path: "like",
+        populate: { path: "user", select: "username fullName avatar" },
+      })
+      .lean();
+    // result.comments=result.comments?.reverse()
+    return res.json(result);
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
+
 // const getPosts =async (limitPost, index, profile, userId,reqUserId) => {
 //   let data = {};
 //   let userIdReq = userId;
@@ -256,9 +295,9 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
       });
       io.sockets.to(`user_${post.poster.toString()}`).emit("notification", {
         data: {
-          ...notiDelete,
+          postId: post._id,
           fromUser: userForNoti,
-          type: -2,
+          type: -1,
         },
       });
       return res.json({

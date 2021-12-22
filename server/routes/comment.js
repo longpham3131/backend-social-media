@@ -8,7 +8,7 @@ const verifyToken = require("../middleware/auth");
 const router = express.Router();
 const SingleFile = require("../models/SingleFile");
 const {
-  singleFileUpload, 
+  singleFileUpload,
   multipleFileUpload,
   getAllFiles,
   getAllMultiFiles,
@@ -77,7 +77,15 @@ router.post("/likeComment", verifyToken, async (req, res) => {
     if (type == 1) {
       io.sockets
         .to(`user_${commentFound.user.toString()}`)
-        .emit("notification", { data: {...queryData,fromUser:userForNoti} });
+        .emit("notification", {
+          data: { ...queryData, fromUser: userForNoti },
+        });
+    } else {
+      io.sockets
+        .to(`user_${commentFound.user.toString()}`)
+        .emit("notification", {
+          data: { ...queryData, fromUser: userForNoti, type: -4 },
+        });
     }
     return res.json({
       success: true,
@@ -132,11 +140,10 @@ router.post("/", verifyToken, async (req, res) => {
     await noti.save();
     if (req.userId !== rs[1].poster.toString()) {
       const io = req.io;
-      io.sockets
-        .to(`user_${rs[1].poster.toString()}`)
-        .emit("notification", {
-          data: { ...queryData, fromUser: userForNoti },
-        });
+      console.log(`user_${rs[1].poster.toString()}`);
+      io.sockets.to(`user_${rs[1].poster.toString()}`).emit("notification", {
+        data: { ...queryData, fromUser: userForNoti },
+      });
     }
     res.json({ success: true, data: rs[0], message: "true" });
   } catch (err) {
