@@ -52,10 +52,10 @@ const Headerbar = ({ collapsed, onToggle }) => {
   const menu = (
     <Menu>
       <Menu.Item>
-        <Link to={`/profile/${myProfile._id}`}>Trang cá nhân</Link>
+        <Link to={`/profile/${myProfile._id}`}>Profile</Link>
       </Menu.Item>
       <Menu.Item>
-        <p onClick={logOut}>Đăng xuất</p>
+        <p onClick={logOut}>Log out</p>
       </Menu.Item>
     </Menu>
   );
@@ -71,14 +71,14 @@ const Headerbar = ({ collapsed, onToggle }) => {
           }
         )}
         <div className="flex items-center gap-[2rem]">
-          {/* Tạo bài viết */}
+          {/* Create Post */}
           <Button type="primary" onClick={() => setShowCreatePost(true)}>
-            Tạo bài viết
+            Create Post
           </Button>
           <SNCreateEditPost
             ref={refAddEditPost}
             visible={showCreatePost}
-            title="Tạo bài viết"
+            title="Create Post"
             okText="Đăng bài viết"
             onClose={() => setShowCreatePost(false)}
             onSubmit={handleCreatePost}

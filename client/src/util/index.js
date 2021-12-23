@@ -79,21 +79,21 @@ export const formatMinutes = (dateString) => {
   var deltaTime = parseInt((nowDate.getTime() - date.getTime()) / 1000);
   var minutes = parseInt(deltaTime / 60);
   if (minutes < 60) {
-    return minutes + " phút trước";
+    return minutes + " minute ago";
   } else {
     var hours = parseInt(minutes / 60);
     if (hours < 24) {
-      return hours + " giờ trước";
+      return hours + " hour ago";
     } else {
       var days = parseInt(hours / 24);
       if (days < 30) {
-        return days + " ngày trước";
+        return days + " day ago";
       } else {
         var months = parseInt(days / 30);
         if (months < 12) {
-          return months + " tháng trước";
+          return months + " month ago";
         } else {
-          return parseInt(months / 12) + " năm trước";
+          return parseInt(months / 12) + " year ago";
         }
       }
     }

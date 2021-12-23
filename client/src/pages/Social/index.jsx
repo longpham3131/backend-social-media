@@ -33,7 +33,7 @@ const Social = () => {
     try {
       const myProfile = await userAPI.getMyProfile();
       dispatch(setProfile(myProfile.data.data));
-      message.success("Chào mừng bạn quay lại");
+      message.success("Welcome back!");
       console.log("history", history.location.pathname);
     } catch (error) {
       console.log("error-newsfeed", error);
@@ -79,7 +79,7 @@ const Social = () => {
                 render={(props) => <Message {...props} />}
               />
             </div>
-            {/* Không hiện danh sách bạn bè khi đang ở trang nhắn tin */}
+            {/* Không hiện Friends List bè khi đang ở trang Messages */}
             {history.location.pathname !== "/message" && (
               <div className="border-l-4  h-full w-[25%] ">
                 <div className=" w-full mb-[1.2rem]">
@@ -131,7 +131,7 @@ const Social = () => {
                   {profile.friends && profile.friends.length > 0 ? (
                     <>
                       <p className="mb-[1.2rem] text-md font-quicksand font-semi-bold text-gray-5">
-                        Danh sách bạn
+                        Friends List
                       </p>
                       <List
                         itemLayout="horizontal"
@@ -157,7 +157,7 @@ const Social = () => {
                     </>
                   ) : (
                     <p className="mb-[1.2rem] text-md font-quicksand font-semi-bold text-gray-5 text-center">
-                      Danh sách bạn bè đang trống.
+                      Friends List bè đang trống.
                     </p>
                   )}
                 </div>

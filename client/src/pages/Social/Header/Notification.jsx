@@ -7,7 +7,7 @@ import {
   Popover,
   Skeleton,
 } from "antd";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import React, { useState } from "react";
 import { NotificationOutlined } from "@ant-design/icons";
 import notificationAPI from "@/apis/notificationAPI";
@@ -17,6 +17,7 @@ import { useContext } from "react";
 import { SocketContext } from "@/service/socket/SocketContext";
 import { formatMinutes, getFirstWord } from "@/util/index";
 import InfiniteScroll from "react-infinite-scroll-component";
+import axios from "axios";
 const Notification = () => {
   const history = useHistory();
   const [notificationState, setNotificationState] = useState({});
@@ -114,6 +115,13 @@ const Notification = () => {
       });
   };
 
+  const notificationSeen = async (id) => {
+    console.log('id',id)
+    await notificationAPI.seenNotify(id);
+    const res = await notificationAPI.getNotify();
+    setNotificationState(res.data);
+  };
+
   return (
     <Popover
       id="scrollableDiv"
@@ -149,29 +157,33 @@ const Notification = () => {
               itemLayout="horizontal"
               dataSource={notificationState.data}
               renderItem={(item) => (
-                <List.Item
-                // actions={[
-                //   <a key="list-loadmore-edit">
+                <Link to={`/post/${item.postId}`}>
+                  <List.Item
+                    onClick={() => notificationSeen(item._id)}
+                    // actions={[
+                    //   <a key="list-loadmore-edit">
 
-                //   </a>,
-                // ]}
-                >
-                  <List.Item.Meta
-                    avatar={
-                      <SNAvatar
-                        src={item.fromUser.avatar}
-                        fullName={item.fromUser.fullName}
-                      />
-                    }
-                    title={<span>{item.fromUser.fullName}</span>}
-                    description={
-                      <div className="">
-                        <div>{descriptionNoti(item.type)}</div>
-                        <div>{formatMinutes(item.createAt)}</div>
-                      </div>
-                    }
-                  />
-                </List.Item>
+                    //   </a>,
+                    // ]}
+                    className=""
+                  >
+                    <List.Item.Meta
+                      avatar={
+                        <SNAvatar
+                          src={item.fromUser.avatar}
+                          fullName={item.fromUser.fullName}
+                        />
+                      }
+                      title={<span className={item.status==1?"":"text-green-primary"}>{item.fromUser.fullName}</span>}
+                      description={
+                        <div className={item.status==1?"":"text-green-primary"}>
+                          <div>{descriptionNoti(item.type)}</div>
+                          <div>{formatMinutes(item.createAt)}</div>
+                        </div>
+                      }
+                    />
+                  </List.Item>
+                </Link>
               )}
             />
           </InfiniteScroll>

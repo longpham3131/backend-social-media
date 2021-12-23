@@ -114,7 +114,7 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
         />
       </Form.Item>
 
-      {/* <Form.Item label="Đính kèm ảnh hoặc video" name="avatar">
+      {/* <Form.Item label="Attach your photo or video" name="avatar">
         <SNUpload onUploadSuccess={(value) => setAvatar(value)} />
       </Form.Item> */}
 

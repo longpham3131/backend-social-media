@@ -77,22 +77,22 @@ const CreateEditPost = React.forwardRef(
           initialValues={{ remember: true }}
           autoComplete="off"
         >
-          <Form.Item label="Đối tượng xem bài viết:" name="audience">
+          <Form.Item label="Post audience:" name="audience">
             <Select onChange={handleChangeAudience}>
-              <Select.Option value="public">Công khai</Select.Option>
-              <Select.Option value="friends">Bạn bè</Select.Option>
-              <Select.Option value="private">Chỉ mình tôi</Select.Option>
+              <Select.Option value="public">Public</Select.Option>
+              <Select.Option value="friends">Friend</Select.Option>
+              <Select.Option value="private">Only me</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item
-            label="Nội dung:"
+            label="What are you thinking:"
             name="content"
             rules={[{ required: true, message: "Vui lòng nhập nội dung" }]}
           >
             <Input.TextArea />
           </Form.Item>
 
-          <Form.Item label="Đính kèm ảnh hoặc video" name="file">
+          <Form.Item label="Attach your photo or video" name="file">
             <SNUpload
               onUploadSuccess={(value) => setFile(value)}
               fileProp={file}

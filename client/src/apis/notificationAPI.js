@@ -9,6 +9,10 @@ const notificationAPI = {
     const url = `${BASE_URL}`;
     return axios.get(url, config);
   },
+  seenNotify(id){
+    const url = `${BASE_URL}/notificationSeen/${id}`;
+    return axios.get(url, config);
+  }
 };
 
 export default notificationAPI;

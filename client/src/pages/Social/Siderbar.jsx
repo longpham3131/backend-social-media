@@ -27,13 +27,13 @@ const Siderbar = ({ collapsed }) => {
       <div className="logo" />
       <Menu mode="inline" selectedKeys={activeTab}>
         <Menu.Item key="/" icon={<UserOutlined />}>
-          <Link to="/">Bảng tin</Link>
+          <Link to="/">News feed</Link>
         </Menu.Item>
         <Menu.Item key="/search-friend" icon={<SearchOutlined />}>
-          <Link to="/search-friend">Tìm kiếm bạn bè</Link>
+          <Link to="/search-friend">Find your friends</Link>
         </Menu.Item>
         <Menu.Item key="/message" icon={<AliwangwangOutlined />}>
-          <Link to="/message">Nhắn tin</Link>
+          <Link to="/message">Messages</Link>
         </Menu.Item>
       </Menu>
     </Sider>

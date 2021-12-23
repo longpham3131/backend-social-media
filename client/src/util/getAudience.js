@@ -1,9 +1,9 @@
 const getAudience = (adience) => {
   switch (adience) {
     case "public":
-      return "Công khai";
+      return "Public";
     default:
-      return "Công khai";
+      return "Public";
   }
 };
 export default getAudience;

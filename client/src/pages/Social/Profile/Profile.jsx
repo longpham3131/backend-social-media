@@ -75,7 +75,7 @@ const Profile = () => {
       const res = await userAPI.getProfile(userId);
       setProfileUser(res.data);
     } catch {
-      message.error("Lấy thông tin chi tiết thất bại!");
+      message.error("Get profile failed!");
     }
   };
 
@@ -89,7 +89,7 @@ const Profile = () => {
       });
       await dispatch(setPostList(postList.data));
     } catch (error) {
-      message.error("Lấy danh sách bài viết thất bại!");
+      message.error("Get posts failed!");
     }
   };
 
@@ -100,26 +100,26 @@ const Profile = () => {
       const res = await postAPI.editPost(values);
       console.log("success", res.data);
       dispatch(editPost(res.data));
-      message.success("Chỉnh sửa bài viết thành công.");
+      message.success("Success!");
       refAddEditPost.current.resetFields();
       setShowEditPost(false);
     } catch {
-      message.error("Chỉnh sửa bài viết thất bại!");
+      message.error("Edit post failed");
     }
   };
   const handleDeletePost = async (postId) => {
     confirm({
-      title: "Bạn chắc chắn muốn xóa bài viết này?",
+      title: "Are you sure you want to delete this post?",
       icon: <ExclamationCircleOutlined />,
-      okText: "Xác nhận xóa",
-      cancelText: "Hủy",
+      okText: "Confirm",
+      cancelText: "Cancel",
       onOk() {
         try {
           postAPI.deletePost(postId);
           dispatch(deletePost(postId));
-          message.success("Xóa bài viết thành công.");
+          message.success("Success!");
         } catch {
-          message.error("Xóa bài viết thất bại!");
+          message.error("Failed!");
         }
       },
       onCancel() {
@@ -153,7 +153,7 @@ const Profile = () => {
       );
       console.log("success", res.data);
     } catch {
-      message.error("Đăng bình luận thất bại!");
+      message.error("Failed!");
     }
   };
   const handleLikePost = async (postId) => {
@@ -161,7 +161,7 @@ const Profile = () => {
       const res = await postAPI.likePost(postId);
       dispatch(likePost(res.data));
     } catch {
-      message.error("Thích bài viết thất bại");
+      message.error("Failed");
     }
   };
   const handleEditProfile = async (dataSubmit) => {
@@ -169,10 +169,10 @@ const Profile = () => {
       const res = await userAPI.updateProfile(dataSubmit);
       dispatch(editProfile(res.data));
       await chatAPI.updateUser(res.data, dataSubmit.avatarForChat);
-      message.success("Chỉnh sửa thông tin thành công.");
+      message.success("Edit success");
       setShowEditProfile(false);
     } catch {
-      message.error("Thích bài viết thất bại");
+      message.error("Failed");
     }
   };
 
@@ -241,21 +241,21 @@ const Profile = () => {
                 <>
                   {isFriend ? (
                     <div>
-                      <Button onClick={() => Unfriend()}>Huỷ kết bạn</Button>
+                      <Button onClick={() => Unfriend()}>Unfriend</Button>
                     </div>
                   ) : (
                     <>
                       {!isFriendRequest && (
                         <div>
                           <Button onClick={() => handleFriendRequest(1)}>
-                            Kết bạn
+                            Add friend
                           </Button>
                         </div>
                       )}
                       {!!isFriendRequest && (
                         <div>
                           <Button onClick={() => handleFriendRequest(0)}>
-                            Huỷ yêu cầu kết bạn
+                          Cancel friend request
                           </Button>
                         </div>
                       )}
@@ -268,24 +268,24 @@ const Profile = () => {
 
           <div className="mt-[3rem] flex gap-[3rem] h-full">
             <Card
-              title="Thông tin"
+              title="Profile"
               style={{ width: "35%", height: "fit-content" }}
               actions={[
                 <Button type="primary" onClick={() => setShowEditProfile(true)}>
-                  Chỉnh sửa thông tin cá nhân
+                  Edit personal profile
                 </Button>,
               ]}
             >
               <p className="flex items-center justify-between text-base">
-                <span>Số người theo dõi: </span>
+                <span>Followers: </span>
                 <span className="ml-auto">{profile.followers.length}</span>
               </p>
               <p className="flex items-center justify-between text-base">
-                <span>Số người đang theo dõi: </span>
+                <span>Followings: </span>
                 <span className="ml-auto">{profile.followings.length}</span>
               </p>
               <p className="flex items-center justify-between text-base">
-                <span>Danh sách bạn: </span>
+                <span>Friends List: </span>
                 <span className="ml-auto">{profile.friends.length}</span>
               </p>
             </Card>
@@ -312,8 +312,8 @@ const Profile = () => {
       <CreateEditPost
         ref={refAddEditPost}
         visible={showEditPost}
-        title="Chỉnh sửa bài viết"
-        okText="Lưu chỉnh sửa"
+        title="Edit post"
+        okText="Update"
         onClose={() => setShowEditPost(false)}
         onSubmit={handleEditPost}
       />

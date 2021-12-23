@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import postAPI from "@/apis/postAPI";
+import emptyIcon from "@/assets/images/emp.png";
 import {
   setPostList,
   editPost,
@@ -15,12 +16,13 @@ import { setProfile } from "@/store/profileSlice";
 import { getUrlImage } from "@/util/index";
 import "./PostDetail.scss";
 import SNPost from "@/components/SNPost";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { ExclamationCircleOutlined, WarningOutlined } from "@ant-design/icons";
 import CreateEditPost from "@/components/SNCreateEditPost";
 import { editProfile } from "@/store/profileSlice";
 const { confirm } = Modal;
 
 const PostDetail = () => {
+  const history = useHistory();
   const myProfile = useSelector((state) => state.profile);
   const postList = useSelector((state) => state.posts[0]);
   const dispatch = useDispatch();
@@ -36,7 +38,7 @@ const PostDetail = () => {
   }, [postId]);
 
   const fetchPostListByProfile = async () => {
-    console.log(postId)
+    console.log(postId);
     try {
       const postList = await postAPI.getPostList({
         limitPost: 10,
@@ -46,7 +48,7 @@ const PostDetail = () => {
       });
       await dispatch(setPostList(postList.data));
     } catch (error) {
-      console.log(error)
+      console.log(error);
       message.error("Lấy bài viết thất bại!");
     }
   };
@@ -72,10 +74,10 @@ const PostDetail = () => {
       const dataDispatchStore = {
         ...res.data.data,
         user: {
-          _id: profile._id,
-          username: profile.username,
-          fullName: profile.fullName,
-          avatar: profile.avatar,
+          _id: myProfile._id,
+          username: myProfile.username,
+          fullName: myProfile.fullName,
+          avatar: myProfile.avatar,
         },
       };
       dispatch(
@@ -95,9 +97,11 @@ const PostDetail = () => {
       onOk() {
         try {
           postAPI.deletePost(postId);
+          dispatch(deletePost(postId));
           history.push("/");
           message.success("Xóa bài viết thành công.");
-        } catch {
+        } catch (err) {
+          console.log(err);
           message.error("Xóa bài viết thất bại!");
         }
       },
@@ -127,7 +131,7 @@ const PostDetail = () => {
   };
   return (
     <div className="flex flex-col px-[4rem] profile-user h-full overflow-auto section--hidden-scroll-y">
-      {postList && (
+      {postList ? (
         <SNPost
           post={postList}
           onDelete={handleDeletePost}
@@ -135,6 +139,16 @@ const PostDetail = () => {
           onCommentPost={handleComment}
           onLike={handleLikePost}
         ></SNPost>
+      ) : (
+        <div className="flex justify-center items-center flex-col mt-6">
+          <WarningOutlined className="WarningOutlined" />
+          <div className="flex flex-row items-end">
+            <p className="mr-2 text-3xl">No posts found </p>
+            <a className="mr-2 text-3xl" href="/">
+              Go back to HomePage
+            </a>
+          </div>
+        </div>
       )}
       <CreateEditPost
         ref={refAddEditPost}

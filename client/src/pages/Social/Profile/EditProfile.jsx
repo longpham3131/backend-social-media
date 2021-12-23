@@ -38,7 +38,7 @@ const EditProfile = ({ visible, onCancel, onEdit }) => {
 
   return (
     <Modal
-      title="Chỉnh sửa thông tin cá nhân"
+      title="Edit personal information"
       visible={visible}
       onOk={handleOk}
       onCancel={onCancel}
