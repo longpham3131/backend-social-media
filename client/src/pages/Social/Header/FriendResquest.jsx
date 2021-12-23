@@ -35,7 +35,7 @@ const FriendRequest = () => {
   return (
     <Popover
       placement="bottom"
-      title={"Kết bạn"}
+      title={"Friend request"}
       overlayInnerStyle={{
         minWidth: "40rem",
         maxHeight: "50rem",
