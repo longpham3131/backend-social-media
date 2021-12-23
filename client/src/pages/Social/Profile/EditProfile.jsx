@@ -51,14 +51,14 @@ const EditProfile = ({ visible, onCancel, onEdit }) => {
         initialValues={{ remember: true }}
         autoComplete="off"
       >
-        <Form.Item label={"Ảnh nền"}>
+        <Form.Item label={"Background picture"}>
           <SNUpload
             isImagePost={false}
             onUploadSuccess={(value) => setCoverPictureEdit(value)}
             fileProp={myProfile.coverPicture}
           />
         </Form.Item>
-        <Form.Item label={"Ảnh đại diện"}>
+        <Form.Item label={"Avatar"}>
           <SNUpload
             isImagePost={false}
             onUploadSuccess={(value) => setAvatarEdit(value)}
@@ -66,7 +66,7 @@ const EditProfile = ({ visible, onCancel, onEdit }) => {
           />
         </Form.Item>
         <Form.Item
-          label={"Họ và tên"}
+          label={"Fullname"}
           name="fullName"
           rules={[
             {
@@ -78,7 +78,7 @@ const EditProfile = ({ visible, onCancel, onEdit }) => {
           <Input />
         </Form.Item>
         <Form.Item
-          label={"Ngày sinh"}
+          label={"Date of birth"}
           name="dateOfBirth"
           rules={[
             {

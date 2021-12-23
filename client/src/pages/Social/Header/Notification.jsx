@@ -80,17 +80,17 @@ const Notification = () => {
   const descriptionNoti = (type) => {
     switch (type) {
       case 1:
-        return "Đã thích bài viết của bạn.";
+        return "Liked your post.";
       case 2:
-        return "Đã bình luận bài viết của bạn.";
+        return "Commented on your post.";
       case 3:
-        return "Đã chia sẽ bài viết của bạn.";
+        return "Shared your post.";
       case 4:
-        return "Đã thích bình luận của bạn.";
+        return "Liked your commment.";
       case 5:
-        return "Đã trả lời bình luận của bạn";
+        return "Replied to your comment.";
       default:
-        return "Đã chấp nhận lời mời kết bạn";
+        return "Accepted your friend request.";
     }
   };
 
@@ -126,7 +126,7 @@ const Notification = () => {
     <Popover
       id="scrollableDiv"
       placement="top"
-      title={"Thông báo"}
+      title={"Notification"}
       overlayInnerStyle={{
         maxWidth: "30rem",
         minWidth: "30rem",

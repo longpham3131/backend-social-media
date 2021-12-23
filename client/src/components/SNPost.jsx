@@ -52,7 +52,7 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
     <Menu>
       {isPoster && (
         <Menu.Item>
-          <p onClick={() => onEdit(post)}>Chỉnh sửa bài viết</p>
+          <p onClick={() => onEdit(post)}>Edit post</p>
         </Menu.Item>
       )}
       {!isPoster && (
@@ -62,7 +62,7 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
       )}
       {isPoster && (
         <Menu.Item danger>
-          <p onClick={() => onDelete(post._id)}>Xóa bài viết</p>
+          <p onClick={() => onDelete(post._id)}>Delete post</p>
         </Menu.Item>
       )}
     </Menu>
