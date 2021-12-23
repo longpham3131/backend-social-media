@@ -42,8 +42,8 @@ const EditProfile = ({ visible, onCancel, onEdit }) => {
       visible={visible}
       onOk={handleOk}
       onCancel={onCancel}
-      okText={"Lưu chỉnh sửa"}
-      cancelText={"Hủy"}
+      okText={"Save"}
+      cancelText={"Cancel"}
     >
       <Form
         form={formEdit}
@@ -71,7 +71,7 @@ const EditProfile = ({ visible, onCancel, onEdit }) => {
           rules={[
             {
               required: true,
-              message: "Vui lòng điền họ và tên của bạn",
+              message: "Please enter your full name.",
             },
           ]}
         >
@@ -83,7 +83,7 @@ const EditProfile = ({ visible, onCancel, onEdit }) => {
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập ngày sinh của bạn",
+              message: "Please enter your birthday.",
             },
           ]}
         >
@@ -102,7 +102,7 @@ const EditProfile = ({ visible, onCancel, onEdit }) => {
           rules={[
             {
               required: true,
-              message: "Vui lòng điền email của bạn",
+              message: "Please enter your email.",
             },
           ]}
         >

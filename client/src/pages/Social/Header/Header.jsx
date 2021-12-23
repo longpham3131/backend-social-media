@@ -79,7 +79,7 @@ const Headerbar = ({ collapsed, onToggle }) => {
             ref={refAddEditPost}
             visible={showCreatePost}
             title="Create Post"
-            okText="Đăng bài viết"
+            okText="Create"
             onClose={() => setShowCreatePost(false)}
             onSubmit={handleCreatePost}
           />
