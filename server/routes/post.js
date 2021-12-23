@@ -152,7 +152,8 @@ router.get("/", verifyToken, async (req, res) => {
   const { limitPost, index, profile, userId, postId = "" } = req.query;
   console.log(typeof limitPost === "string", index, profile, userId);
   try {
-    let data = postId != "" ? { _id:ObjectId(postId) , status: 1 } : { status: 1 };
+    let data =
+      postId != "" ? { _id: ObjectId(postId), status: 1 } : { status: 1 };
     if (profile == 1) {
       const userIdReq = userId != "0" ? userId : req.userId;
       data = { poster: userIdReq, status: 1 };
@@ -313,21 +314,24 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
       post.like.push(like);
       await post.save();
 
-      const noti = await UserNotification({
-        user: post.poster,
-        type: 1,
-        postId: post._id,
-        fromUser: req.userId,
-      });
-      await noti.save();
-      io.sockets.to(`user_${post.poster.toString()}`).emit("notification", {
-        data: {
+      if (post.poster.toString() != req.userId) {
+        const noti = await UserNotification({
           user: post.poster,
           type: 1,
           postId: post._id,
-          fromUser: userForNoti,
-        },
-      });
+          fromUser: req.userId,
+        });
+        await noti.save();
+        io.sockets.to(`user_${post.poster.toString()}`).emit("notification", {
+          data: {
+            user: post.poster,
+            type: 1,
+            postId: post._id,
+            fromUser: userForNoti,
+          },
+        });
+      }
+
       return res.json({
         like: true,
         postId: post._id,

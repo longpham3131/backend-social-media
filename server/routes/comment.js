@@ -136,9 +136,10 @@ router.post("/", verifyToken, async (req, res) => {
       fromUser: req.userId,
     };
     // await UserNotification.findByIdAndDelete(queryData);
-    const noti = await UserNotification(queryData);
-    await noti.save();
+   
     if (req.userId !== rs[1].poster.toString()) {
+      const noti = await UserNotification(queryData);
+      await noti.save();
       const io = req.io;
       console.log(`user_${rs[1].poster.toString()}`);
       io.sockets.to(`user_${rs[1].poster.toString()}`).emit("notification", {
