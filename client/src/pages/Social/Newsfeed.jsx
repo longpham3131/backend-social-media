@@ -45,7 +45,7 @@ const Newsfeed = () => {
       await dispatch(setPostList(postList.data));
     } catch (error) {
       console.log(error);
-      message.error("Lấy danh sách bài viết thất bại!");
+      message.error("get post failed!");
     }
   };
   const handleEditPost = async (values) => {
@@ -55,26 +55,26 @@ const Newsfeed = () => {
       const res = await postAPI.editPost(values);
       console.log("success", res.data);
       dispatch(editPost(res.data));
-      message.success("Chỉnh sửa bài viết thành công.");
+      message.success("Edit post success.");
       refAddEditPost.current.resetFields();
       setShowEditPost(false);
     } catch {
-      message.error("Chỉnh sửa bài viết thất bại!");
+      message.error("Edit post failed!");
     }
   };
   const handleDeletePost = async (postId) => {
     confirm({
-      title: "Bạn chắc chắn muốn xóa bài viết này?",
+      title: "Do you want to delete this post?",
       icon: <ExclamationCircleOutlined />,
-      okText: "Xác nhận xóa",
-      cancelText: "Hủy",
+      okText: "Confirm",
+      cancelText: "Cancel",
       onOk() {
         try {
           postAPI.deletePost(postId);
           dispatch(deletePost(postId));
-          message.success("Xóa bài viết thành công.");
+          message.success("Delete post success!");
         } catch {
-          message.error("Xóa bài viết thất bại!");
+          message.error("Delete post failed!");
         }
       },
       onCancel() {
@@ -108,7 +108,7 @@ const Newsfeed = () => {
       );
       console.log("success", res.data);
     } catch {
-      message.error("Đăng bình luận thất bại!");
+      message.error("Post comment failed!");
     }
   };
   const handleLikePost = async (postId) => {
@@ -116,7 +116,7 @@ const Newsfeed = () => {
       const res = await postAPI.likePost(postId);
       dispatch(likePost(res.data));
     } catch {
-      message.error("Thích bài viết thất bại");
+      message.error("Liked the failed post!");
     }
   };
 
@@ -179,8 +179,8 @@ const Newsfeed = () => {
       <CreateEditPost
         ref={refAddEditPost}
         visible={showEditPost}
-        title="Chỉnh sửa bài viết"
-        okText="Lưu chỉnh sửa"
+        title="Edit post"
+        okText="Update"
         onClose={() => setShowEditPost(false)}
         onSubmit={handleEditPost}
       />
