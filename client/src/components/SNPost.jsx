@@ -126,7 +126,7 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
     </Form>
   );
   return (
-    <div className="flex items-center justify-center pb-4 w-full">
+    <div className="flex items-center justify-center pb-4 w-full ">
       <div className="flex flex-col  border w-full shadow-2 ">
         <Badge.Ribbon text={getAudience(post.audience)} placement="start">
           <Card
@@ -227,7 +227,7 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
             <List
               itemLayout="horizontal"
               dataSource={comments}
-              locale={{ emptyText: "Chưa có bình luận nào." }}
+              locale={{ emptyText: "No comment." }}
               renderItem={(item) => (
                 <li>
                   <Comment

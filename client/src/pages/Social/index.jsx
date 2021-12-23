@@ -41,24 +41,22 @@ const Social = () => {
   }, []);
   return (
     <Layout className="w-full h-screen newsfeed">
-      <Siderbar collapsed={collapsed} />
+      <Siderbar
+        collapsed={collapsed}
+        onClose={() => setCollapsed(!collapsed)}
+      />
       <Layout className="site-layout">
         <Header
           collapsed={collapsed}
           onToggle={() => setCollapsed(!collapsed)}
         />
-        <Content
-          className="site-layout-background"
-          style={{
-            margin: "24px 16px",
-
-            minHeight: 280,
-          }}
-        >
+        <Content className="site-layout-background min-h-[28rem] w-full m-0 lg:my-[2.4rem] lg:mx-[1.6rem]">
           <div className="flex justify-between w-full h-full">
             <div
-              className={`h-full ${
-                history.location.pathname !== "/message" ? "w-[75%]" : "w-full"
+              className={`h-full  ${
+                history.location.pathname !== "/message"
+                  ? "w-full lg:w-[75%]"
+                  : "w-full"
               } `}
             >
               <Route path="/" render={() => <Newsfeed />} exact />
@@ -66,7 +64,7 @@ const Social = () => {
                 path="/profile/:userId"
                 render={(props) => <Profile {...props} />}
               />
-               <Route
+              <Route
                 path="/post/:postId"
                 render={(props) => <PostDetail {...props} />}
               />
@@ -81,7 +79,7 @@ const Social = () => {
             </div>
             {/* Không hiện Friends List bè khi đang ở trang Messages */}
             {history.location.pathname !== "/message" && (
-              <div className="border-l-4  h-full w-[25%] ">
+              <div className="border-l-4  h-full hidden lg:block lg:w-[25%] ">
                 <div className=" w-full mb-[1.2rem]">
                   <Carousel autoplay>
                     {/* <div>
@@ -157,7 +155,7 @@ const Social = () => {
                     </>
                   ) : (
                     <p className="mb-[1.2rem] text-md font-quicksand font-semi-bold text-gray-5 text-center">
-                      Friends List bè đang trống.
+                      Friends List is empty.
                     </p>
                   )}
                 </div>

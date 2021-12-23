@@ -37,7 +37,7 @@ const FriendRequest = () => {
       placement="bottom"
       title={"Kết bạn"}
       overlayInnerStyle={{
-        minWidth: "40rem",
+        minWidth: "30rem",
         maxHeight: "50rem",
         overflow: "auto",
       }}

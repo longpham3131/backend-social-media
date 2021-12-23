@@ -96,7 +96,7 @@ const Headerbar = ({ collapsed, onToggle }) => {
                 fullName={myProfile?.fullName}
               />
 
-              <span className=" text-base text-gray-500">
+              <span className=" text-base text-gray-500 hidden lg:block">
                 {myProfile?.fullName}
               </span>
             </div>

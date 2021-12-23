@@ -25,17 +25,17 @@ const Login = () => {
       autoComplete="off"
     >
       <Form.Item
-        label="Tài khoản"
+        label="Username"
         name="username"
-        rules={[{ required: true, message: "Vui lòng nhập tài khoản" }]}
+        rules={[{ required: true, message: "Please enter your username." }]}
       >
         <Input />
       </Form.Item>
 
       <Form.Item
-        label="Mật khẩu"
+        label="Password"
         name="password"
-        rules={[{ required: true, message: "Vui lòng nhập mật khẩu." }]}
+        rules={[{ required: true, message: "Please enter your passoword." }]}
       >
         <Input.Password />
       </Form.Item>
@@ -46,7 +46,7 @@ const Login = () => {
 
       <div className="w-full text-right">
         <Button type="primary" htmlType="submit" className="bg-green-4">
-          Đăng nhập
+          Login
         </Button>
       </div>
     </Form>
