@@ -241,7 +241,7 @@ router.post("/getDataChartUser", verifyToken, async (req, res) => {
     // const date = new Date();
     let listDays = getDataChartUserDay(startDate, endDate);
     let countMax=0
-    let count=0
+    let count=0 
     let listData = await Promise.all(
       listDays.map(async (day) => {
         // console.log(day)
