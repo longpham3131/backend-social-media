@@ -61,7 +61,7 @@ const Notification = () => {
         notification.info({
           message: `Thông báo`,
           description: (
-            <div onClick={() => history.push(`/post/${msg.data.postId}`)}>
+            <div onClick={() => {msg.data.type!=10? history.push(`/post/${msg.data.postId}`):history.push(`/profile/${msg.data.fromUser._id}`)}}>
               <SNAvatar
                 src={msg.data.fromUser.avatar}
                 className="mr-2"
@@ -80,17 +80,17 @@ const Notification = () => {
   const descriptionNoti = (type) => {
     switch (type) {
       case 1:
-        return "Liked your post.";
+        return "liked your post.";
       case 2:
-        return "Commented on your post.";
+        return "commented on your post.";
       case 3:
-        return "Shared your post.";
+        return "shared your post.";
       case 4:
-        return "Liked your commment.";
+        return "liked your commment.";
       case 5:
-        return "Replied to your comment.";
+        return "replied to your comment.";
       default:
-        return "Accepted your friend request.";
+        return "accepted your friend request.";
     }
   };
 
@@ -157,7 +157,7 @@ const Notification = () => {
               itemLayout="horizontal"
               dataSource={notificationState.data}
               renderItem={(item) => (
-                <Link to={`/post/${item.postId}`}>
+                <Link to={item?`/post/${item.postId}`:`/profile/${item.fromUser._id}`}>
                   <List.Item
                     onClick={() => notificationSeen(item._id)}
                     // actions={[
