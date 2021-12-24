@@ -9,8 +9,8 @@ const Post = require("../models/Post");
 const { ObjectId } = require("mongodb");
 const { error500, error400 } = require("../util/res");
 const verifyToken = require("../middleware/auth");
-const endOfDayfrom  = require('date-fns/endOfDay');
-const startOfDay  = require('date-fns/startOfDay');
+const endOfDayfrom = require("date-fns/endOfDay");
+const startOfDay = require("date-fns/startOfDay");
 router.get("/getUsers", verifyToken, async (req, res) => {
   try {
     User.find()
@@ -236,11 +236,15 @@ router.get("/getPosts", verifyToken, async (req, res) => {
 router.post("/getDataChartUser", verifyToken, async (req, res) => {
   try {
     const { type, time } = req.body;
-    const date = new Date();
+    let startDate = moment('19/12/2021',"DD-MM-YYYY")
+      // .format("DD-MM-YYYY"); //req.params.startTime = 2016-09-25 00:00:00
+    let endDate = moment('24/12/2021',"DD-MM-YYYY")
+      // .format("DD-MM-YYYY"); //req.params.endTime = 2016-09-25 01:00:00
+    // const date = new Date();
     let result = await UserNotification.find({
       createAt: {
-        $gte: startOfDay(date.setDate(date.getDate() - 10)),
-        $lte: endOfDayfrom(date),
+        $gt: startDate,
+        $lt: endDate,
       },
     });
     return res.json({ success: true, data: result });
@@ -251,3 +255,4 @@ router.post("/getDataChartUser", verifyToken, async (req, res) => {
 });
 
 module.exports = router;
+ 
