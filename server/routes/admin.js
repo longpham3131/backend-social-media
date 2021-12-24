@@ -9,8 +9,6 @@ const Post = require("../models/Post");
 const { ObjectId } = require("mongodb");
 const { error500, error400 } = require("../util/res");
 const verifyToken = require("../middleware/auth");
-const endOfDayfrom = require("date-fns/endOfDay");
-const startOfDay = require("date-fns/startOfDay");
 router.get("/getUsers", verifyToken, async (req, res) => {
   try {
     User.find()

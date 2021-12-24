@@ -120,7 +120,7 @@ router.post("/changePassword", verifyToken, async (req, res) => {
         .json({ success: false, message: "User not found" });
 
     const passwordValid = await argon2.verify(user.password, oldPassword);
-    if (!passwordValid) return error400(res, "Wrong password");
+    if (!passwordValid) return error400(res, "Wrong old password");
 
     const hashedPassword = await argon2.hash(newPassword);
     user.password = hashedPassword;
