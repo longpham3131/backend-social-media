@@ -241,6 +241,7 @@ router.post("/getDataChartUser", verifyToken, async (req, res) => {
     // const date = new Date();
     let listDays = getDataChartUserDay(startDate, endDate);
     let countMax=0
+    let count=0
     let listData = await Promise.all(
       listDays.map(async (day) => {
         // console.log(day)
@@ -261,12 +262,13 @@ router.post("/getDataChartUser", verifyToken, async (req, res) => {
         // console.log(day);
         countMax=countMax<resultLike.length?resultLike.length:countMax
         countMax=countMax<resultComment.length?resultComment.length:countMax
+        count=count+resultLike.length+resultComment.length
         return { day: day, like: resultLike.length, comment: resultComment.length };
       })
     );
 
     // console.log(moment(listData[0].day));
-    return res.json({ success: true, data: listData,countMax });
+    return res.json({ success: true, data: listData,countMax,count });
   } catch (error) {
     console.log(error);
     return error500(res);
