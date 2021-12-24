@@ -1,14 +1,16 @@
 const express = require("express");
 const router = express.Router();
+const moment = require("moment");
 const User = require("../models/User");
 const ReportUser = require("../models/ReportUser");
 const ReportPost = require("../models/ReportPost");
-
+const UserNotification = require("../models/UserNotification");
 const Post = require("../models/Post");
 const { ObjectId } = require("mongodb");
 const { error500, error400 } = require("../util/res");
 const verifyToken = require("../middleware/auth");
-
+const endOfDayfrom  = require('date-fns/endOfDay');
+const startOfDay  = require('date-fns/startOfDay');
 router.get("/getUsers", verifyToken, async (req, res) => {
   try {
     User.find()
@@ -29,8 +31,8 @@ router.get("/getUsers", verifyToken, async (req, res) => {
 });
 router.get("/getUsersDetail/:userId", verifyToken, async (req, res) => {
   try {
-    const {userId}= req.params; 
-    User.find({_id:ObjectId(userId)})
+    const { userId } = req.params;
+    User.find({ _id: ObjectId(userId) })
       .select(["-password"])
       .populate({ path: "friends.user", select: "-password" })
       .populate({ path: "friendsRequest.user", select: "-password" })
@@ -229,6 +231,23 @@ router.get("/getPosts", verifyToken, async (req, res) => {
   }
 });
 
+///Chart
 
-router.get;
+router.post("/getDataChartUser", verifyToken, async (req, res) => {
+  try {
+    const { type, time } = req.body;
+    const date = new Date();
+    let result = await UserNotification.find({
+      createAt: {
+        $gte: startOfDay(date.setDate(date.getDate() - 10)),
+        $lte: endOfDayfrom(date),
+      },
+    });
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    console.log(error);
+    return error500(res);
+  }
+});
+
 module.exports = router;

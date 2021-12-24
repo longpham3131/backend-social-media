@@ -1,5 +1,6 @@
 const { error500, error400 } = require("../util/res");
 const { ObjectId } = require("mongodb");
+
 const User = require("../models/User");
 const FriendRequest = async (req, res) => {
   try {
@@ -100,20 +101,11 @@ const GetFriendsRequest = async (req, res) => {
 };
 ///Follow
 
-///Chart
 
-const GetDataUser = async (req, res) => {
-  try {
-    
-    // return res.json({ success: true, data: friends.friendsRequest });
-  } catch (error) {
-    return error500(res);
-  }
-};
 
 module.exports = {
   FriendRequest,
   FriendRequestRespone,
   GetFriendsRequest,
-  UnFriend,
+  UnFriend
 };
