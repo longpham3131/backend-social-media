@@ -233,24 +233,57 @@ router.get("/getPosts", verifyToken, async (req, res) => {
 
 router.post("/getDataChartUser", verifyToken, async (req, res) => {
   try {
-    const { type, time } = req.body;
-    let startDate = moment('19/12/2021',"DD-MM-YYYY")
-      // .format("DD-MM-YYYY"); //req.params.startTime = 2016-09-25 00:00:00
-    let endDate = moment('24/12/2021',"DD-MM-YYYY")
-      // .format("DD-MM-YYYY"); //req.params.endTime = 2016-09-25 01:00:00
+    const { type, fromTime,toTime } = req.body;
+    let startDate = fromTime
+    // .format("DD-MM-YYYY"); //req.params.startTime = 2016-09-25 00:00:00
+    let endDate = toTime
+    // .format("DD-MM-YYYY"); //req.params.endTime = 2016-09-25 01:00:00
     // const date = new Date();
-    let result = await UserNotification.find({
-      createAt: {
-        $gt: startDate,
-        $lt: endDate,
-      },
-    });
-    return res.json({ success: true, data: result });
+    let listDays = getDataChartUserDay(startDate, endDate);
+    let countMax=0
+    let listData = await Promise.all(
+      listDays.map(async (day) => {
+        // console.log(day)
+        let resultLike = await UserNotification.find({
+          createAt: {
+            $gte: day,
+            $lte: moment(day).add(1, "days"),
+          },
+          type: 1,
+        }).lean();
+        let resultComment = await UserNotification.find({
+          createAt: {
+            $gte: day,
+            $lte: moment(day).add(1, "days"),
+          },
+          type: 2,
+        }).lean();
+        // console.log(day);
+        countMax=countMax<resultLike.length?resultLike.length:countMax
+        countMax=countMax<resultComment.length?resultComment.length:countMax
+        return { day: day, like: resultLike.length, comment: resultComment.length };
+      })
+    );
+
+    // console.log(moment(listData[0].day));
+    return res.json({ success: true, data: listData,countMax });
   } catch (error) {
     console.log(error);
     return error500(res);
   }
 });
 
+const getDataChartUserDay = (startDay, endDay) => {
+  let newDay = startDay;
+  let listDays = [startDay];
+  let count = 0;
+  while (!moment(newDay).isSame(endDay)) {
+    newDay = moment(newDay).add(1, "days");
+    listDays.push(newDay);
+    count++;
+  }
+  // console.log(listDays);
+  return listDays;
+};
+
 module.exports = router;
- 
