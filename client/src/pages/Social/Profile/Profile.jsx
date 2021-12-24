@@ -213,7 +213,7 @@ const Profile = () => {
     setProfileUser(res[1].data);
   };
   return (
-    <div className="flex flex-col px-[4rem] profile-user h-full overflow-auto section--hidden-scroll-y">
+    <div className="flex flex-col p-0 lg:px-[4rem] profile-user h-full overflow-auto section--hidden-scroll-y">
       {profile && (
         <>
           <div className="shadow-2 pb-[1rem]">
@@ -255,7 +255,7 @@ const Profile = () => {
                       {!!isFriendRequest && (
                         <div>
                           <Button onClick={() => handleFriendRequest(0)}>
-                          Cancel friend request
+                            Cancel friend request
                           </Button>
                         </div>
                       )}
@@ -266,10 +266,11 @@ const Profile = () => {
             </div>
           </div>
 
-          <div className="mt-[3rem] flex gap-[3rem] h-full">
+          <div className="mt-[3rem] flex flex-col lg:flex-row gap-[3rem] h-full px-[2rem] lg:px-0">
             <Card
               title="Profile"
-              style={{ width: "35%", height: "fit-content" }}
+              style={{ height: "fit-content" }}
+              className="w-full lg:w-[35%] shadow-2 "
               actions={[
                 <Button type="primary" onClick={() => setShowEditProfile(true)}>
                   Edit personal profile
@@ -294,7 +295,7 @@ const Profile = () => {
               onEdit={handleEditProfile}
               onCancel={() => setShowEditProfile(false)}
             />
-            <div className="w-[65%]">
+            <div className="w-full lg:w-[65%]">
               {postList.map((post) => (
                 <SNPost
                   post={post}

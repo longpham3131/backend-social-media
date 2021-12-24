@@ -24,21 +24,6 @@ const Notification = () => {
   const [loading, setLoading] = useState(false);
   const socket = useContext(SocketContext);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const data = [
-    {
-      title: "Ant Design Title 1",
-    },
-    {
-      title: "Ant Design Title 2",
-    },
-    {
-      title: "Ant Design Title 3",
-    },
-    {
-      title: "Ant Design Title 4",
-    },
-  ];
-
   useEffect(() => {
     fetchNoti();
   }, []);
@@ -49,7 +34,7 @@ const Notification = () => {
       setNotificationState(res.data);
       console.log("noti", res.data);
     } catch {
-      message.error("Lấy thông báo thất bại");
+      message.error("Get notification fail");
     }
   };
   useEffect(() => {
@@ -59,7 +44,7 @@ const Notification = () => {
       // Không hiện thông báo khi dislike (-2)
       if (msg.data.type !== -1 && msg.data.type !== -4) {
         notification.info({
-          message: `Thông báo`,
+          message: `Notification`,
           description: (
             <div onClick={() => {msg.data.type!=10? history.push(`/post/${msg.data.postId}`):history.push(`/profile/${msg.data.fromUser._id}`)}}>
               <SNAvatar
@@ -116,7 +101,7 @@ const Notification = () => {
   };
 
   const notificationSeen = async (id) => {
-    console.log('id',id)
+    console.log("id", id);
     await notificationAPI.seenNotify(id);
     const res = await notificationAPI.getNotify();
     setNotificationState(res.data);
@@ -174,9 +159,21 @@ const Notification = () => {
                           fullName={item.fromUser.fullName}
                         />
                       }
-                      title={<span className={item.status==1?"":"text-green-primary"}>{item.fromUser.fullName}</span>}
+                      title={
+                        <span
+                          className={
+                            item.status == 1 ? "" : "text-green-primary"
+                          }
+                        >
+                          {item.fromUser.fullName}
+                        </span>
+                      }
                       description={
-                        <div className={item.status==1?"":"text-green-primary"}>
+                        <div
+                          className={
+                            item.status == 1 ? "" : "text-green-primary"
+                          }
+                        >
                           <div>{descriptionNoti(item.type)}</div>
                           <div>{formatMinutes(item.createAt)}</div>
                         </div>

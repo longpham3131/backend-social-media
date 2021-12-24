@@ -79,7 +79,7 @@ const Headerbar = ({ collapsed, onToggle }) => {
             ref={refAddEditPost}
             visible={showCreatePost}
             title="Create Post"
-            okText="Đăng bài viết"
+            okText="Create"
             onClose={() => setShowCreatePost(false)}
             onSubmit={handleCreatePost}
           />
@@ -96,7 +96,7 @@ const Headerbar = ({ collapsed, onToggle }) => {
                 fullName={myProfile?.fullName}
               />
 
-              <span className=" text-base text-gray-500">
+              <span className=" text-base text-gray-500 hidden lg:block">
                 {myProfile?.fullName}
               </span>
             </div>

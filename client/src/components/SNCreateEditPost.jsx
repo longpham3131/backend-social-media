@@ -68,7 +68,7 @@ const CreateEditPost = React.forwardRef(
         onOk={handleOk}
         onCancel={handleCancel}
         okText={okText}
-        cancelText={"Hủy"}
+        cancelText={"Cancel"}
       >
         <Form
           name="basic"
@@ -87,7 +87,7 @@ const CreateEditPost = React.forwardRef(
           <Form.Item
             label="What are you thinking:"
             name="content"
-            rules={[{ required: true, message: "Vui lòng nhập nội dung" }]}
+            rules={[{ required: true, message: "Please enter your content" }]}
           >
             <Input.TextArea />
           </Form.Item>

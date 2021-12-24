@@ -57,7 +57,7 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
       )}
       {!isPoster && (
         <Menu.Item>
-          <p>Báo cáo bài viết</p>
+          <p>Report</p>
         </Menu.Item>
       )}
       {isPoster && (
@@ -69,14 +69,14 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
   );
 
   const actionComment = [
-    <Tooltip key="comment-basic-like" title="Thích">
+    <Tooltip key="comment-basic-like" title="Like">
       <div className="flex items-center gap-[0.8rem]" onClick={likeComment}>
         {createElement(action === "liked" ? LikeFilled : LikeOutlined)}
         <p className="comment-action">{likes}</p>
       </div>
     </Tooltip>,
     <span className="ml-[1rem]" key="comment-basic-reply-to">
-      Trả lời
+      Reply to
     </span>,
   ];
   const onSubmitCmt = (values) => {
@@ -104,10 +104,10 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
     >
       <Form.Item
         name="contentComment"
-        rules={[{ required: true, message: "Vui lòng nhập nội dung" }]}
+        rules={[{ required: true, message: "Please enter your comment" }]}
       >
         <Input.TextArea
-          placeholder="Nội dung bình luận."
+          placeholder="Comment"
           showCount
           maxLength={50}
           autoSize={{ minRows: 2, maxRows: 6 }}
@@ -120,13 +120,13 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
 
       <div className="w-full text-right">
         <Button type="primary" htmlType="submit" className="bg-green-4">
-          Đăng bình luận
+          Comment
         </Button>
       </div>
     </Form>
   );
   return (
-    <div className="flex items-center justify-center pb-4 w-full">
+    <div className="flex items-center justify-center pb-4 w-full ">
       <div className="flex flex-col  border w-full shadow-2 ">
         <Badge.Ribbon text={getAudience(post.audience)} placement="start">
           <Card
@@ -212,8 +212,8 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
         {/* Card Bình luận */}
         {isShowComment && (
           <Card
-            title={`Bình luận ${
-              comments.length > 0 ? `- ${comments.length} lượt bình luận` : ""
+            title={`Comments ${
+              comments.length > 0 ? `- ${comments.length} Comments` : ""
             }`}
             className="w-full flex flex-col"
             bodyStyle={{
@@ -227,7 +227,7 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
             <List
               itemLayout="horizontal"
               dataSource={comments}
-              locale={{ emptyText: "Chưa có bình luận nào." }}
+              locale={{ emptyText: "No comment." }}
               renderItem={(item) => (
                 <li>
                   <Comment

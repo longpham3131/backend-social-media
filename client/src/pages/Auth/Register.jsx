@@ -17,7 +17,7 @@ const Register = ({ onSuccess }) => {
         secret: res.data.hash,
       };
       await chatAPI.registerUser(dataRegisterChat);
-      message.success("Đăng ký thành công");
+      message.success("Register success");
       onSuccess();
     } catch (error) {
       message.error(error.response);
@@ -34,9 +34,9 @@ const Register = ({ onSuccess }) => {
       onFinish={handleSubmit}
     >
       <Form.Item
-        label="Tài khoản"
+        label="Username"
         name="username"
-        rules={[{ required: true, message: "Vui lòng nhập tài khoản." }]}
+        rules={[{ required: true, message: "Please enter your username." }]}
       >
         <Input />
       </Form.Item>
@@ -44,22 +44,22 @@ const Register = ({ onSuccess }) => {
       <Form.Item
         label="Email"
         name="email"
-        rules={[{ required: true, message: "Vui lòng nhập email." }]}
+        rules={[{ required: true, message: "Please enter your email." }]}
       >
         <Input />
       </Form.Item>
       <Form.Item
-        label="Tên đầy đủ"
+        label="Full name"
         name="fullName"
-        rules={[{ required: true, message: "Vui lòng nhập tên." }]}
+        rules={[{ required: true, message: "Please enter your full name." }]}
       >
         <Input />
       </Form.Item>
 
       <Form.Item
-        label="Mật khẩu"
+        label="Password"
         name="password"
-        rules={[{ required: true, message: "Vui lòng nhập mật khẩu." }]}
+        rules={[{ required: true, message: "Please enter your password." }]}
         hasFeedback
       >
         <Input.Password />
@@ -67,20 +67,20 @@ const Register = ({ onSuccess }) => {
 
       <Form.Item
         name="confirm"
-        label="Nhập lại mật khẩu"
+        label="Confirm password"
         dependencies={["password"]}
         hasFeedback
         rules={[
           {
             required: true,
-            message: "Vui lòng xác nhận lại mật khẩu.",
+            message: "Confirm password incorrect.",
           },
           ({ getFieldValue }) => ({
             validator(_, value) {
               if (!value || getFieldValue("password") === value) {
                 return Promise.resolve();
               }
-              return Promise.reject(new Error("Mật khẩu không khớp."));
+              return Promise.reject(new Error("Confirm password incorrect."));
             },
           }),
         ]}
@@ -90,7 +90,7 @@ const Register = ({ onSuccess }) => {
 
       <div className="w-full text-right">
         <Button type="primary" htmlType="submit" className="bg-green-4">
-          Đăng ký
+          Register
         </Button>
       </div>
     </Form>

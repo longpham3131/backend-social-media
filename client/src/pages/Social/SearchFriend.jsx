@@ -58,8 +58,9 @@ const SearchFriend = () => {
         renderItem={(item) => (
           <List.Item
             actions={[
+              item.friends &&
               item.friends.findIndex((item) => item.user === myProfile._id) ===
-              -1 ? (
+                -1 ? (
                 <Link to={`profile/${item._id}`}>
                   <UserAddOutlined className="text-xl cursor-pointer" />
                 </Link>

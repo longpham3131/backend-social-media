@@ -11,11 +11,11 @@ export default function SNUpload({
   const beforeUpload = (file) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
-      message.info("Bạn chỉ có thể upload hình ảnh thôi.");
+      message.info("You can only upload JPG/PNG file!");
     }
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
-      message.info("Hãy thử với dung lượng nhỏ hơn nào.");
+      message.info("Image must smaller than 2MB!");
     }
     return isJpgOrPng && isLt2M;
   };
@@ -30,7 +30,7 @@ export default function SNUpload({
       setLoading(false);
     } else if (file.status === "error") {
       setLoading(false);
-      message.error("Tải ảnh không thành công");
+      message.error("Upload fail");
     }
   };
   const uploadButton = (
