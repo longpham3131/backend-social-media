@@ -52,6 +52,7 @@ const UnFriend = async (req, res) => {
 };
 const FriendRequestRespone = async (req, res) => {
   try {
+    const io = req.io;
     const { userId, type } = req.body;
     let user = await User.findById(req.userId);
     let user2 = await User.findById(userId);
@@ -76,6 +77,11 @@ const FriendRequestRespone = async (req, res) => {
     );
     await user.save();
     await user2.save();
+    io.sockets
+      .to(`user_${userId}`)
+      .emit("notification", {
+        data: { fromUser:user,type:10},
+      });
     return res.json({ success: true, message: "save success", data: user });
   } catch (error) {
     return error500(res);
@@ -93,6 +99,17 @@ const GetFriendsRequest = async (req, res) => {
   }
 };
 ///Follow
+
+///Chart
+
+const GetDataUser = async (req, res) => {
+  try {
+    
+    // return res.json({ success: true, data: friends.friendsRequest });
+  } catch (error) {
+    return error500(res);
+  }
+};
 
 module.exports = {
   FriendRequest,

@@ -12,7 +12,28 @@ const verifyToken = require("../middleware/auth");
 router.get("/getUsers", verifyToken, async (req, res) => {
   try {
     User.find()
-      .select(["-password", "-createAt"])
+      .select(["-password"])
+      .populate({ path: "friends.user", select: "fullName avatar" })
+      .populate({ path: "friendsRequest.user", select: "fullName avatar" })
+      .lean()
+      .then((rs) => {
+        try {
+          return res.json({ success: true, data: rs });
+        } catch (error) {
+          return error500(res);
+        }
+      });
+  } catch (err) {
+    return error500(res);
+  }
+});
+router.get("/getUsersDetail/:userId", verifyToken, async (req, res) => {
+  try {
+    const {userId}= req.params; 
+    User.find({_id:ObjectId(userId)})
+      .select(["-password"])
+      .populate({ path: "friends.user", select: "-password" })
+      .populate({ path: "friendsRequest.user", select: "-password" })
       .lean()
       .then((rs) => {
         try {
@@ -27,7 +48,7 @@ router.get("/getUsers", verifyToken, async (req, res) => {
 });
 router.post("/createReportUser", verifyToken, async (req, res) => {
   try {
-    const { type, content ,user} = req.body;
+    const { type, content, user } = req.body;
     let ru = new ReportUser({
       type,
       content,
@@ -46,7 +67,7 @@ router.post("/createReportPost", verifyToken, async (req, res) => {
     let rp = new ReportPost({
       type,
       content,
-      postId:ObjectId(postId),
+      postId: ObjectId(postId),
       userReport: ObjectId(req.userId),
     });
     await rp.save();
@@ -58,7 +79,9 @@ router.post("/createReportPost", verifyToken, async (req, res) => {
 
 router.get("/getRepostsPost", verifyToken, async (req, res) => {
   try {
-    let result = await ReportPost.find().populate("userReport").populate("postId");
+    let result = await ReportPost.find()
+      .populate("userReport")
+      .populate("postId");
     return res.json({ success: true, data: result });
   } catch (err) {
     return error500(res);
@@ -66,7 +89,9 @@ router.get("/getRepostsPost", verifyToken, async (req, res) => {
 });
 router.get("/getRepostsUser", verifyToken, async (req, res) => {
   try {
-    let result = await ReportUser.find().populate("userReport").populate("user");
+    let result = await ReportUser.find()
+      .populate("userReport")
+      .populate("user");
     return res.json({ success: true, data: result });
   } catch (err) {
     return error500(res);
@@ -136,8 +161,8 @@ router.post("/editStatusUser2", verifyToken, async (req, res) => {
 
 router.post("/editReportPost", verifyToken, async (req, res) => {
   try {
-    const { userId, data } = req.body;
-    await ReportUser.findOneAndUpdate({ _id: ObjectId(userId) }, data);
+    const { reportId, data } = req.body;
+    await ReportPost.findOneAndUpdate({ _id: ObjectId(reportId) }, data);
     return res.json({ success: true });
   } catch (err) {
     console.log(err);
@@ -147,8 +172,8 @@ router.post("/editReportPost", verifyToken, async (req, res) => {
 
 router.post("/editReportUser", verifyToken, async (req, res) => {
   try {
-    const { userId, data } = req.body;
-    await ReportUser.findOneAndUpdate({ _id: ObjectId(userId) }, data);
+    const { reportId, data } = req.body;
+    await ReportUser.findOneAndUpdate({ _id: ObjectId(reportId) }, data);
     return res.json({ success: true });
   } catch (err) {
     console.log(err);
@@ -203,5 +228,7 @@ router.get("/getPosts", verifyToken, async (req, res) => {
     return error500(res);
   }
 });
+
+
 router.get;
 module.exports = router;
