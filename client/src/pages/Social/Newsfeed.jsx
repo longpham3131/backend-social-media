@@ -146,7 +146,7 @@ const Newsfeed = () => {
   return (
     <div
       id="scrollablePost"
-      className="h-full overflow-auto section--hidden-scroll-y p-[2rem] xl:py-[2.4rem] xl:px-[15rem] min-w-[30rem] xl:min-w-[600px] "
+      className="h-full overflow-y-auto section--hidden-scroll-y p-[2rem] xl:py-[2.4rem] xl:px-[15rem]  "
     >
       <InfiniteScroll
         dataLength={postList?.length ?? 0}

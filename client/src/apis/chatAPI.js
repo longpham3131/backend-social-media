@@ -29,6 +29,19 @@ const chatAPI = {
       },
     });
   },
+  changePassword(userChatId, newPass) {
+    const url = `${BASE_URL}/users/${userChatId}`;
+    let formData = new FormData();
+    formData.append("secret", newPass);
+
+    return axios.patch(url, formData, {
+      headers: authObject,
+    });
+  },
+  getUser() {
+    const url = `${BASE_URL}/users`;
+    return axios.get(url, { headers: authObject });
+  },
 };
 
 export default chatAPI;

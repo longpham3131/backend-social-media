@@ -43,10 +43,10 @@ const CreateEditPost = React.forwardRef(
         attachments: file
           ? [
               {
-                file: file.filePath ?? file.file,
-                type: file.fileType ?? file.type,
-                name: file.fileName ?? file.name,
-                size: file.fileSize ?? file.size,
+                file: file.response.data.filePath ?? file.file,
+                type: file.response.data.fileType ?? file.type,
+                name: file.response.data.fileName ?? file.name,
+                size: file.response.data.fileSize ?? file.size,
               },
             ]
           : [],
@@ -77,13 +77,13 @@ const CreateEditPost = React.forwardRef(
           initialValues={{ remember: true }}
           autoComplete="off"
         >
-          <Form.Item label="Post audience:" name="audience">
+          {/* <Form.Item label="Post audience:" name="audience">
             <Select onChange={handleChangeAudience}>
               <Select.Option value="public">Public</Select.Option>
               <Select.Option value="friends">Friend</Select.Option>
               <Select.Option value="private">Only me</Select.Option>
             </Select>
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             label="What are you thinking:"
             name="content"

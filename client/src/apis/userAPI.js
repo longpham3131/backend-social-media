@@ -45,6 +45,10 @@ const userAPI = {
     const url = `${BASE_URL}/search/${keySearch}`;
     return axios.get(url, config);
   },
+  updatePassword(data) {
+    const url = `${BASE_URL}/changePassword`;
+    return axios.post(url, data, config);
+  },
 };
 
 export default userAPI;

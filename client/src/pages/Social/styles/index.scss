@@ -14,4 +14,7 @@
   .ant-image {
     @apply w-full;
   }
+  .infinite-scroll-component {
+    overflow: unset !important;
+  }
 }
