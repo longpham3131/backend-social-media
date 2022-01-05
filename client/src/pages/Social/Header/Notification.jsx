@@ -17,12 +17,16 @@ import { useContext } from "react";
 import { SocketContext } from "@/service/socket/SocketContext";
 import { formatMinutes, getFirstWord } from "@/util/index";
 import InfiniteScroll from "react-infinite-scroll-component";
+import userAPI from "@/apis/userAPI";
+import { setProfile } from "@/store/profileSlice";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 const Notification = () => {
   const history = useHistory();
   const [notificationState, setNotificationState] = useState({});
   const [loading, setLoading] = useState(false);
   const socket = useContext(SocketContext);
+  const dispatch = useDispatch();
   const [currentIndex, setCurrentIndex] = useState(0);
   useEffect(() => {
     fetchNoti();
@@ -37,6 +41,10 @@ const Notification = () => {
       message.error("Get notification fail");
     }
   };
+  const fetchInfoUser = async () => {
+    const myProfile = await userAPI.getMyProfile();
+    dispatch(setProfile(myProfile.data.data));
+  };
   useEffect(() => {
     socket.on("notification", (msg) => {
       console.log("messs-notify", msg.data);
@@ -46,7 +54,13 @@ const Notification = () => {
         notification.info({
           message: `Notification`,
           description: (
-            <div onClick={() => {msg.data.type!=10? history.push(`/post/${msg.data.postId}`):history.push(`/profile/${msg.data.fromUser._id}`)}}>
+            <div
+              onClick={() => {
+                msg.data.type != 10
+                  ? history.push(`/post/${msg.data.postId}`)
+                  : history.push(`/profile/${msg.data.fromUser._id}`);
+              }}
+            >
               <SNAvatar
                 src={msg.data.fromUser.avatar}
                 className="mr-2"
@@ -58,6 +72,10 @@ const Notification = () => {
           ),
           placement: "bottomLeft",
         });
+        // fetch lại data thông tin người dùng khi được kết bạn
+        if (msg.data.type === 10) {
+          fetchInfoUser();
+        }
       }
     });
   }, []);
@@ -142,7 +160,13 @@ const Notification = () => {
               itemLayout="horizontal"
               dataSource={notificationState.data}
               renderItem={(item) => (
-                <Link to={item?`/post/${item.postId}`:`/profile/${item.fromUser._id}`}>
+                <Link
+                  to={
+                    item
+                      ? `/post/${item.postId}`
+                      : `/profile/${item.fromUser._id}`
+                  }
+                >
                   <List.Item
                     onClick={() => notificationSeen(item._id)}
                     // actions={[

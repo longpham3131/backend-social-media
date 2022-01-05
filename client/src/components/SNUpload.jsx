@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Upload, message } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { getUrlImage } from "@/util/index";
@@ -19,13 +19,13 @@ export default function SNUpload({
     }
     return isJpgOrPng && isLt2M;
   };
-  // const [avatar, setAvatar] = useState(fileProp);
+
   const [loading, setLoading] = useState(false);
   const handleChangeAvatar = ({ file }) => {
     setLoading(true);
     if (file.status === "done") {
       // setAvatar(file?.response?.data?.filePath);
-      console.log(file.originFileObj);
+
       onUploadSuccess(file);
       setLoading(false);
     } else if (file.status === "error") {
@@ -48,11 +48,11 @@ export default function SNUpload({
       beforeUpload={beforeUpload}
       onChange={handleChangeAvatar}
     >
-      {fileProp ? (
+      {!loading && fileProp ? (
         <img
           src={
             isImagePost
-              ? getUrlImage(fileProp.file ?? fileProp.filePath)
+              ? getUrlImage(fileProp.file ?? fileProp.response.data.filePath)
               : getUrlImage(fileProp)
           }
           alt="avatar"

@@ -1,6 +1,6 @@
 import { Button, Card, Image, message, Modal } from "antd";
 import userAPI from "@/apis/userAPI";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import postAPI from "@/apis/postAPI";
@@ -19,6 +19,7 @@ import SNPost from "@/components/SNPost";
 import { ExclamationCircleOutlined, WarningOutlined } from "@ant-design/icons";
 import CreateEditPost from "@/components/SNCreateEditPost";
 import { editProfile } from "@/store/profileSlice";
+import { SocketContext } from "@/service/socket/SocketContext";
 const { confirm } = Modal;
 
 const PostDetail = () => {
@@ -32,10 +33,19 @@ const PostDetail = () => {
   const [selectedPostId, setSelectedPostId] = useState("");
   const refAddEditPost = useRef(null);
   const [post, setPost] = useState(null);
+  const socket = useContext(SocketContext);
 
   useEffect(() => {
     fetchPostListByProfile();
   }, [postId]);
+
+  useEffect(() => {
+    socket.on("notification", (msg) => {
+      if (msg.data.type === 1 || msg.data.type === 2) {
+        fetchPostListByProfile();
+      }
+    });
+  }, []);
 
   const fetchPostListByProfile = async () => {
     console.log(postId);
@@ -154,7 +164,7 @@ const PostDetail = () => {
         ref={refAddEditPost}
         visible={showEditPost}
         title="Edit post"
-        okText="Lưu chỉnh sửa"
+        okText="Save"
         onClose={() => setShowEditPost(false)}
         onSubmit={handleEditPost}
       />

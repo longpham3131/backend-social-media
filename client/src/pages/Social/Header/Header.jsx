@@ -6,6 +6,8 @@ import {
   Badge,
   Button,
   Dropdown,
+  Form,
+  Input,
   Layout,
   List,
   Menu,
@@ -18,12 +20,15 @@ import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import SNCreateEditPost from "@/components/SNCreateEditPost";
 
 import postAPI from "@/apis/postAPI";
-import userAPI from "@/apis/userAPI";
 
 import { createPost } from "@/store/postSlice";
 import SNAvatar from "@/components/SNAvatar";
 import FriendRequest from "./FriendResquest";
 import Notification from "./Notification";
+import Modal from "antd/lib/modal/Modal";
+import userAPI from "@/apis/userAPI";
+import { changePassword } from "@/store/profileSlice";
+import chatAPI from "@/apis/chatAPI";
 const { Header } = Layout;
 const Headerbar = ({ collapsed, onToggle }) => {
   let history = useHistory();
@@ -31,6 +36,8 @@ const Headerbar = ({ collapsed, onToggle }) => {
   const dispatch = useDispatch();
   const myProfile = useSelector((state) => state?.profile);
   const [showCreatePost, setShowCreatePost] = useState(false);
+  const [openModalPass, setOpenModalPass] = useState(false);
+  const [form] = Form.useForm();
 
   const logOut = () => {
     localStorage.clear();
@@ -42,18 +49,39 @@ const Headerbar = ({ collapsed, onToggle }) => {
       const res = await postAPI.createPost(values);
       console.log("success", res.data);
       dispatch(createPost(res.data));
-      message.success("Đăng bài viết thành công.");
+      message.success("Create post success.");
       refAddEditPost.current.resetFields();
       setShowCreatePost(false);
     } catch {
-      message.error("Đăng bài viết thất bại!");
+      message.error("Create post fail !");
     }
     console.log("Submit values", values);
   };
+
+  const handleChangePassword = async (values) => {
+    try {
+      const res = await userAPI.updatePassword(values);
+      const resChat = await chatAPI.getUser();
+      const userChatId = resChat.data.find(
+        (user) => user.username === myProfile.username
+      ).id;
+      await chatAPI.changePassword(userChatId, res.data.hashedPassword);
+      form.resetFields();
+      dispatch(changePassword(res.data.hashedPassword));
+      setOpenModalPass(false);
+      message.success("Update password success.");
+    } catch (err) {
+      message.error(err.response.data.message);
+    }
+  };
+
   const menu = (
     <Menu>
       <Menu.Item>
         <Link to={`/profile/${myProfile._id}`}>Profile</Link>
+      </Menu.Item>
+      <Menu.Item>
+        <p onClick={() => setOpenModalPass(true)}>Change your password</p>
       </Menu.Item>
       <Menu.Item>
         <p onClick={logOut}>Log out</p>
@@ -110,6 +138,77 @@ const Headerbar = ({ collapsed, onToggle }) => {
               </span>
             </div>
           </Dropdown>
+          <Modal
+            title="Change password"
+            visible={openModalPass}
+            onCancel={() => setOpenModalPass(false)}
+            footer={null}
+          >
+            <Form
+              form={form}
+              onFinish={handleChangePassword}
+              layout={"vertical"}
+            >
+              <Form.Item
+                label="Old password"
+                name="oldPassword"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter your old password.",
+                  },
+                ]}
+                hasFeedback
+              >
+                <Input.Password />
+              </Form.Item>
+              <Form.Item
+                label="New password"
+                name="newPassword"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter your new password.",
+                  },
+                ]}
+                hasFeedback
+              >
+                <Input.Password />
+              </Form.Item>
+
+              <Form.Item
+                label="Confirm password"
+                name="confirmPassword"
+                dependencies={["newPassword"]}
+                hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    message: "Confirm password incorrect.",
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue("newPassword") === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error("Confirm password incorrect.")
+                      );
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password />
+              </Form.Item>
+
+              <div className="w-full flex gap-[0.8rem] justify-end">
+                <Button onClick={() => setOpenModalPass(false)}>Cancel</Button>
+                <Button type="primary" htmlType="submit" className="bg-green-4">
+                  Save
+                </Button>
+              </div>
+            </Form>
+          </Modal>
         </div>
       </div>
     </Header>

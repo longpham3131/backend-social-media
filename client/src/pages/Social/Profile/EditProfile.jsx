@@ -7,8 +7,8 @@ import moment from "moment";
 
 const EditProfile = ({ visible, onCancel, onEdit }) => {
   const myProfile = useSelector((state) => state.profile);
-  const [coverPictureEdit, setCoverPictureEdit] = useState("");
-  const [avatarEdit, setAvatarEdit] = useState("");
+  const [coverPictureEdit, setCoverPictureEdit] = useState(null);
+  const [avatarEdit, setAvatarEdit] = useState(null);
   const [formEdit] = Form.useForm();
   const handleOk = () => {
     formEdit.submit();
@@ -21,7 +21,7 @@ const EditProfile = ({ visible, onCancel, onEdit }) => {
         : myProfile.avatar;
       dataEmit.avatarForChat = avatarEdit ? avatarEdit.originFileObj : null;
       dataEmit.coverPicture = coverPictureEdit
-        ? coverPictureEdit.filePath
+        ? coverPictureEdit.response.data.filePath
         : myProfile.coverPicture;
       onEdit(dataEmit);
     }
@@ -53,16 +53,16 @@ const EditProfile = ({ visible, onCancel, onEdit }) => {
       >
         <Form.Item label={"Background picture"}>
           <SNUpload
-            isImagePost={false}
+            isImagePost={coverPictureEdit ? true : false}
             onUploadSuccess={(value) => setCoverPictureEdit(value)}
-            fileProp={myProfile.coverPicture}
+            fileProp={coverPictureEdit ?? myProfile.coverPicture}
           />
         </Form.Item>
         <Form.Item label={"Avatar"}>
           <SNUpload
-            isImagePost={false}
+            isImagePost={avatarEdit ? true : false}
             onUploadSuccess={(value) => setAvatarEdit(value)}
-            fileProp={myProfile.avatar}
+            fileProp={avatarEdit ?? myProfile.avatar}
           />
         </Form.Item>
         <Form.Item

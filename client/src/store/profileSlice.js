@@ -14,9 +14,13 @@ const profile = createSlice({
       state = { ...state, coverPicture, avatar, fullName, email, dateOfBirth };
       return state;
     },
+    changePassword: (state, action) => {
+      state.password = action.payload;
+      return state;
+    },
   },
 });
 
 const { reducer, actions } = profile;
-export const { setProfile, editProfile } = actions;
+export const { setProfile, editProfile, changePassword } = actions;
 export default reducer;

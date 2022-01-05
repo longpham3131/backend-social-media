@@ -69,15 +69,15 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
   );
 
   const actionComment = [
-    <Tooltip key="comment-basic-like" title="Like">
-      <div className="flex items-center gap-[0.8rem]" onClick={likeComment}>
-        {createElement(action === "liked" ? LikeFilled : LikeOutlined)}
-        <p className="comment-action">{likes}</p>
-      </div>
-    </Tooltip>,
-    <span className="ml-[1rem]" key="comment-basic-reply-to">
-      Reply to
-    </span>,
+    // <Tooltip key="comment-basic-like" title="Like">
+    //   <div className="flex items-center gap-[0.8rem]" onClick={likeComment}>
+    //     {createElement(action === "liked" ? LikeFilled : LikeOutlined)}
+    //     <p className="comment-action">{likes}</p>
+    //   </div>
+    // </Tooltip>,
+    // <span className="ml-[1rem]" key="comment-basic-reply-to">
+    //   Reply to
+    // </span>,
   ];
   const onSubmitCmt = (values) => {
     const data = {
@@ -111,6 +111,7 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
           showCount
           maxLength={50}
           autoSize={{ minRows: 2, maxRows: 6 }}
+          onPressEnter={() => form.submit()}
         />
       </Form.Item>
 
@@ -161,9 +162,13 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
             ]}
             bordered={false}
             extra={
-              <Dropdown overlay={menu} placement="bottomRight">
-                <MoreOutlined />
-              </Dropdown>
+              isPoster ? (
+                <Dropdown overlay={menu} placement="bottomRight">
+                  <MoreOutlined />
+                </Dropdown>
+              ) : (
+                <></>
+              )
             }
           >
             <Meta
@@ -182,7 +187,11 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
                   </div>
                 </>
               }
-              description={post.text}
+              description={
+                <p className=" font-quicksand text-gray-5 text-md">
+                  {post.text}
+                </p>
+              }
             />
             {/* Attachment */}
             {post.attachments.length > 0 && (
