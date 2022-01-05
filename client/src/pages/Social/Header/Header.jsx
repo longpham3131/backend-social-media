@@ -12,12 +12,13 @@ import {
   message,
   Popover,
 } from "antd";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 
 import SNCreateEditPost from "@/components/SNCreateEditPost";
 
 import postAPI from "@/apis/postAPI";
+import userAPI from "@/apis/userAPI";
 
 import { createPost } from "@/store/postSlice";
 import SNAvatar from "@/components/SNAvatar";
@@ -59,6 +60,14 @@ const Headerbar = ({ collapsed, onToggle }) => {
       </Menu.Item>
     </Menu>
   );
+
+  useEffect(() => {
+    checkInAtivity();
+  }, []);
+
+  const checkInAtivity = async () => {
+    await userAPI.checkInAtivity();
+  };
 
   return (
     <Header className="site-layout-background" style={{ padding: 0 }}>

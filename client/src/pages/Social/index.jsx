@@ -18,7 +18,7 @@ import getFirstLetter from "@/util/getFirstLetter";
 import { Link } from "react-router-dom";
 import SNAvatar from "@/components/SNAvatar";
 import Message from "./Message";
-
+import { makeid } from "@/util/index";
 const { Content } = Layout;
 
 const Social = () => {
@@ -35,9 +35,21 @@ const Social = () => {
       dispatch(setProfile(myProfile.data.data));
       message.success("Welcome back!");
       console.log("history", history.location.pathname);
+      sendEmail();
     } catch (error) {
       console.log("error-newsfeed", error);
     }
+  }, []);
+
+  useEffect(() => {
+    function getProfile() {
+      userAPI.getMyProfile().then((rs) => dispatch(setProfile(rs.data.data)));
+    }
+    getProfile();
+    const interval = setInterval(() => getProfile(), 1000 * 60);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
   return (
     <Layout className="w-full h-screen newsfeed">
@@ -141,6 +153,7 @@ const Social = () => {
                                 <SNAvatar
                                   src={item.user.avatar}
                                   fullName={item.user.fullName}
+                                  isOnline={item.user.isOnline}
                                 />
                               }
                               title={

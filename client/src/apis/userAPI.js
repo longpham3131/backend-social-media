@@ -45,6 +45,10 @@ const userAPI = {
     const url = `${BASE_URL}/search/${keySearch}`;
     return axios.get(url, config);
   },
+  checkInAtivity(){
+    const url = `${HTTP_CONNECT}/admin/checkInActivity`;
+    return axios.get(url, config);
+  }
 };
 
 export default userAPI;
