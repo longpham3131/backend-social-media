@@ -3,6 +3,7 @@ import { useState } from "react";
 import Login from "./Login";
 import React from "react";
 import Register from "./Register";
+import ForgetPassword from "./ForgetPassword";
 const AuthPage = () => {
   const tabList = [
     {
@@ -13,11 +14,16 @@ const AuthPage = () => {
       key: "register",
       tab: "Register",
     },
+    {
+      key: "forgetPassword",
+      tab: "Forget Password",
+    },
   ];
   const [activeTabKey, setActiveTabKey] = useState("login");
   const contentList = {
     login: <Login />,
     register: <Register onSuccess={() => setActiveTabKey("login")} />,
+    forgetPassword: <ForgetPassword onSuccess={() => setActiveTabKey("login")}/>,
   };
 
   const onTabChange = (key) => {
