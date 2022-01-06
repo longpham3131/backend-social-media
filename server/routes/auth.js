@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
+const moment = require("moment");
 const argon2 = require("argon2");
 const User = require("../models/User");
+const AuthenticateCode = require("../models/AuthenticateCode");
+const { ObjectId } = require("mongodb");
 const MultipleFile = require("../models/MultipleFile");
 const jwt = require("jsonwebtoken");
 // require("dotenv").config();
 router.get("/", (req, res) => res.send("USER ROUTE"));
-const { error500, error400 } = require("../util/res");
+const { error500, error400, makeid, sendEmail } = require("../util/res");
 //@route POST api/auth/register
 
 //REGISTER
@@ -30,11 +33,13 @@ router.post("/register", async (req, res) => {
         .status(400)
         .json({ success: false, message: "Email đã tồn tại" });
     const hashedPassword = await argon2.hash(password);
+
     const newUser = new User({
       username,
       password: hashedPassword,
       email,
       fullName,
+      createAt: moment(),
     });
     await newUser.save();
     const date = new Date();
@@ -82,4 +87,99 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/verifyCode", async (req, res) => {
+  try {
+    const { code } = req.body;
+    let data = await checkValidCode(code);
+    delete data.findCode;
+    return res.json(data);
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
+
+const checkValidCode = async (code) => {
+  let findCode = await AuthenticateCode.findOne({ code: code });
+  if (!findCode) {
+    return {
+      success: false,
+      message: "Your code are invalid",
+    };
+  }
+  if (moment(findCode.expireAt).isBefore(moment())) {
+    return {
+      success: false,
+      message: "Your code are expired",
+    };
+  }
+
+  return {
+    success: true,
+    message: "",
+    findCode,
+  };
+};
+
+router.post("/changePasswordByCode", async (req, res) => {
+  try {
+    const { code, newPassword } = req.body;
+    let data = await checkValidCode(code);
+    if (!data.success) {
+      return res.json(data);
+    }
+    const user = await User.findOne({ email: data.findCode.email });
+    if (!user) return res.json({ success: false, message: "User not found" });
+
+    const hashedPassword = await argon2.hash(newPassword);
+    user.password = hashedPassword;
+
+    await user.save();
+    return res.json({
+      success: "true",
+      message: "Change password success",
+      hashedPassword,
+    });
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
+
+router.post("/forgetPassword", async (req, res) => {
+  try {
+    const { email } = req.body;
+    let findUser = await User.findOne({ email });
+    if (!findUser)
+      return res.json({
+        success: "false",
+      });
+    let find = await AuthenticateCode.find({ email });
+    let genCode = makeid(6);
+    if (find.length == 0) {
+      let authenticateCode = new AuthenticateCode({
+        email,
+        code: genCode,
+      });
+      await authenticateCode.save();
+    } else {
+      let upt = await AuthenticateCode.findOneAndUpdate(
+        { email },
+        {
+          code: genCode,
+          createAt: moment(),
+          expireAt: moment().add(30, "minutes"),
+        }
+      );
+      console.log("upt", upt);
+    }
+    sendEmail(genCode, email);
+    return res.json({
+      success: "true",
+    });
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
 module.exports = router;

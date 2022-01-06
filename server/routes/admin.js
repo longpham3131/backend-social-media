@@ -5,6 +5,7 @@ const User = require("../models/User");
 const ReportUser = require("../models/ReportUser");
 const ReportPost = require("../models/ReportPost");
 const UserNotification = require("../models/UserNotification");
+const ActivityHistory = require("../models/ActivityHistory");
 const Post = require("../models/Post");
 const { ObjectId } = require("mongodb");
 const { error500, error400 } = require("../util/res");
@@ -27,6 +28,7 @@ router.get("/getUsers", verifyToken, async (req, res) => {
     return error500(res);
   }
 });
+
 router.get("/getUsersDetail/:userId", verifyToken, async (req, res) => {
   try {
     const { userId } = req.params;
@@ -233,42 +235,106 @@ router.get("/getPosts", verifyToken, async (req, res) => {
 
 router.post("/getDataChartUser", verifyToken, async (req, res) => {
   try {
-    const { type, fromTime,toTime } = req.body;
-    let startDate = fromTime
-    // .format("DD-MM-YYYY"); //req.params.startTime = 2016-09-25 00:00:00
-    let endDate = toTime
-    // .format("DD-MM-YYYY"); //req.params.endTime = 2016-09-25 01:00:00
-    // const date = new Date();
-    let listDays = getDataChartUserDay(startDate, endDate);
-    let countMax=0
-    let count=0 
+    const { type, fromTime, toTime } = req.body;
+    console.log(type, fromTime, toTime);
+    let startDate = moment(fromTime).clone().startOf("day");
+    let endDate = moment(toTime).clone().endOf("day");
+    let listDays = null;
+    switch (type) {
+      case "day":
+        listDays = getDataChartUserDay(startDate, endDate);
+        break;
+      case "month":
+        listDays = getDataChartUserMonth(startDate, endDate);
+        break;
+      case "year":
+        listDays = getDataChartUserYear(startDate, endDate);
+        break;
+    } 
+    getDataChartUserDay(startDate, endDate);
+    console.log(listDays);
+    let countMax = 0;
+    let count = 0;
     let listData = await Promise.all(
       listDays.map(async (day) => {
-        // console.log(day)
         let resultLike = await UserNotification.find({
           createAt: {
-            $gte: day,
-            $lte: moment(day).add(1, "days"),
+            $gte: day, 
+            $lte: day.clone().endOf(type),
           },
           type: 1,
         }).lean();
         let resultComment = await UserNotification.find({
           createAt: {
             $gte: day,
-            $lte: moment(day).add(1, "days"),
+            $lte: day.clone().endOf(type),
           },
           type: 2,
         }).lean();
         // console.log(day);
-        countMax=countMax<resultLike.length?resultLike.length:countMax
-        countMax=countMax<resultComment.length?resultComment.length:countMax
-        count=count+resultLike.length+resultComment.length
-        return { day: day, like: resultLike.length, comment: resultComment.length };
+        countMax = countMax < resultLike.length ? resultLike.length : countMax;
+        countMax =
+          countMax < resultComment.length ? resultComment.length : countMax;
+        count = count + resultLike.length + resultComment.length;
+        return {
+          day: day,
+          like: resultLike.length,
+          comment: resultComment.length,
+        };
       })
     );
 
     // console.log(moment(listData[0].day));
-    return res.json({ success: true, data: listData,countMax,count });
+    return res.json({ success: true, data: listData, countMax, count });
+    return;
+  } catch (error) {
+    console.log(error);
+    return error500(res);
+  }
+});
+
+router.post("/test", verifyToken, async (req, res) => {
+  try {
+    let currentDate = moment();
+    let startDate = currentDate.clone().startOf("day");
+    let endDate = currentDate.clone().endOf("day");
+    let listDays = getDataChartUserDay(startDate, endDate);
+
+    console.log(listDays);
+    let countMax = 0;
+    let count = 0;
+    let listData = await Promise.all(
+      listDays.map(async (day) => {
+        let resultLike = await UserNotification.find({
+          createAt: {
+            $gte: day,
+            $lte: day.clone().endOf("day"),
+          },
+          type: 1,
+        }).lean();
+        let resultComment = await UserNotification.find({
+          createAt: {
+            $gte: day,
+            $lte: day.clone().endOf("day"),
+          },
+          type: 2,
+        }).lean();
+        // console.log(day);
+        countMax = countMax < resultLike.length ? resultLike.length : countMax;
+        countMax =
+          countMax < resultComment.length ? resultComment.length : countMax;
+        count = count + resultLike.length + resultComment.length;
+        return {
+          day: day,
+          like: resultLike.length,
+          comment: resultComment.length,
+        };
+      })
+    );
+
+    // console.log(moment(listData[0].day));
+    return res.json({ success: true, data: listData, countMax, count });
+    return;
   } catch (error) {
     console.log(error);
     return error500(res);
@@ -276,10 +342,10 @@ router.post("/getDataChartUser", verifyToken, async (req, res) => {
 });
 
 const getDataChartUserDay = (startDay, endDay) => {
-  let newDay = startDay;
+  let newDay = moment(startDay);
   let listDays = [startDay];
   let count = 0;
-  while (!moment(newDay).isSame(endDay)) {
+  while (!moment(newDay).isSame(endDay, "day")) {
     newDay = moment(newDay).add(1, "days");
     listDays.push(newDay);
     count++;
@@ -288,4 +354,99 @@ const getDataChartUserDay = (startDay, endDay) => {
   return listDays;
 };
 
+const getDataChartUserMonth = (startDay, endDay) => {
+  let newDay = moment(startDay);
+  let listDays = [startDay];
+  let count = 0;
+  while (!moment(newDay).isSame(endDay, "month")) {
+    newDay = moment(newDay).add(1, "months").startOf("month");
+    listDays.push(newDay);
+    count++;
+  }
+  // console.log(listDays);
+  return listDays;
+};
+
+const getDataChartUserYear = (startDay, endDay) => {
+  let newDay = moment(startDay);
+  let listDays = [startDay];
+  let count = 0;
+  while (!moment(newDay).isSame(endDay, "year")) {
+    newDay = moment(newDay).add(1, "years").startOf("year");
+    listDays.push(newDay);
+    count++;
+  }
+  // console.log(listDays);
+  return listDays;
+};
+
+router.get("/getDataChartUserActivity", verifyToken, async (req, res) => {
+  try {
+    let currentDate = moment();
+    let startDate = currentDate.clone().startOf("day");
+    let endDate = currentDate.clone().endOf("day");
+
+    let result = await ActivityHistory.find({
+      createAt: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    }).lean();
+
+    // console.log(day);
+
+    // console.log(moment(listData[0].day));
+    return res.json({ success: true, data: result.length });
+  } catch (error) {
+    console.log(error);
+    return error500(res);
+  }
+});
+
+router.get("/checkInActivity", verifyToken, async (req, res) => {
+  try {
+    let currentDate = moment();
+    let strDate = currentDate.format("DD/MM/YYYY").toString();
+    console.log(strDate);
+    let result = await ActivityHistory.find({
+      user: ObjectId(req.userId),
+      createAt: {
+        $gte: currentDate.clone().startOf("day"),
+        $lte: currentDate.clone().endOf("day"),
+      },
+    }).lean();
+    if (result.length == 0) {
+      let activityHistory = new ActivityHistory({
+        user: ObjectId(req.userId),
+        createAt: currentDate,
+        strDate: strDate,
+      });
+      await activityHistory.save();
+    }
+
+    return res.json({ success: true });
+  } catch (err) {
+    return error500(res);
+  }
+});
+
+router.get("/getDataChartUserNew", verifyToken, async (req, res) => {
+  try {
+    let currentDate = moment();
+    let strDate = currentDate.format("DD/MM/YYYY").toString();
+    console.log(strDate);
+    let result = await User.find({
+      createAt: {
+        $gte: currentDate.clone().startOf("day"),
+        $lte: currentDate.clone().endOf("day"),
+      },
+    }).lean();
+
+    console.log(result);
+
+    return res.json({ success: true, data: result.length });
+  } catch (err) {
+    return error500(res);
+  }
+});
 module.exports = router;

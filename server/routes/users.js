@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const moment = require("moment");
 const User = require("../models/User");
 const { ObjectId } = require("mongodb");
 const {
@@ -11,11 +12,13 @@ const {
 } = require("../controllers/friend");
 const { error500, error400 } = require("../util/res");
 const verifyToken = require("../middleware/auth");
+
 const argon2 = require("argon2");
 router.get("/getFriendRequest", verifyToken, GetFriendsRequest);
 router.post("/unfriend", verifyToken, UnFriend);
 router.post("/friendRequest", verifyToken, FriendRequest);
 router.post("/friendRespone", verifyToken, FriendRequestRespone);
+
 // GET ALL USER
 // router.get("/user/", verifyToken, (req, res) => {
 //   User.find().then((users) => {
@@ -129,10 +132,10 @@ router.post("/changePassword", verifyToken, async (req, res) => {
     return res.json({
       success: "true",
       message: "Change password success",
-      hashedPassword
+      hashedPassword,
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return error500(res);
   }
 });
@@ -142,7 +145,7 @@ router.post("/changePassword", verifyToken, async (req, res) => {
 router.get("/profile", verifyToken, (req, res) => {
   console.log("profile");
   User.findById(req.userId)
-    .populate({ path: "friends.user", select: "fullName avatar" })
+    .populate({ path: "friends.user", select: "fullName avatar isOnline" })
     .populate({ path: "friendsRequest.user", select: "fullName avatar" })
     .lean()
     .then((user) => {
@@ -169,7 +172,7 @@ router.get("/:id", verifyToken, (req, res) => {
   try {
     const userId = req.params.id;
     User.findById(userId)
-      .populate({ path: "friends.user", select: "fullName avatar" })
+      .populate({ path: "friends.user", select: "fullName avatar isOnline" })
       .populate({ path: "friendsRequest.user", select: "fullName avatar" })
       .lean()
       .then((user) => {

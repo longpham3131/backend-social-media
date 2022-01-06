@@ -18,6 +18,8 @@ const verifyToken = async (req, res, next) => {
     if (!moment(decode.expired).isAfter(currentTime))
       return res.status(401).json({ success: false, message: "Token has expired" });
     if (user) {
+
+
       next();
     } else {
       return error403(res);
