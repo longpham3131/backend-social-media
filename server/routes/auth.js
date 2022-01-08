@@ -86,6 +86,32 @@ router.post("/login", async (req, res) => {
     return error500(res);
   }
 });
+router.post("/loginAdmin", async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const user = await User.findOne({ username, isAdmin: true });
+
+    if (!user) return error400(res, "Tài khoản hoặc mật khẩu không đúng");
+    const passwordValid = await argon2.verify(user.password, password);
+    if (!passwordValid)
+      return error400(res, "Tài khoản hoặc mật khẩu không đúng");
+
+    const date = new Date();
+    date.setDate(date.getDate() + 300000);
+    const accessToken = jwt.sign(
+      { userId: user._id, expired: date },
+      process.env.ACCESS_TOKEN_SECRET
+    );
+    res.json({
+      success: true,
+      message: "Login successfully",
+      accessToken,
+    });
+  } catch (error) {
+    console.log(error);
+    return error500(res);
+  }
+});
 
 router.post("/verifyCode", async (req, res) => {
   try {

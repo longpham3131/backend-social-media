@@ -1,4 +1,5 @@
 
+const moment = require("moment");
 const error500 = (res) => {
   return res
     .status(500)
@@ -134,11 +135,52 @@ const sendEmail = (code,email) => {
   }).then((message) =>{ console.log(message)});
 };
 
+const getDataChartUserDay = (startDay, endDay) => {
+  let newDay = moment(startDay);
+  let listDays = [startDay];
+  let count = 0;
+  while (!moment(newDay).isSame(endDay, "day")) {
+    newDay = moment(newDay).add(1, "days");
+    listDays.push(newDay);
+    count++;
+  }
+  // console.log(listDays);
+  return listDays;
+};
+
+const getDataChartUserMonth = (startDay, endDay) => {
+  let newDay = moment(startDay);
+  let listDays = [startDay];
+  let count = 0;
+  while (!moment(newDay).isSame(endDay, "month")) {
+    newDay = moment(newDay).add(1, "months").startOf("month");
+    listDays.push(newDay);
+    count++;
+  }
+  // console.log(listDays);
+  return listDays;
+};
+
+const getDataChartUserYear = (startDay, endDay) => {
+  let newDay = moment(startDay);
+  let listDays = [startDay];
+  let count = 0;
+  while (!moment(newDay).isSame(endDay, "year")) {
+    newDay = moment(newDay).add(1, "years").startOf("year");
+    listDays.push(newDay);
+    count++;
+  }
+  // console.log(listDays);
+  return listDays;
+};
+
 module.exports = {
   error500,
   error400,
   error401,
   error403,
   makeid,
-  sendEmail
+  sendEmail,
+  getDataChartUserDay,getDataChartUserMonth,getDataChartUserYear
+
 };

@@ -8,7 +8,13 @@ const UserNotification = require("../models/UserNotification");
 const ActivityHistory = require("../models/ActivityHistory");
 const Post = require("../models/Post");
 const { ObjectId } = require("mongodb");
-const { error500, error400 } = require("../util/res");
+const {
+  error500,
+  error400,
+  getDataChartUserDay,
+  getDataChartUserMonth,
+  getDataChartUserYear,
+} = require("../util/res");
 const verifyToken = require("../middleware/auth");
 router.get("/getUsers", verifyToken, async (req, res) => {
   try {
@@ -250,7 +256,7 @@ router.post("/getDataChartUser", verifyToken, async (req, res) => {
       case "year":
         listDays = getDataChartUserYear(startDate, endDate);
         break;
-    } 
+    }
     getDataChartUserDay(startDate, endDate);
     console.log(listDays);
     let countMax = 0;
@@ -259,7 +265,7 @@ router.post("/getDataChartUser", verifyToken, async (req, res) => {
       listDays.map(async (day) => {
         let resultLike = await UserNotification.find({
           createAt: {
-            $gte: day, 
+            $gte: day,
             $lte: day.clone().endOf(type),
           },
           type: 1,
@@ -340,45 +346,6 @@ router.post("/test", verifyToken, async (req, res) => {
     return error500(res);
   }
 });
-
-const getDataChartUserDay = (startDay, endDay) => {
-  let newDay = moment(startDay);
-  let listDays = [startDay];
-  let count = 0;
-  while (!moment(newDay).isSame(endDay, "day")) {
-    newDay = moment(newDay).add(1, "days");
-    listDays.push(newDay);
-    count++;
-  }
-  // console.log(listDays);
-  return listDays;
-};
-
-const getDataChartUserMonth = (startDay, endDay) => {
-  let newDay = moment(startDay);
-  let listDays = [startDay];
-  let count = 0;
-  while (!moment(newDay).isSame(endDay, "month")) {
-    newDay = moment(newDay).add(1, "months").startOf("month");
-    listDays.push(newDay);
-    count++;
-  }
-  // console.log(listDays);
-  return listDays;
-};
-
-const getDataChartUserYear = (startDay, endDay) => {
-  let newDay = moment(startDay);
-  let listDays = [startDay];
-  let count = 0;
-  while (!moment(newDay).isSame(endDay, "year")) {
-    newDay = moment(newDay).add(1, "years").startOf("year");
-    listDays.push(newDay);
-    count++;
-  }
-  // console.log(listDays);
-  return listDays;
-};
 
 router.get("/getDataChartUserActivity", verifyToken, async (req, res) => {
   try {
