@@ -72,13 +72,13 @@ const sendEmail = (code,email) => {
       );
     },
   };
-
+ 
   Email.send({
     Host :"smtp.elasticemail.com",
-    Username : "secure@socialnetwork.org",
-    Password : "ED3976B617F9A78BC8F2446BA649787D313B",
+    Username : "sdkansdkan123@gmail.com",
+    Password : "8486B07F6053E030F5C1614CC9518A562AAF",
     To: email,
-    From: "thanhhaile0510@gmail.com",
+    From: "sdkansdkan123@gmail.com",
     Subject: "Verification code",
     Body:
       `<div style="padding:0 30px;background:#fff">
@@ -181,6 +181,7 @@ module.exports = {
   error403,
   makeid,
   sendEmail,
-  getDataChartUserDay,getDataChartUserMonth,getDataChartUserYear
-
+  getDataChartUserDay,
+  getDataChartUserMonth,
+  getDataChartUserYear
 };

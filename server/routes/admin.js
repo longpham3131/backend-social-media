@@ -416,4 +416,54 @@ router.get("/getDataChartUserNew", verifyToken, async (req, res) => {
     return error500(res);
   }
 });
+
+//Chart 
+
+router.post("/getDataChartUserActivities", verifyToken, async (req, res) => {
+  try {
+    const { type, fromTime, toTime } = req.body;
+    console.log(type, fromTime, toTime);
+    let startDate = moment(fromTime).clone().startOf("day");
+    let endDate = moment(toTime).clone().endOf("day");
+    let listDays = null;
+    switch (type) {
+      case "day":
+        listDays = getDataChartUserDay(startDate, endDate);
+        break;
+      case "month":
+        listDays = getDataChartUserMonth(startDate, endDate);
+        break;
+      case "year":
+        listDays = getDataChartUserYear(startDate, endDate);
+        break;
+    }
+    getDataChartUserDay(startDate, endDate);
+    console.log(listDays);
+    let countMax = 0;
+    let listData = await Promise.all(
+      listDays.map(async (day) => {
+        let result = await ActivityHistory.find({
+          createAt: {
+            $gte: day,
+            $lte: day.clone().endOf(type),
+          },
+        }).lean();
+       
+        // console.log(day);
+        countMax = countMax < result.length ? result.length : countMax;
+        return {
+          day: day,
+          count: result.length,
+        };
+      })
+    );
+
+    // console.log(moment(listData[0].day));
+    return res.json({ success: true, data: listData, countMax });
+    return;
+  } catch (error) {
+    console.log(error);
+    return error500(res);
+  }
+});
 module.exports = router;
