@@ -277,15 +277,25 @@ router.post("/getDataChartUser", verifyToken, async (req, res) => {
           },
           type: 2,
         }).lean();
+        let resultPost = await Post.find({
+          createAt: {
+            $gte: day,
+            $lte: day.clone().endOf(type),
+          },
+          type: 2,
+        }).lean();
         // console.log(day);
         countMax = countMax < resultLike.length ? resultLike.length : countMax;
         countMax =
           countMax < resultComment.length ? resultComment.length : countMax;
+        countMax =
+          countMax < resultPost.length ? resultPost.length : countMax;
         count = count + resultLike.length + resultComment.length;
         return {
           day: day,
           like: resultLike.length,
           comment: resultComment.length,
+          post: resultPost.length,
         };
       })
     );
@@ -417,7 +427,7 @@ router.get("/getDataChartUserNew", verifyToken, async (req, res) => {
   }
 });
 
-//Chart 
+//Chart
 
 router.post("/getDataChartUserActivities", verifyToken, async (req, res) => {
   try {
@@ -448,7 +458,7 @@ router.post("/getDataChartUserActivities", verifyToken, async (req, res) => {
             $lte: day.clone().endOf(type),
           },
         }).lean();
-       
+
         // console.log(day);
         countMax = countMax < result.length ? result.length : countMax;
         return {
