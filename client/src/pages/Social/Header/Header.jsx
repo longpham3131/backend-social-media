@@ -97,7 +97,7 @@ const Headerbar = ({ collapsed, onToggle }) => {
     try {
       await userAPI.checkInAtivity();
     } catch (err) {
-      if (err.response.status == 401) logOut();
+      if ((+err.response.statu) == +401) logOut();
     }
   };
 
