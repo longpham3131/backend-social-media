@@ -279,14 +279,14 @@ const Profile = () => {
                 </Button>,
               ]}
             >
-              <p className="flex items-center justify-between text-base">
+              {/* <p className="flex items-center justify-between text-base">
                 <span>Followers: </span>
                 <span className="ml-auto">{profile.followers.length}</span>
               </p>
               <p className="flex items-center justify-between text-base">
                 <span>Followings: </span>
                 <span className="ml-auto">{profile.followings.length}</span>
-              </p>
+              </p> */}
               <p className="flex items-center justify-between text-base">
                 <span>Friends List: </span>
                 <span className="ml-auto">{profile.friends.length}</span>
