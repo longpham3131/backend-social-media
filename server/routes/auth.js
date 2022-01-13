@@ -165,6 +165,7 @@ router.post("/changePasswordByCode", async (req, res) => {
       success: "true",
       message: "Change password success",
       hashedPassword,
+      userId:user._id
     });
   } catch (err) {
     console.log(err);
