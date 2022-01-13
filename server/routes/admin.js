@@ -288,8 +288,7 @@ router.post("/getDataChartUser", verifyToken, async (req, res) => {
         countMax = countMax < resultLike.length ? resultLike.length : countMax;
         countMax =
           countMax < resultComment.length ? resultComment.length : countMax;
-        countMax =
-          countMax < resultPost.length ? resultPost.length : countMax;
+        countMax = countMax < resultPost.length ? resultPost.length : countMax;
         count = count + resultLike.length + resultComment.length;
         return {
           day: day,
@@ -410,8 +409,6 @@ router.get("/checkInActivity", verifyToken, async (req, res) => {
 router.get("/getDataChartUserNew", verifyToken, async (req, res) => {
   try {
     let currentDate = moment();
-    let strDate = currentDate.format("DD/MM/YYYY").toString();
-    console.log(strDate);
     let result = await User.find({
       createAt: {
         $gte: currentDate.clone().startOf("day"),
@@ -423,6 +420,35 @@ router.get("/getDataChartUserNew", verifyToken, async (req, res) => {
 
     return res.json({ success: true, data: result.length });
   } catch (err) {
+    return error500(res);
+  }
+});
+
+router.get("/getDataChartPostsNew", verifyToken, async (req, res) => {
+  try {
+    let currentDate = moment();
+    let result = await Post.find({
+      createAt: {
+        $gte: currentDate.clone().startOf("day"),
+        $lt: currentDate.clone().endOf("day"),
+      },
+    }).lean();
+
+    console.log(result);
+
+    return res.json({ success: true, data: result.length });
+  } catch (err) {
+    return error500(res);
+  }
+});
+
+router.get("/deleteUser/:id", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    await User.findByIdAndDelete(id)
+    return res.json({ success: true });
+  } 
+  catch (err) {
     return error500(res);
   }
 });
@@ -476,4 +502,5 @@ router.post("/getDataChartUserActivities", verifyToken, async (req, res) => {
     return error500(res);
   }
 });
+
 module.exports = router;

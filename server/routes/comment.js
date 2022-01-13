@@ -172,7 +172,7 @@ router.put("/", verifyToken, async (req, res) => {
   }
 });
 
-router.delete("/", verifyToken, async (req, res) => {
+router.post("/commentDelete", verifyToken, async (req, res) => { 
   try {
     const { commentId, postId } = req.body;
     const result = await Promise.all([
@@ -190,7 +190,9 @@ router.delete("/", verifyToken, async (req, res) => {
       fromUser: ObjectId(req.userId),
       type: 2,
     });
+
     const io = req.io;
+    
     io.sockets
       .to(`user_${result[0].poster.toString()}`)
       .emit("notification", "you have new notification");

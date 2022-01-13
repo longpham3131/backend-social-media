@@ -19,19 +19,19 @@ router.post("/register", async (req, res) => {
   if (!username || !password || !email)
     return res
       .status(400)
-      .json({ success: false, message: "Missing username and/or password" });
+      .json({ success: false, message: "Missing username or password" });
   try {
     //check exits user
     const user = await User.findOne({ username });
     if (user)
       return res
         .status(400)
-        .json({ success: false, message: "Tài khoản đã tồn tại" });
+        .json({ success: false, message: "Account already exists" });
     const emailuser = await User.findOne({ email });
     if (emailuser)
       return res
         .status(400)
-        .json({ success: false, message: "Email đã tồn tại" });
+        .json({ success: false, message: "" });
     const hashedPassword = await argon2.hash(password);
 
     const newUser = new User({
@@ -65,10 +65,10 @@ router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ username });
 
-    if (!user) return error400(res, "Tài khoản hoặc mật khẩu không đúng");
+    if (!user) return error400(res, "Wrong Username or Password");
     const passwordValid = await argon2.verify(user.password, password);
     if (!passwordValid)
-      return error400(res, "Tài khoản hoặc mật khẩu không đúng");
+      return error400(res, "Wrong Username or Password");
 
     const date = new Date();
     date.setDate(date.getDate() + 300000);
@@ -91,10 +91,10 @@ router.post("/loginAdmin", async (req, res) => {
   try {
     const user = await User.findOne({ username, isAdmin: true });
 
-    if (!user) return error400(res, "Tài khoản hoặc mật khẩu không đúng");
+    if (!user) return error400(res, "Wrong Username or Password");
     const passwordValid = await argon2.verify(user.password, password);
     if (!passwordValid)
-      return error400(res, "Tài khoản hoặc mật khẩu không đúng");
+      return error400(res, "Wrong Username or Password");
 
     const date = new Date();
     date.setDate(date.getDate() + 300000);
