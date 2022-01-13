@@ -11,6 +11,7 @@ import {
   createComment,
   likePost,
   addMorePost,
+  deletePostComment,
 } from "@/store/postSlice";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import CreateEditPost from "@/components/SNCreateEditPost";
@@ -62,6 +63,7 @@ const Newsfeed = () => {
       message.error("Edit post failed!");
     }
   };
+
   const handleDeletePost = async (postId) => {
     confirm({
       title: "Do you want to delete this post?",
@@ -82,6 +84,29 @@ const Newsfeed = () => {
       },
     });
   };
+
+  const handleDeletePostComment = async (data) => {
+    confirm({
+      title: "Do you want to delete this post?",
+      icon: <ExclamationCircleOutlined />,
+      okText: "Confirm",
+      cancelText: "Cancel",
+      async onOk() { 
+        try {
+          await postAPI.deleteComment(data);
+          await dispatch(deletePostComment(data));
+          message.success("Delete post success!");
+        } catch (err) {
+          console.log(err);
+          message.error("Delete post failed!");
+        }
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
   const showEdit = async (post) => {
     await refAddEditPost.current.setFields(
       post.audience,
@@ -169,6 +194,7 @@ const Newsfeed = () => {
               post={post}
               key={post._id}
               onDelete={handleDeletePost}
+              onDeleteComment={handleDeletePostComment}
               onEdit={showEdit}
               onCommentPost={handleComment}
               onLike={handleLikePost}

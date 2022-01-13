@@ -9,7 +9,7 @@ const post = createSlice({
       return state;
     },
     addMorePost: (state, action) => {
-      state = [...state,...action.payload];
+      state = [...state, ...action.payload];
       return state;
     },
     createPost: (state, action) => {
@@ -30,6 +30,17 @@ const post = createSlice({
         (item) => item._id === action.payload.postId
       );
       state[index].comments.unshift(action.payload.comment);
+      return state;
+    },
+    deletePostComment: (state, action) => {
+      console.log("state", state, "action", action.payload);
+      const index = state.findIndex(
+        (item) => item._id === action.payload.postId
+      );
+      state[index].comments = state[index].comments.filter(
+        (cmt) => cmt._id != action.payload.commentId
+      );
+
       return state;
     },
     //like
@@ -58,6 +69,7 @@ export const {
   deletePost,
   createComment,
   likePost,
-  addMorePost
+  addMorePost,
+  deletePostComment,
 } = actions;
 export default reducer;

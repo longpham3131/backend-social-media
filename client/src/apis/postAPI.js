@@ -47,8 +47,8 @@ const postAPI = {
     return axios.post(url, data, config);
   },
   deleteComment(data) {
-    const url = `${HTTP_CONNECT}/comment`;
-    return axios.delete(url, data, config);
+    const url = `${HTTP_CONNECT}/comment/commentDelete`;
+    return axios.post(url, data, config);
   },
   editComment(data) {
     const url = `${HTTP_CONNECT}/comment`;

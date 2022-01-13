@@ -30,7 +30,7 @@ import { Link } from "react-router-dom";
 import SNAvatar from "./SNAvatar";
 
 const { Meta } = Card;
-const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
+const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike ,onDeleteComment}) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const myProfile = useSelector((state) => state.profile);
   const { poster, comments, like } = post;
@@ -63,6 +63,16 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
       {isPoster && (
         <Menu.Item danger>
           <p onClick={() => onDelete(post._id)}>Delete post</p>
+        </Menu.Item>
+      )}
+    </Menu>
+  );
+
+  const menuComment =(data)=> (
+    <Menu>
+      {data.user._id==myProfile?._id && (
+        <Menu.Item danger>
+          <p onClick={() => onDeleteComment({postId:post._id,commentId:data._id})}>Delete comment</p>
         </Menu.Item>
       )}
     </Menu>
@@ -238,7 +248,7 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
               dataSource={comments}
               locale={{ emptyText: "No comment." }}
               renderItem={(item) => (
-                <li>
+                <li className="flex justify-between">
                   <Comment
                     actions={actionComment}
                     author={item.user?.fullName}
@@ -265,6 +275,14 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike }) => {
                       datetime={formatMinutes(item.createAt)}
                     ></Comment> */}
                   </Comment>
+                  <Dropdown
+                    overlay={menuComment(item)}
+                    className="pt-2"
+                    placement="topRight"
+                  >
+                    <MoreOutlined />
+                  </Dropdown>
+                  <></>
                 </li>
               )}
             />

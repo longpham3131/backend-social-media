@@ -94,7 +94,11 @@ const Headerbar = ({ collapsed, onToggle }) => {
   }, []);
 
   const checkInAtivity = async () => {
-    await userAPI.checkInAtivity();
+    try {
+      await userAPI.checkInAtivity();
+    } catch (err) {
+      if (err.response.status == 401) logOut();
+    }
   };
 
   return (
