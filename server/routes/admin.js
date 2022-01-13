@@ -445,10 +445,11 @@ router.get("/getDataChartPostsNew", verifyToken, async (req, res) => {
 router.get("/deleteUser/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
-    await User.findByIdAndDelete(id)
+    await Post.updateMany({ poster: ObjectId(id) }, { status: 0 });
+    await User.findByIdAndDelete(id);
+
     return res.json({ success: true });
-  } 
-  catch (err) {
+  } catch (err) {
     return error500(res);
   }
 });
