@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import {
   Avatar,
@@ -31,7 +31,7 @@ import { changePassword } from "@/store/profileSlice";
 import chatAPI from "@/apis/chatAPI";
 const { Header } = Layout;
 const Headerbar = ({ collapsed, onToggle }) => {
-  let history = useHistory();
+  const navigate = useNavigate();
   const refAddEditPost = useRef(null);
   const dispatch = useDispatch();
   const myProfile = useSelector((state) => state?.profile);
@@ -41,7 +41,7 @@ const Headerbar = ({ collapsed, onToggle }) => {
 
   const logOut = () => {
     localStorage.clear();
-    history.push("/login");
+    navigate("/login");
     window.location.reload();
   };
   const handleCreatePost = async (values) => {
@@ -97,7 +97,7 @@ const Headerbar = ({ collapsed, onToggle }) => {
     try {
       await userAPI.checkInAtivity();
     } catch (err) {
-      if ((+err.response.statu) == +401) logOut();
+      if (+err.response.statu == +401) logOut();
     }
   };
 

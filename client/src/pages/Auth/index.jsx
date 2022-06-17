@@ -1,55 +1,26 @@
-import { Card } from "antd";
-import { useState } from "react";
-import Login from "./Login";
 import React from "react";
-import Register from "./Register";
-import ForgetPassword from "./ForgetPassword";
-const AuthPage = () => {
-  const tabList = [
-    {
-      key: "login",
-      tab: "Login",
-    },
-    {
-      key: "register",
-      tab: "Register",
-    },
-    {
-      key: "forgetPassword",
-      tab: "Forget Password",
-    },
-  ];
-  const [activeTabKey, setActiveTabKey] = useState("login");
-  const contentList = {
-    login: <Login />,
-    register: <Register onSuccess={() => setActiveTabKey("login")} />,
-    forgetPassword: <ForgetPassword onSuccess={() => setActiveTabKey("login")}/>,
-  };
-
-  const onTabChange = (key) => {
-    setActiveTabKey(key);
-  };
+const AuthPage = ({ slot }) => {
   return (
-    <div className="p-[5rem] h-screen flex items-center justify-center bg-gradient-to-r from-green-300 via-green-400 to-green-500">
-      <div className="flex items-center justify-around gap-[1rem] w-full">
-        <div className="text-center hidden lg:block">
-          <img
-            src="https://dotnettrickscloud.blob.core.windows.net/uploads/CourseImages/becomeamernstackdeveloper-mobile.png"
-            className="mx-auto"
-            alt=""
-          />
+    <div className="flex">
+      <div className="bg-welcome-page h-screen w-full basis-[50%] bg-no-repeat">
+        <div className="flex justify-center items-center h-full">
+          <div className="w-[55%] text-center">
+            <p className="text-[1.5rem] text-white font-medium">WELCOME TO</p>
+            <p className=" font-secondary font-bold text-[6.5rem] text-white leading-[1em]">
+              VIKINGER
+            </p>
+          </div>
         </div>
-        <div className="w-[50rem] shadow">
-          <Card
-            style={{ width: "100%" }}
-            tabList={tabList}
-            activeTabKey={activeTabKey}
-            onTabChange={(key) => {
-              onTabChange(key);
-            }}
-          >
-            {contentList[activeTabKey]}
-          </Card>
+      </div>
+      <div className="flex justify-center items-center h-sreen basis-[50%]">
+        <div className="flex flex-col w-full text-center">
+          <img
+            src="src/assets/images/logo.png"
+            alt="logo"
+            className="w-[4rem] h-[4rem] mx-auto"
+          />
+          <p className="pt-[3rem] text-[1.625rem] font-semi-bold">Welcome</p>
+          <div className="mx-auto mt-[4rem] w-[40%]">{slot}</div>
         </div>
       </div>
     </div>

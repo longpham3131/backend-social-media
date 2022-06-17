@@ -1,55 +1,74 @@
-import { Form, Input, Button, message } from "antd";
-import { useHistory } from "react-router-dom";
+import { message } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 import authAPI from "@/apis/authAPI";
-import React from "react";
-const Login = () => {
-  let history = useHistory();
+import React, { useState } from "react";
+import SNTextField from "@/components/SNTextField";
+import SNButton from "@/components/SNButton";
+import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
 
-  const onFinish = async (values) => {
+const Login = () => {
+  let navigate = useNavigate();
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm();
+
+  const onFinish = async (data) => {
+    const { username, password } = data;
     try {
-      const res = await authAPI.login(values);
+      const res = await authAPI.login({ username, password });
       await localStorage.setItem("token", res.data.accessToken);
-      history.push("/");
-      window.location.reload();
+      navigate("/");
     } catch (error) {
-      message.error(error.response.data.message);
+      console.log("error");
+      message.error("Invalid username or password");
     }
   };
 
   return (
-    <Form
-      name="basic"
-      wrapperCol={{ span: 24 }}
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      autoComplete="off"
-    >
-      <Form.Item
-        label="Username"
+    <form className="flex flex-col gap-[2rem]">
+      <SNTextField
         name="username"
-        rules={[{ required: true, message: "Please enter your username." }]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        label="Password"
+        label={"Username"}
+        rules={{ required: "Username is required" }}
+        control={control}
+        error={!!errors.username}
+        helperText={errors.username?.message}
+      />
+      <SNTextField
         name="password"
-        rules={[{ required: true, message: "Please enter your passoword." }]}
-      >
-        <Input.Password />
-      </Form.Item>
+        label={"Password"}
+        type={"password"}
+        control={control}
+        rules={{ required: "Username is required" }}
+        error={!!errors.password}
+        helperText={errors.password?.message}
+      />
+      <SNButton
+        text={"Log in"}
+        type="submit"
+        onClick={handleSubmit(onFinish)}
+      />
 
-      {/* <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 4, span: 16 }}>
-        <Checkbox>Lưu tài khoản</Checkbox>
-      </Form.Item> */}
-
-      <div className="w-full text-right">
-        <Button type="primary" htmlType="submit" className="bg-green-4">
-          Login
-        </Button>
+      <div className="mt-[1rem]">
+        <Link
+          to={"/forget-password"}
+          className=" font-semi-bold text-[0.875rem] text-color-text hover:text-color-primary"
+        >
+          Lost your password?
+        </Link>
       </div>
-    </Form>
+      <div className="mt-[0.25rem] text-left">
+        <Link
+          to={"/register"}
+          className=" text-color-text-alt-2 font-semi-bold text-[0.875rem]  hover:text-color-primary"
+        >
+          ← Go to Vikinger
+        </Link>
+      </div>
+    </form>
   );
 };
 

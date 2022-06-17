@@ -6,13 +6,11 @@ import { debounce } from "lodash";
 import userAPI from "@/apis/userAPI";
 import { useSelector } from "react-redux";
 import { UserAddOutlined, TeamOutlined } from "@ant-design/icons";
-import { useHistory } from "react-router";
 
 const { Search } = Input;
 const SearchFriend = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
-  const history = useHistory();
   const myProfile = useSelector((state) => state.profile);
 
   const debounceSearch = useCallback(

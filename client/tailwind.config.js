@@ -1,7 +1,5 @@
 module.exports = {
-  mode: "jit",
-  purge: ["./public/**/*.html", "./src/**/*.{js,jsx,ts,tsx,vue}"],
-  darkMode: false, // or 'media' or 'class'
+  content: ["./public/**/*.html", "./src/**/*.{js,jsx,ts,tsx,vue}"],
   theme: {
     debugScreens: {
       position: ["top", "left"],
@@ -28,8 +26,13 @@ module.exports = {
       "80%": "80%",
     },
     extend: {
+      backgroundImage: {
+        "welcome-page": "url('/src/assets/images/background.jpg')",
+      },
       fontFamily: {
         quicksand: "'Quicksand', serif",
+        primary: "'Rajdhani', sans-serif",
+        secondary: "'Titillium Web', sans-serif",
       },
       lineHeight: {
         "0px": "0rem",
@@ -72,6 +75,10 @@ module.exports = {
         bold: 900,
       },
       colors: {
+        "color-text-alt-2": "var(--color-text-alt-2)",
+        "color-primary": "var(--color-primary)",
+        "color-text": "var(--color-text)",
+
         "color-background": "var(--color-background)",
         "color-default-background": "var(--color-default-background)",
         "color-login-background": "var(--color-login-background)",
@@ -111,16 +118,7 @@ module.exports = {
         "in-expo": "cubic-bezier(0.645, 0.045, 0.355, 1)",
         "out-expo": "cubic-bezier(0.19, 1, 0.22, 1)",
       },
-      backgroundImage: {
-        "landing-page": "url('/images/img-background.png')",
-        "sidebar-image": "url('/images/image-sidebar.png')",
-        "background-404": "url('/images/background404.png')",
-        "dashboard-image": "url('/images/background-dashboard.png')",
-        "active-status": "url('/images/active-status-image.png')",
-        "complete-status": "url('/images/complete-status-image.png')",
-        "close-status": "url('/images/close-status-image.png')",
-        "linear-green": "var(--color-primary-linear-green)",
-      },
+
       padding: {
         "7px": "0.7rem",
         "12px": "1.2rem",
@@ -160,9 +158,6 @@ module.exports = {
         "overplay-modal": "11",
       },
     },
-  },
-  variants: {
-    extend: {},
   },
   plugins: [
     require("tailwindcss-debug-screens"),

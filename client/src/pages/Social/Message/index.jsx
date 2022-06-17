@@ -2,14 +2,12 @@ import userAPI from "@/apis/userAPI";
 import React, { useEffect } from "react";
 import { ChatEngine } from "react-chat-engine";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router";
 import { setProfile } from "@/store/profileSlice";
 import { message } from "antd";
 import "./styles/index.css";
 const Message = () => {
   const myProfile = useSelector((state) => state.profile);
   const dispatch = useDispatch();
-  const history = useHistory();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     try {

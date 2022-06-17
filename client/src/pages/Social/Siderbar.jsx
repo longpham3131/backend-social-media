@@ -8,17 +8,17 @@ import {
 } from "@ant-design/icons";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import { useLocation } from "react-router";
 import SNAvatar from "@/components/SNAvatar";
 const { Sider } = Layout;
 const Siderbar = ({ collapsed, onClose }) => {
-  const history = useHistory();
-  const [activeTab, setActiveTab] = useState(history.location.pathname);
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(location.pathname);
 
   const profile = useSelector((state) => state.profile);
   useEffect(() => {
-    setActiveTab([history.location.pathname]);
-  }, [history.location.pathname]);
+    setActiveTab([location.pathname]);
+  }, [location.pathname]);
   return (
     <>
       {/* Sidebar cho web */}

@@ -5,7 +5,7 @@ import "./styles/index.scss";
 import userAPI from "@/apis/userAPI";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Route, useHistory } from "react-router";
+import { Route, Routes, useLocation } from "react-router";
 import Newsfeed from "./Newsfeed";
 import SearchFriend from "./SearchFriend";
 
@@ -23,10 +23,11 @@ const { Content } = Layout;
 
 const Social = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const location = useLocation();
 
   const [collapsed, setCollapsed] = useState(false);
   const profile = useSelector((state) => state.profile);
+  // console.log("history", history);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
@@ -34,8 +35,7 @@ const Social = () => {
       const myProfile = await userAPI.getMyProfile();
       dispatch(setProfile(myProfile.data.data));
       message.success("Welcome back!");
-      console.log("history", history.location.pathname);
-      sendEmail();
+      // sendEmail();
     } catch (error) {
       console.log("error-newsfeed", error);
     }
@@ -66,31 +66,21 @@ const Social = () => {
           <div className="flex justify-between w-full h-full">
             <div
               className={`h-full  ${
-                history.location.pathname !== "/message"
+                location.pathname !== "/message"
                   ? "w-full lg:w-[75%]"
                   : "w-full"
               } `}
             >
-              <Route path="/" render={() => <Newsfeed />} exact />
-              <Route
-                path="/profile/:userId"
-                render={(props) => <Profile {...props} />}
-              />
-              <Route
-                path="/post/:postId"
-                render={(props) => <PostDetail {...props} />}
-              />
-              <Route
-                path="/search-friend"
-                render={(props) => <SearchFriend {...props} />}
-              />
-              <Route
-                path="/message"
-                render={(props) => <Message {...props} />}
-              />
+              <Routes>
+                <Route path="/" element={<Newsfeed />} />
+                <Route path="/profile/:userId" element={<Profile />} />
+                <Route path="/post/:postId" element={<PostDetail />} />
+                <Route path="/search-friend" element={<SearchFriend />} />
+                <Route path="/message" element={<Message />} />
+              </Routes>
             </div>
             {/* Không hiện Friends List bè khi đang ở trang Messages */}
-            {history.location.pathname !== "/message" && (
+            {location.pathname !== "/message" && (
               <div className="border-l-4  h-full hidden lg:block lg:w-[25%] ">
                 <div className=" w-full mb-[1.2rem]">
                   <Carousel autoplay>

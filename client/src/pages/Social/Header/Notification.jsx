@@ -7,7 +7,7 @@ import {
   Popover,
   Skeleton,
 } from "antd";
-import { useHistory, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { NotificationOutlined } from "@ant-design/icons";
 import notificationAPI from "@/apis/notificationAPI";
@@ -22,7 +22,7 @@ import { setProfile } from "@/store/profileSlice";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 const Notification = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [notificationState, setNotificationState] = useState({});
   const [loading, setLoading] = useState(false);
   const socket = useContext(SocketContext);
@@ -57,8 +57,8 @@ const Notification = () => {
             <div
               onClick={() => {
                 msg.data.type != 10
-                  ? history.push(`/post/${msg.data.postId}`)
-                  : history.push(`/profile/${msg.data.fromUser._id}`);
+                  ? navigate(`/post/${msg.data.postId}`)
+                  : navigate(`/profile/${msg.data.fromUser._id}`);
               }}
             >
               <SNAvatar

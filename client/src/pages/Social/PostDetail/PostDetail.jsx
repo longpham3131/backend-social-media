@@ -2,7 +2,7 @@ import { Button, Card, Image, message, Modal } from "antd";
 import userAPI from "@/apis/userAPI";
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import postAPI from "@/apis/postAPI";
 import emptyIcon from "@/assets/images/emp.png";
 import {
@@ -23,7 +23,7 @@ import { SocketContext } from "@/service/socket/SocketContext";
 const { confirm } = Modal;
 
 const PostDetail = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const myProfile = useSelector((state) => state.profile);
   const postList = useSelector((state) => state.posts[0]);
   const dispatch = useDispatch();
@@ -108,7 +108,7 @@ const PostDetail = () => {
         try {
           postAPI.deletePost(postId);
           dispatch(deletePost(postId));
-          history.push("/");
+          navigate("/");
           message.success("Post deleted successfully!");
         } catch (err) {
           console.log(err);

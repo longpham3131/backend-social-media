@@ -30,7 +30,14 @@ import { Link } from "react-router-dom";
 import SNAvatar from "./SNAvatar";
 
 const { Meta } = Card;
-const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike ,onDeleteComment}) => {
+const SNPost = ({
+  post,
+  onDelete,
+  onEdit,
+  onCommentPost,
+  onLike,
+  onDeleteComment,
+}) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const myProfile = useSelector((state) => state.profile);
   const { poster, comments, like } = post;
@@ -68,11 +75,17 @@ const SNPost = ({ post, onDelete, onEdit, onCommentPost, onLike ,onDeleteComment
     </Menu>
   );
 
-  const menuComment =(data)=> (
+  const menuComment = (data) => (
     <Menu>
-      {data.user._id==myProfile?._id && (
+      {data.user._id == myProfile?._id && (
         <Menu.Item danger>
-          <p onClick={() => onDeleteComment({postId:post._id,commentId:data._id})}>Delete comment</p>
+          <p
+            onClick={() =>
+              onDeleteComment({ postId: post._id, commentId: data._id })
+            }
+          >
+            Delete comment
+          </p>
         </Menu.Item>
       )}
     </Menu>

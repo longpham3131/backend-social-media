@@ -1,65 +1,29 @@
 import { message } from "antd";
 import authAPI from "@/apis/authAPI";
-import React from "react";
-import chatAPI from "@/apis/chatAPI";
-import SNTextField from "@/components/SNTextField";
 import SNButton from "@/components/SNButton";
+import SNTextField from "@/components/SNTextField";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
-const Register = () => {
+
+const ResetPassword = ({ onFinished, code }) => {
   const {
-    control,
     handleSubmit,
     getValues,
+    control,
     formState: { errors },
   } = useForm();
-  const navigate = useNavigate();
+
   const onSubmit = async (data) => {
-    try {
-      const res = await authAPI.register(data);
-      await localStorage.setItem("token", res.data.accessToken);
-      message.success("Welcome to Vikinger");
-      navigate("/");
-    } catch (error) {
-      message.error(error.response);
+    const newPassword = data.password;
+    let rs = await authAPI.changePasswordByCode({ code, newPassword });
+    if (!rs.data.success) {
+      message.error(rs.data.message);
+      return;
     }
+    onFinished();
   };
   return (
     <div className="flex flex-col gap-[2rem]">
-      <SNTextField
-        name={"username"}
-        label={"Username"}
-        control={control}
-        rules={{
-          required: "Username is required",
-        }}
-        error={!!errors.username}
-        helperText={errors.username?.message}
-      />
-      <SNTextField
-        name="email"
-        label={"Email"}
-        control={control}
-        rules={{
-          required: "Email is required",
-          pattern: {
-            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-            message: "invalid",
-          },
-        }}
-        error={!!errors.email}
-        helperText={errors.email?.message}
-      />
-      <SNTextField
-        name="fullName"
-        label={"Full name"}
-        control={control}
-        rules={{
-          required: "Fullname is required",
-        }}
-        error={!!errors.fullname}
-        helperText={errors.fullname?.message}
-      />
       <SNTextField
         name="password"
         label={"Password"}
@@ -98,11 +62,12 @@ const Register = () => {
         helperText={errors.confirmPassword?.message}
       />
       <SNButton
-        text={"Sign up"}
+        text={"Change password"}
         type="submit"
         onClick={handleSubmit(onSubmit)}
       />
     </div>
   );
 };
-export default Register;
+
+export default ResetPassword;

@@ -74,7 +74,7 @@ export function beforeUpload(file) {
 }
 export const formatMinutes = (dateString) => {
   var date = new Date(dateString);
-  console.log(date);
+
   var nowDate = new Date();
   var deltaTime = parseInt((nowDate.getTime() - date.getTime()) / 1000);
   var minutes = parseInt(deltaTime / 60);

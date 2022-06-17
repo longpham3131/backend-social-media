@@ -33,10 +33,6 @@ const Newsfeed = () => {
     fetchPostList();
   }, []);
 
-  useEffect(() => {
-    console.log(postList);
-  }, [postList]);
-
   const fetchPostList = async () => {
     try {
       const postList = await postAPI.getPostList({
@@ -91,7 +87,7 @@ const Newsfeed = () => {
       icon: <ExclamationCircleOutlined />,
       okText: "Confirm",
       cancelText: "Cancel",
-      async onOk() { 
+      async onOk() {
         try {
           await postAPI.deleteComment(data);
           await dispatch(deletePostComment(data));

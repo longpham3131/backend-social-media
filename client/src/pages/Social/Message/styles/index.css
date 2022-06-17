@@ -1,7 +1,4 @@
 /* CHAT STYLES */
-* {
-  @apply font-quicksand;
-}
 .ce-chat-engine {
   height: 100% !important;
 }

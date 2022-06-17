@@ -2,7 +2,7 @@ import { Button, Card, Image, message, Modal } from "antd";
 import userAPI from "@/apis/userAPI";
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router";
+import { useParams } from "react-router";
 import postAPI from "@/apis/postAPI";
 import {
   setPostList,
