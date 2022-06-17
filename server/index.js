@@ -5,6 +5,7 @@ const io = require("socket.io")(4001, {
     origin: "*",
   },
 });
+const User = require("./models/User");
 const mongoose = require("mongoose");
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/post");
@@ -13,7 +14,9 @@ const usersRouter = require("./routes/users");
 const usersNotificationRouter = require("./routes/userNotification");
 const uploadRouter = require("./routes/upload");
 const groupRouter = require("./routes/group");
-const adminRouter =  require("./routes/admin");
+const adminRouter = require("./routes/admin");
+const verifyRouter = require("./routes/verify");
+const { ObjectId } = require("mongodb");
 const helmet = require("helmet");
 const path = require("path");
 const { cloudinary } = require("./util/cloudinary");
@@ -61,6 +64,7 @@ userNotification.on("connection", (socket) => {
 //     next(new Error("Error token"));
 //   }
 // });
+let users = [];
 io.on("connection", (socket) => {
   // console.log("1", socket.id);
   // socket.on('test',(rq)=>{
@@ -68,13 +72,27 @@ io.on("connection", (socket) => {
   //  io.emit('receive-message','server rs')
   // })
   // socket.to(room).emit("receive-noti",'noti')
+
   socket.on("join-room", (room) => {
+    socket.join(room);
+  });
+  socket.on("leave-all-and-join-room", async (room) => {
+    if(room=="user_undefined") return
     var rooms = io.sockets.adapter.sids[socket.id];
     for (var room in rooms) {
       socket.leave(room);
     }
-    console.log("join", room);
+    users[socket.id] = room;
+  
+    await User.findByIdAndUpdate(room.slice(5), { isOnline: true });
     socket.join(room);
+  });
+  socket.on("disconnect", async () => {
+    if(!users[socket.id]) return
+    console.log("disconnect " + users[socket.id].slice(5));
+    await User.findByIdAndUpdate(users[socket.id].slice(5), {
+      isOnline: false,
+    });
   });
 });
 
@@ -89,6 +107,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/group", groupRouter);
 app.use("/api/notification", usersNotificationRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/verify", verifyRouter);
 app.use("/api/upload", uploadRouter.routes);
 app.use("/filemanager", express.static(path.join(__dirname, "uploads")));
 

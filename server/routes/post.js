@@ -80,12 +80,14 @@ router.post("/", verifyToken, async (req, res) => {
     const newPost = new Post({
       title,
       text,
-      poster: await User.findById(req.userId).then((user) => user),
+      poster: ObjectId(req.userId),
       audience,
       attachments: attachFile,
       postParent,
     });
     await newPost.save();
+    const newPoster = await User.findById(req.userId);
+    newPost.poster = newPoster;
     res.json(newPost);
   } catch (error) {
     console.log(error);
@@ -93,16 +95,18 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 // DELETE POST
-router.delete("/delete/:id", verifyToken, (req, res) => {
-  const { id } = req.params;
-  Post.findByIdAndDelete(id)
-    .then(() => {
-      res.json({ success: true, message: "Xóa thành công", postId: id });
-    })
-    .catch((err) => {
-      console.log(err);
-      return error500({ success: false, message: "Xóa thất bại" });
-    });
+router.delete("/delete/:id", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    let post = await Post.findById(id);
+    post.attachments.forEach(
+      async (file) => await SingleFile.findByIdAndDelete(file.id)
+    );
+    await Post.findByIdAndDelete(id);
+  } catch (err) {
+    console.log(err);
+    return error500({ success: false, message: "Xóa thất bại" });
+  }
 });
 
 //UPDATE POST
@@ -145,16 +149,19 @@ router.put("/", verifyToken, async (req, res) => {
 // });
 // GET POST PROFILE
 router.get("/", verifyToken, async (req, res) => {
-  const { limitPost, index, profile, userId } = req.query;
+  const { limitPost, index, profile, userId, postId = "" } = req.query;
+  console.log(typeof limitPost === "string", index, profile, userId);
   try {
-    let data = {};
+    let data =
+      postId != "" ? { _id: ObjectId(postId), status: 1 } : { status: 1 };
     if (profile == 1) {
       const userIdReq = userId != "0" ? userId : req.userId;
-      data = { poster: userIdReq };
+      data = { poster: userIdReq, status: 1 };
     }
     const result = await Post.find(data)
+      .sort({ createAt: -1 })
       .skip(index * limitPost)
-      .limit(limitPost)
+      .limit(+limitPost)
       .populate("poster")
       .populate({
         path: "comments",
@@ -183,7 +190,46 @@ router.get("/", verifyToken, async (req, res) => {
       })
       .lean();
     // result.comments=result.comments?.reverse()
-    return res.json(result.reverse());
+    return res.json(result);
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
+
+router.get("/getPostById/:postId", verifyToken, async (req, res) => {
+  const { postId } = req.params;
+  try {
+    const result = await Post.findById(postId)
+      .populate("poster")
+      .populate({
+        path: "comments",
+        options: {
+          skip: 0,
+          perDocumentLimit: 10,
+          sort: { createAt: "descending" },
+        },
+        populate: [
+          {
+            path: "user",
+            select: "username fullName avatar like",
+          },
+          {
+            path: "like.user",
+            select: "username fullName avatar like",
+          },
+          {
+            path: "file",
+          },
+        ],
+      })
+      .populate({
+        path: "like",
+        populate: { path: "user", select: "username fullName avatar" },
+      })
+      .lean();
+    // result.comments=result.comments?.reverse()
+    return res.json(result);
   } catch (err) {
     console.log(err);
     return error500(res);
@@ -232,23 +278,29 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
   try {
     let post = await Post.findById(id).populate("like.user");
     const { _id, avatar, fullName, username } = await User.findById(req.userId);
+    let userForNoti = await User.findById(req.userId).select("fullName avatar");
     if (
       post.like.some(
         (item) => item.user._id == req.userId || item.user == req.userId
       )
     ) {
       // console.log("a");
+
       post.like = post.like.filter((e) => e.user._id.toString() !== req.userId);
       await post.save();
       const notiDelete = await UserNotification.findOneAndDelete({
-        user: post.poster,
-        postId: ObjectId(post._id),
+        user: ObjectId(post.poster),
+        postId: post._id,
         fromUser: ObjectId(req.userId),
         type: 1,
       });
-      io.sockets
-        .to(`user_${post.poster.toString()}`)
-        .emit("notification", "you have new notification");
+      io.sockets.to(`user_${post.poster.toString()}`).emit("notification", {
+        data: {
+          postId: post._id,
+          fromUser: userForNoti,
+          type: -1,
+        },
+      });
       return res.json({
         like: false,
         postId: post._id,
@@ -262,16 +314,24 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
       post.like.push(like);
       await post.save();
 
-      const noti = await UserNotification({
-        user: post.poster,
-        type: 1,
-        postId: post._id,
-        fromUser: req.userId,
-      });
-      await noti.save();
-      io.sockets
-        .to(`user_${post.poster.toString()}`)
-        .emit("notification", "you have new notification");
+      if (post.poster.toString() != req.userId) {
+        const noti = await UserNotification({
+          user: post.poster,
+          type: 1,
+          postId: post._id,
+          fromUser: req.userId,
+        });
+        await noti.save();
+        io.sockets.to(`user_${post.poster.toString()}`).emit("notification", {
+          data: {
+            user: post.poster,
+            type: 1,
+            postId: post._id,
+            fromUser: userForNoti,
+          },
+        });
+      }
+
       return res.json({
         like: true,
         postId: post._id,

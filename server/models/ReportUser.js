@@ -3,12 +3,17 @@ const Schema = mongoose.Schema;
 
 const ReportUser = new Schema({
   type: {
-    type: String,
-    default: "",
+    type: Array,
+    default: [],
   },
   content: {
     type: String,
     default: "public",
+  },
+  userReport: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    require: true,
   },
   user: {
     type: Schema.Types.ObjectId,

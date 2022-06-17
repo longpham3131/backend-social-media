@@ -20,7 +20,7 @@ const PostSchema = new Schema({
   },
   status:{
     type:Number,
-    default:0
+    default:1
   },
   like: [
     {
@@ -51,6 +51,7 @@ const PostSchema = new Schema({
     type: Date,
     default: Date.now,
     unique: true,
+    index:true
   },
   updateAt: {
     type: Date,

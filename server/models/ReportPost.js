@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const ReportPost = new Schema({
   type: {
-    type: String,
-    default: "",
+    type: Array,
+    default: [],
   },
   content: {
     type: String,
@@ -13,6 +13,11 @@ const ReportPost = new Schema({
   postId: {
     type: Schema.Types.ObjectId,
     ref: "post",
+  },
+  userReport: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    require: true,
   },
   status:{
     type:Number,

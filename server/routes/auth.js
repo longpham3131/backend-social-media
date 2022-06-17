@@ -28,7 +28,10 @@ router.post("/register", async (req, res) => {
         .status(400)
         .json({ success: false, message: "Account already exists" });
     const emailuser = await User.findOne({ email });
-    if (emailuser) return res.status(400).json({ success: false, message: "" });
+    if (emailuser)
+      return res
+        .status(400)
+        .json({ success: false, message: "" });
     const hashedPassword = await argon2.hash(password);
 
     const newUser = new User({
@@ -64,7 +67,8 @@ router.post("/login", async (req, res) => {
 
     if (!user) return error400(res, "Wrong Username or Password");
     const passwordValid = await argon2.verify(user.password, password);
-    if (!passwordValid) return error400(res, "Wrong Username or Password");
+    if (!passwordValid)
+      return error400(res, "Wrong Username or Password");
 
     const date = new Date();
     date.setDate(date.getDate() + 300000);
@@ -89,7 +93,8 @@ router.post("/loginAdmin", async (req, res) => {
 
     if (!user) return error400(res, "Wrong Username or Password");
     const passwordValid = await argon2.verify(user.password, password);
-    if (!passwordValid) return error400(res, "Wrong Username or Password");
+    if (!passwordValid)
+      return error400(res, "Wrong Username or Password");
 
     const date = new Date();
     date.setDate(date.getDate() + 300000);
@@ -160,7 +165,7 @@ router.post("/changePasswordByCode", async (req, res) => {
       success: "true",
       message: "Change password success",
       hashedPassword,
-      username: user.username,
+      username:user.username
     });
   } catch (err) {
     console.log(err);

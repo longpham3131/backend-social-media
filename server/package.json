@@ -10,12 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ant-design/icons": "^4.7.0",
     "@google-cloud/storage": "^5.14.2",
     "@socket.io/admin-ui": "^0.2.0",
     "argon2": "^0.28.2",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.27.0",
     "cors": "^2.8.5",
+    "date-fns": "^2.27.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "filereader": "^0.10.3",
@@ -30,7 +32,8 @@
     "multer": "^1.4.3",
     "multer-gridfs-storage": "^5.0.1",
     "socket.io": "^4.2.0",
-    "socket.io-client": "^4.2.0"
+    "socket.io-client": "^4.2.0",
+    "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"

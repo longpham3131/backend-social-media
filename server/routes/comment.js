@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const User = require("../models/User");
 const Comment = require("../models/comment");
 const UserNotification = require("../models/UserNotification");
 const { ObjectId } = require("mongodb");
@@ -51,24 +52,45 @@ router.get("/", verifyToken, async (req, res) => {
 
 router.post("/likeComment", verifyToken, async (req, res) => {
   try {
-    const { commentId, type } = req.body;
+    const { commentId, type, postId } = req.body;
+    const io = req.io;
+    let userForNoti = await User.findById(req.userId).select("fullName avatar");
     let commentFound = await comment.findById(commentId);
     commentFound.like = commentFound.like.filter((e) => {
       return e.user.toString() != req.userId;
     });
+
     if (type == 1) {
       commentFound.like.push({ user: ObjectId(req.userId) });
-      await commentFound.save();
-      return res.json({
-        success: true,
-        data: commentFound.like[commentFound.like.length - 1],
-      });
     }
-    commentFound.like = commentFound.like.filter(
-      (comment) => comment._id != commentId
-    );
+
+    let queryData = {
+      user: commentFound.user,
+      type: 4,
+      postId: postId,
+      fromUser: ObjectId(req.userId),
+    };
+    await UserNotification.findByIdAndDelete(queryData);
+    const noti = await UserNotification(queryData);
+    await noti.save();
     await commentFound.save();
-    return res.json({ success: true });
+    if (type == 1) {
+      io.sockets
+        .to(`user_${commentFound.user.toString()}`)
+        .emit("notification", {
+          data: { ...queryData, fromUser: userForNoti },
+        });
+    } else {
+      io.sockets
+        .to(`user_${commentFound.user.toString()}`)
+        .emit("notification", {
+          data: { ...queryData, fromUser: userForNoti, type: -4 },
+        });
+    }
+    return res.json({
+      success: true,
+      data: commentFound.like[commentFound.like.length - 1],
+    });
   } catch (err) {
     console.log(err);
     error500(res);
@@ -77,8 +99,14 @@ router.post("/likeComment", verifyToken, async (req, res) => {
 
 router.post("/", verifyToken, async (req, res) => {
   try {
-    const { postId, content, file = null, parentComment = null } = req.body;
+    const {
+      postId = null,
+      content,
+      file = null,
+      parentComment = null,
+    } = req.body;
 
+    let userForNoti = await User.findById(req.userId).select("fullName avatar");
     let newFile = null;
     if (file[0]) {
       newFile = new SingleFile({
@@ -86,6 +114,7 @@ router.post("/", verifyToken, async (req, res) => {
         filePath: file[0].file,
         fileType: file[0].type,
         fileSize: file[0].size, // 0.00
+        type: "comment",
         user: req.userId,
       });
       await newFile.save();
@@ -100,19 +129,22 @@ router.post("/", verifyToken, async (req, res) => {
     let rs = await Promise.all([comment.save(), Post.findById(postId)]);
     rs[1].comments = [comment._id, ...rs[1].comments];
     await rs[1].save();
-
-    const noti = await UserNotification({
+    let queryData = {
       user: rs[1].poster,
-      type: 2,
+      type: parentComment == null ? 2 : 5,
       postId: postId,
       fromUser: req.userId,
-    });
-    await noti.save();
+    };
+    // await UserNotification.findByIdAndDelete(queryData);
+   
     if (req.userId !== rs[1].poster.toString()) {
+      const noti = await UserNotification(queryData);
+      await noti.save();
       const io = req.io;
-      io.sockets
-        .to(`user_${rs[1].poster.toString()}`)
-        .emit("notification", comment);
+      console.log(`user_${rs[1].poster.toString()}`);
+      io.sockets.to(`user_${rs[1].poster.toString()}`).emit("notification", {
+        data: { ...queryData, fromUser: userForNoti },
+      });
     }
     res.json({ success: true, data: rs[0], message: "true" });
   } catch (err) {
@@ -140,7 +172,7 @@ router.put("/", verifyToken, async (req, res) => {
   }
 });
 
-router.delete("/", verifyToken, async (req, res) => {
+router.post("/commentDelete", verifyToken, async (req, res) => { 
   try {
     const { commentId, postId } = req.body;
     const result = await Promise.all([
@@ -158,7 +190,9 @@ router.delete("/", verifyToken, async (req, res) => {
       fromUser: ObjectId(req.userId),
       type: 2,
     });
+
     const io = req.io;
+    
     io.sockets
       .to(`user_${result[0].poster.toString()}`)
       .emit("notification", "you have new notification");
