@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const PostSchema = new Schema({
   title: {
     type: String,
-    default:""
+    default: ""
   },
   text: {
     type: String,
@@ -12,15 +12,23 @@ const PostSchema = new Schema({
   },
   audience: {
     type: String,
-    default:"public"
+    default: "public"
   },
   poster: {
     type: Schema.Types.ObjectId,
     ref: "User",
   },
-  status:{
-    type:Number,
-    default:1
+  status: {
+    type: Number,
+    default: 1
+  },
+  isGroup:{
+    type:Boolean,
+    default:false
+  },
+  groupId:{
+    type: Schema.Types.ObjectId,
+    ref: "Group",
   },
   like: [
     {
@@ -40,7 +48,7 @@ const PostSchema = new Schema({
       ref: "Comment",
     },
   ],
- 
+
   share: { type: Number, default: 0 },
   attachments: {
     type: Array,
@@ -51,14 +59,18 @@ const PostSchema = new Schema({
     type: Date,
     default: Date.now,
     unique: true,
-    index:true
+    index: true
   },
   updateAt: {
     type: Date,
     default: Date.now,
   },
+  tags: {
+    type: Array,
+    default: []
+  }
 });
-PostSchema.pre("remove", function () {});
+PostSchema.pre("remove", function () { });
 PostSchema.pre("updateOne", function () {
   this.set({ updateAt: new Date() });
 });

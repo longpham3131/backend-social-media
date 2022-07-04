@@ -4,9 +4,11 @@ const { ObjectId } = require("mongodb");
 const { error500, error400 } = require("../util/res");
 const { cloudinary } = require("../util/cloudinary");
 var fs = require("fs");
+const { default: axios } = require("axios");
 const singleFileUpload = async (req, res, next) => {
   try {
     console.log(req.file);
+    let body = req.body
     await console.log("----------------------------");
     let uploadRes = null;
     if (req.file.mimetype.split("/")[0] === "image") {
@@ -14,6 +16,13 @@ const singleFileUpload = async (req, res, next) => {
         "uploads\\" + req.file.path.split("\\")[1],
         { upload_preset: "ml_default" }
       );
+      axios.get(`http://localhost:3001/detection/2022-01-13T15-26-37.372Z-ttt-3388_qcdmae`)
+        .then(response => {
+          console.log('ok');
+        })
+        .catch(error => {
+          console.log(error);
+        });
     } else if (req.file.mimetype.split("/")[0] === "video") {
       uploadRes = await cloudinary.uploader.upload(
         "uploads\\" + req.file.path.split("\\")[1],
@@ -107,8 +116,8 @@ const getAllFiles = async (req, res, next) => {
 };
 const getAllMediaByUserId = async (req, res, next) => {
   try {
-    const {  userId } = req.query;
-    const files = await SingleFile.find({user:ObjectId(userId)});
+    const { userId } = req.query;
+    const files = await SingleFile.find({ user: ObjectId(userId) });
     res.json({
       message: "success",
       data: files,
@@ -117,6 +126,21 @@ const getAllMediaByUserId = async (req, res, next) => {
     error400("get file error");
   }
 };
+
+const updateTags = async (req, res) => {
+  try {
+    const { tags, filePath } = req.body;
+    const rs = await SingleFile.findOneAndUpdate({ filePath: filePath }, { tags: tags }, { new: true });
+    console.log(rs);
+    res.json({
+      message: rs,
+    });
+  } catch (er) {
+    error400("get file error");
+  }
+};
+
+
 const getAllMultiFiles = async (req, res, next) => {
   try {
     const files = await MultipleFile.find().populate("files");
@@ -142,11 +166,14 @@ const fileSizeFormatter = (byte, decimal) => {
   );
 };
 
+
+
 module.exports = {
   singleFileUpload,
   multipleFileUpload,
   getAllFiles,
-  getAllMultiFiles,
   fileSizeFormatter,
-  getAllMediaByUserId
+  getAllMediaByUserId,
+  updateTags,
+  getAllMultiFiles
 };

@@ -56,7 +56,7 @@ router.get("/getPostByIdImage/:id", verifyToken, async (req, res) => {
 
 // CREATE POST
 router.post("/", verifyToken, async (req, res) => {
-  const { title, text, audience, attachments, postParent } = req.body;
+  const { title, text, audience, attachments, postParent, isGroup, groupId } = req.body;
   req.io.sockets.emit("post", "post noti");
   if (!text && attachments.length === 0)
     return error400(res, "Nội dung bài đăng không được trống");
@@ -84,6 +84,8 @@ router.post("/", verifyToken, async (req, res) => {
       audience,
       attachments: attachFile,
       postParent,
+      isGroup,
+      groupId
     });
     await newPost.save();
     const newPoster = await User.findById(req.userId);
@@ -149,19 +151,19 @@ router.put("/", verifyToken, async (req, res) => {
 // });
 // GET POST PROFILE
 router.get("/", verifyToken, async (req, res) => {
-  const { limitPost, index, profile, userId, postId = "" } = req.query;
+  const { limitPost, index, profile, userId, postId = "", groupId = "" } = req.query;
   console.log(typeof limitPost === "string", index, profile, userId);
   try {
-    let data =
-      postId != "" ? { _id: ObjectId(postId), status: 1 } : { status: 1 };
+    let data = postId != "" ? { _id: ObjectId(postId), status: 1 } : { status: 1 };
     if (profile == 1) {
       const userIdReq = userId != "0" ? userId : req.userId;
       data = { poster: userIdReq, status: 1 };
     }
+    if (groupId !== "") { data.groupId = groupId }
     const result = await Post.find(data)
       .sort({ createAt: -1 })
       .skip(index * limitPost)
-      .limit(+limitPost)
+      .limit(10)
       .populate("poster")
       .populate({
         path: "comments",
