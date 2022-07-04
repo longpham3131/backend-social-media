@@ -143,7 +143,7 @@ router.post("/changePassword", verifyToken, async (req, res) => {
 // DETELE USER
 // router.put
 router.get("/profile", verifyToken, (req, res) => {
-  console.log("profile");
+  // console.log("profile");
   User.findById(req.userId)
     .populate({ path: "friends.user", select: "fullName avatar isOnline" })
     .populate({ path: "friendsRequest.user", select: "fullName avatar" })

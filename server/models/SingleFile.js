@@ -10,6 +10,8 @@ const singleFileSchema = new Schema(
     filePath: {
       type: String,
       required: true,
+      unique: true,
+      index: true
     },
     fileType: {
       type: String,
@@ -19,14 +21,18 @@ const singleFileSchema = new Schema(
       type: String,
       required: true,
     },
-    type:{
+    type: {
       type: String,
       required: true,
-      default:"main"
+      default: "main"
     },
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
+    },
+    tags: {
+      type: Array,
+      default: []
     },
     createAt: {
       type: Date,
@@ -36,7 +42,7 @@ const singleFileSchema = new Schema(
     updateAt: {
       type: Date,
       default: Date.now,
-    },
+    }
   },
   { timestamps: true }
 );
