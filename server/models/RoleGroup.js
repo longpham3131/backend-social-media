@@ -8,7 +8,7 @@ const RoleGroupSchema = new Schema({
     },
     privilege: [{
         type: Schema.Types.ObjectId,
-        ref: "Privilege",
+        ref: "PrivilegeGroup",
     }],
 });
 module.exports = mongoose.model("RoleGroup", RoleGroupSchema);

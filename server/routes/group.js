@@ -93,6 +93,71 @@ router.get("/requestJoinGroup/:groupId", verifyToken, async (req, res) => {
   }
 });
 
+
+router.post("/inviteToGroup", verifyToken, async (req, res) => {
+  try {
+    const io = req.io;
+    let { groupId, userId } = req.body;
+    let group = await Group.findById(groupId)
+    if (!group) {
+      return res.json({
+        success: false
+      })
+    }
+    let isMember = group.members.find(mems =>
+      mem.user.toString() === req.userId)
+    if (!isMember) {
+      return res.json({
+        success: false,
+        data: "You don't have privilege to do this"
+      })
+    }
+    group.invited.push({ member: ObjectId(req.userId), invitedUser: ObjectId(userId) })
+    const rs = await group.save()
+    const noti = await UserNotification({
+      data: group,
+      type: 5,
+      fromUser: req.userId,
+    });
+    await noti.save();
+    io.sockets.to(`user_${userId}`).emit("notification", {
+      data: noti,
+    });
+    return res.json({
+      success: true,
+      data: rs
+    });
+  }
+  catch (err) {
+    error500(res)
+  }
+});
+
+router.post("/responeIntiveToGroup", verifyToken, async (req, res) => {
+  try {
+    let { isJoin, groupId } = req.body
+    let group = await Group.findById(groupId)
+    if (!group) {
+      return res.json({
+        success: false
+      })
+    }
+    group.invited = group.invited.filter(i => i.invitedUser.toString() !== req.userId)
+    if (isJoin) {
+      let roleMember = await RoleGroup.findOne({ roleName: "member" })
+      group.members.push({ user: ObjectId(req.userId), role: roleMember._id })
+    }
+    let rs = await group.save()
+    return res.json({
+      success: true,
+      data: rs
+    });
+  }
+  catch (err) {
+    error500(res)
+  }
+})
+
 router.post("/joinGroup", verifyToken, async (req, res) => {
   try {
     let { groupId, userId } = req.body;
@@ -241,6 +306,20 @@ router.post("/privilege", verifyToken, async (req, res) => {
     error500(res)
   }
 });
+
+router.get("/getRoles", verifyToken, async (req, res) => {
+  try {
+    let rs = await RoleGroup.find().select("-__v").populate({ path: 'privilege', select: "-_id -__v", })
+    return res.json({
+      success: true,
+      data: rs
+    });
+  }
+  catch (err) {
+    error500(res)
+  }
+});
+
 
 
 module.exports = router;

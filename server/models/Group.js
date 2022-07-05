@@ -47,6 +47,18 @@ const Group = new Schema({
       ref: "User",
     }
   ],
+  invited: [
+    {
+      member: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+      invitedUser: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      }
+    }
+  ],
   createAt: {
     type: Date,
     default: Date.now,
