@@ -16,6 +16,10 @@ import {
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import CreateEditPost from "@/components/SNCreateEditPost";
 import InfiniteScroll from "react-infinite-scroll-component";
+import SNWidgetBox from "@/components/SNWidgetBox";
+import SNWidgetBoxItem from "@/components/SNWidgetBoxItem";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEarthAmericas, faLock } from "@fortawesome/free-solid-svg-icons";
 const { confirm } = Modal;
 
 const Newsfeed = () => {
@@ -29,6 +33,7 @@ const Newsfeed = () => {
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   // const profile = useSelector((state) => state.profile);
+
   useEffect(() => {
     fetchPostList();
   }, []);
@@ -164,48 +169,153 @@ const Newsfeed = () => {
         setLoading(false);
       });
   };
-
+  // Data member
+  const members = [
+    {
+      name: "Sandra Amuda",
+      avatar: profile?.avatar,
+      description: "@Sandra",
+    },
+    {
+      name: "Alex Kilo",
+      avatar: profile?.avatar,
+      description: "@Alex",
+    },
+    {
+      name: "Smith Halo",
+      avatar: profile?.avatar,
+      description: "@Smith",
+    },
+    {
+      name: "Johnny Deep",
+      avatar: profile?.avatar,
+      description: "@Johnny",
+    },
+    {
+      name: "Mohamed Sela",
+      avatar: profile?.avatar,
+      description: "@Mohamed",
+    },
+  ];
+  const groups = [
+    {
+      name: "Street Artists",
+      avatar: profile?.avatar,
+      member: "3 members",
+      leftIcon: (
+        <FontAwesomeIcon
+          icon={faEarthAmericas}
+          className=" text-lg text-color-icon"
+        />
+      ),
+    },
+    {
+      name: "Cosplayers of the World",
+      avatar: profile?.avatar,
+      member: "5 members",
+      leftIcon: (
+        <FontAwesomeIcon
+          icon={faEarthAmericas}
+          className=" text-lg text-color-icon"
+        />
+      ),
+    },
+    {
+      name: "Stream Designers",
+      avatar: profile?.avatar,
+      member: "3 members",
+      leftIcon: (
+        <FontAwesomeIcon
+          icon={faEarthAmericas}
+          className=" text-lg text-color-icon"
+        />
+      ),
+    },
+    {
+      name: "Gaming Watchtower",
+      avatar: profile?.avatar,
+      member: "6 members",
+      leftIcon: (
+        <FontAwesomeIcon icon={faLock} className=" text-lg text-color-icon" />
+      ),
+    },
+    {
+      name: "Living in Japan",
+      avatar: profile?.avatar,
+      member: "1 members",
+      leftIcon: (
+        <FontAwesomeIcon
+          icon={faEarthAmericas}
+          className=" text-lg text-color-icon"
+        />
+      ),
+    },
+  ];
+  // End data member
   return (
-    <div
-      id="scrollablePost"
-      className="h-full overflow-y-auto section--hidden-scroll-y p-[2rem] xl:py-[2.4rem] xl:px-[15rem]  "
-    >
-      <InfiniteScroll
-        dataLength={postList?.length ?? 0}
-        next={loadMoreData}
-        hasMore={loadMore}
-        loader={
-          <Skeleton
-            className="w-[30rem]"
-            avatar
-            paragraph={{ rows: 1 }}
-            active
+    <div className="grid grid-cols-4 gap-4 mt-[32px]">
+      <SNWidgetBox
+        title={"Newest Members"}
+        content={members.map((item, index) => (
+          <SNWidgetBoxItem
+            key={index}
+            srcAvatar={item.avatar}
+            name={item.name}
+            description={item.description}
           />
-        }
-        endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
-        scrollableTarget="scrollablePost"
-      >
-        {postList.length > 0 &&
-          postList.map((post) => (
-            <SNPost
-              post={post}
-              key={post._id}
-              onDelete={handleDeletePost}
-              onDeleteComment={handleDeletePostComment}
-              onEdit={showEdit}
-              onCommentPost={handleComment}
-              onLike={handleLikePost}
-            />
-          ))}
-      </InfiniteScroll>
+        ))}
+      />
 
-      <CreateEditPost
-        ref={refAddEditPost}
-        visible={showEditPost}
-        title="Edit post"
-        okText="Update"
-        onClose={() => setShowEditPost(false)}
-        onSubmit={handleEditPost}
+      <div id="scrollablePost" className=" col-span-2">
+        <InfiniteScroll
+          dataLength={postList?.length ?? 0}
+          next={loadMoreData}
+          hasMore={loadMore}
+          loader={
+            <Skeleton
+              className="w-[30rem]"
+              avatar
+              paragraph={{ rows: 1 }}
+              active
+            />
+          }
+          endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+          scrollableTarget="scrollablePost"
+        >
+          {postList.length > 0 &&
+            postList.map((post) => (
+              <SNPost
+                post={post}
+                key={post._id}
+                onDelete={handleDeletePost}
+                onDeleteComment={handleDeletePostComment}
+                onEdit={showEdit}
+                onCommentPost={handleComment}
+                onLike={handleLikePost}
+              />
+            ))}
+        </InfiniteScroll>
+
+        <CreateEditPost
+          ref={refAddEditPost}
+          visible={showEditPost}
+          title="Edit post"
+          okText="Update"
+          onClose={() => setShowEditPost(false)}
+          onSubmit={handleEditPost}
+        />
+      </div>
+      <SNWidgetBox
+        title={"Groups"}
+        content={groups.map((item, index) => (
+          <SNWidgetBoxItem
+            key={index}
+            srcAvatar={item.avatar}
+            name={item.name}
+            description={item.member}
+            leftIcon={item.leftIcon}
+          />
+        ))}
       />
     </div>
   );

@@ -5,15 +5,20 @@ import {
   UserOutlined,
   SearchOutlined,
   AliwangwangOutlined,
+  DesktopOutlined,
+  DeploymentUnitOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import SNAvatar from "@/components/SNAvatar";
+import "./styles.scss";
 const { Sider } = Layout;
 const Siderbar = ({ collapsed, onClose }) => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.pathname);
+  const sizeIcon = 30;
 
   const profile = useSelector((state) => state.profile);
   useEffect(() => {
@@ -28,33 +33,59 @@ const Siderbar = ({ collapsed, onClose }) => {
         collapsed={collapsed}
         width={300}
         theme={"light"}
-        className="hidden lg:block"
+        className="hidden lg:block slider-bar-custom"
       >
-        <div className="logo" />
-        <Menu mode="inline" selectedKeys={activeTab}>
-          <Menu.Item key="/" icon={<UserOutlined />}>
-            <Link to="/">News feed</Link>
+        <Menu mode="inline" selectedKeys={activeTab} className="pt-[32px]">
+          <Menu.Item
+            key={`/profile/${profile?._id}`}
+            icon={<SNAvatar size={70} src={profile?.avatar} />}
+          >
+            <Link
+              to={`/profile/${profile?._id}`}
+              className=" font-bold sider-item ml-[10px] text-[20px]"
+            >
+              {profile?.fullName}
+            </Link>
           </Menu.Item>
-          <Menu.Item key="/search-friend" icon={<SearchOutlined />}>
-            <Link to="/search-friend">Find your friends</Link>
+
+          <hr className="w-[90%] my-[1rem]" />
+          <Menu.Item
+            key="/"
+            icon={<DesktopOutlined style={{ fontSize: `${sizeIcon}px` }} />}
+          >
+            <Link to="/" className=" font-bold sider-item">
+              Newsfeed
+            </Link>
           </Menu.Item>
-          <Menu.Item key="/message" icon={<AliwangwangOutlined />}>
-            <Link to="/message">Messages</Link>
+
+          <Menu.Item
+            key="/members"
+            icon={<TeamOutlined style={{ fontSize: `${sizeIcon}px` }} />}
+          >
+            <Link to="/members" className=" font-bold">
+              Members
+            </Link>
+          </Menu.Item>
+          <Menu.Item
+            key="/groups"
+            icon={
+              <DeploymentUnitOutlined style={{ fontSize: `${sizeIcon}px` }} />
+            }
+          >
+            <Link to="/groups" className=" font-bold">
+              Groups
+            </Link>
           </Menu.Item>
         </Menu>
       </Sider>
       {/* Sidebar cho mobile */}
-      <Drawer
+      {/* <Drawer
         title="Social Network"
         placement={"left"}
         onClose={onClose}
         visible={collapsed}
         className="lg:hidden block"
       >
-        <div className="logo" />
-        <p className="mb-[1.2rem] text-md font-quicksand font-semi-bold text-gray-5 text-center">
-          Menu
-        </p>
         <Menu mode="inline" selectedKeys={activeTab}>
           <Menu.Item key="/" icon={<UserOutlined />}>
             <Link to="/">News feed</Link>
@@ -100,7 +131,7 @@ const Siderbar = ({ collapsed, onClose }) => {
             </p>
           )}
         </div>
-      </Drawer>
+      </Drawer> */}
     </>
   );
 };

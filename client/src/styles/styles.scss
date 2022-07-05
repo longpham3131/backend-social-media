@@ -29,5 +29,18 @@
     src: url("../assets/font/Quicksand-Bold.ttf") format("truetype");
   }
 }
-
+@layer utilities {
+  .octagon-avatar {
+    clip-path: polygon(
+      30% 0%,
+      70% 0%,
+      100% 30%,
+      100% 70%,
+      70% 100%,
+      30% 100%,
+      0% 70%,
+      0% 30%
+    );
+  }
+}
 @import "./common/general.scss";

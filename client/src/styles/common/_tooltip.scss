@@ -5,7 +5,7 @@ div {
       @apply hidden;
     }
     .ant-tooltip-inner {
-      @apply bg-gray-6 py-[4px] px-[6px] rounded-[2px] text-xs font-md font-quicksand min-h-[auto] min-w-[auto] flex items-center justify-center;
+      @apply bg-gray-6 py-[4px] px-[6px] rounded-[2px] text-xs font-medium font-quicksand min-h-[auto] min-w-[auto] flex items-center justify-center;
     }
   }
 }

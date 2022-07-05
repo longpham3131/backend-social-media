@@ -6,6 +6,9 @@
     "@craco/craco": "^6.4.2",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.3",
     "@popperjs/core": "^2.10.1",
@@ -22,6 +25,7 @@
     "antd-img-crop": "^3.16.0",
     "autosize": "^5.0.1",
     "axios": "^0.21.1",
+    "classnames": "^2.3.1",
     "craco-less": "^1.20.0",
     "cross-env": "^7.0.3",
     "draft-js": "^0.11.7",
@@ -46,6 +50,7 @@
     "redux": "^4.1.1",
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^4.2.0",
+    "styled-components": "^5.3.5",
     "tailwindcss-debug-screens": "^2.2.0",
     "use-deep-compare-effect": "^1.8.1",
     "web-vitals": "^1.0.1"
@@ -85,5 +90,8 @@
     "tailwindcss": "^3.1.2",
     "vite": "^2.7.1",
     "vite-plugin-imp": "^2.0.10"
+  },
+  "resolutions": {
+    "styled-components": "^5"
   }
 }

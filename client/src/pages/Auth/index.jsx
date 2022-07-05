@@ -15,7 +15,7 @@ const AuthPage = ({ slot }) => {
       <div className="flex justify-center items-center h-sreen basis-[50%]">
         <div className="flex flex-col w-full text-center">
           <img
-            src="src/assets/images/logo.png"
+            src="images/logo.png"
             alt="logo"
             className="w-[4rem] h-[4rem] mx-auto"
           />

@@ -214,7 +214,7 @@ const Notification = () => {
     >
       <div>
         <Badge count={notificationState.countNotification}>
-          <NotificationOutlined style={{ fontSize: "20px" }} />
+          <NotificationOutlined style={{ fontSize: "20px", color: "#fff" }} />
         </Badge>
       </div>
     </Popover>

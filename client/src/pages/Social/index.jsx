@@ -6,12 +6,12 @@ import userAPI from "@/apis/userAPI";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Route, Routes, useLocation } from "react-router";
-import Newsfeed from "./Newsfeed";
+import Newsfeed from "./Newsfeed/Newsfeed";
 import SearchFriend from "./SearchFriend";
 
 import Profile from "./Profile/Profile";
 import PostDetail from "./PostDetail/PostDetail";
-import Siderbar from "./Siderbar";
+import Siderbar from "./Siderbar/Siderbar";
 import Header from "./Header/Header";
 import { setProfile } from "@/store/profileSlice";
 import getFirstLetter from "@/util/getFirstLetter";
@@ -19,6 +19,7 @@ import { Link } from "react-router-dom";
 import SNAvatar from "@/components/SNAvatar";
 import Message from "./Message";
 import { makeid } from "@/util/index";
+import Banner from "./Banner/Banner";
 const { Content } = Layout;
 
 const Social = () => {
@@ -53,24 +54,17 @@ const Social = () => {
   }, []);
   return (
     <Layout className="w-full h-screen newsfeed">
-      <Siderbar
-        collapsed={collapsed}
-        onClose={() => setCollapsed(!collapsed)}
-      />
+      <Header collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
+
       <Layout className="site-layout">
-        <Header
+        <Siderbar
           collapsed={collapsed}
-          onToggle={() => setCollapsed(!collapsed)}
+          onClose={() => setCollapsed(!collapsed)}
         />
-        <Content className="site-layout-background min-h-[28rem] w-full m-0 lg:my-[2.4rem] lg:mx-[1.6rem]">
-          <div className="flex justify-between w-full h-full">
-            <div
-              className={`h-full  ${
-                location.pathname !== "/message"
-                  ? "w-full lg:w-[75%]"
-                  : "w-full"
-              } `}
-            >
+        <Content className="site-layout-background min-h-[28rem] w-full m-0 lg:mt-[2.4rem] lg:mx-[1.6rem]">
+          <div className="w-full h-full">
+            <div className={`h-full w-[1184px] mx-auto`}>
+              <Banner />
               <Routes>
                 <Route path="/" element={<Newsfeed />} />
                 <Route path="/profile/:userId" element={<Profile />} />
@@ -79,91 +73,6 @@ const Social = () => {
                 <Route path="/message" element={<Message />} />
               </Routes>
             </div>
-            {/* Không hiện Friends List bè khi đang ở trang Messages */}
-            {location.pathname !== "/message" && (
-              <div className="border-l-4  h-full hidden lg:block lg:w-[25%] ">
-                <div className=" w-full mb-[1.2rem]">
-                  <Carousel autoplay>
-                    {/* <div>
-                    <img
-                      src="/src/assets/images/ads-1.jpg"
-                      style={contentStyleCarousel}
-                      alt="ads-img"
-                    />
-                  </div> */}
-                    <div>
-                      <div
-                        className="w-[100%] h-[25rem] "
-                        style={{
-                          background: `url('https://alsecco.co.uk/wp-content/themes/yootheme/cache/1-final-d6777e9b.jpeg')`,
-                          backgroundPosition: "center",
-                          backgroundSize: "cover",
-                        }}
-                        alt="ads-img"
-                      ></div>
-                    </div>
-                    <div>
-                      <div
-                        className="w-[100%] h-[25rem] "
-                        style={{
-                          background: `url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQThES0xolfpy15PS-mJ45O-HkITqX42QhhiA&usqp=CAU')`,
-                          backgroundPosition: "center",
-                          backgroundSize: "cover",
-                        }}
-                        alt="ads-img"
-                      ></div>
-                    </div>
-                    <div>
-                      <div
-                        className="w-[100%] h-[25rem] "
-                        style={{
-                          background: `url('https://www.thoughtco.com/thmb/TS2GuSTQNysrYLJTOV2Upeeuheg=/1280x853/filters:fill(auto,1)/106481665-56a9f7393df78cf772abc9ba.jpg')`,
-                          backgroundPosition: "center",
-                          backgroundSize: "cover",
-                        }}
-                        alt="ads-img"
-                      ></div>
-                    </div>
-                  </Carousel>
-                </div>
-
-                <div className="px-[1.2rem]">
-                  {profile.friends && profile.friends.length > 0 ? (
-                    <>
-                      <p className="mb-[1.2rem] text-md font-quicksand font-semi-bold text-gray-5">
-                        Friends List
-                      </p>
-                      <List
-                        itemLayout="horizontal"
-                        dataSource={profile.friends}
-                        renderItem={(item) => (
-                          <List.Item>
-                            <List.Item.Meta
-                              avatar={
-                                <SNAvatar
-                                  src={item.user.avatar}
-                                  fullName={item.user.fullName}
-                                  isOnline={item.user.isOnline}
-                                />
-                              }
-                              title={
-                                <Link to={`/profile/${item.user._id}`}>
-                                  {item.user.fullName}
-                                </Link>
-                              }
-                            />
-                          </List.Item>
-                        )}
-                      />
-                    </>
-                  ) : (
-                    <p className="mb-[1.2rem] text-md font-quicksand font-semi-bold text-gray-5 text-center">
-                      Friends List is empty.
-                    </p>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         </Content>
       </Layout>
