@@ -51,6 +51,7 @@ const Newsfeed = () => {
     }
   };
   const handleEditPost = async (values) => {
+    debugger
     values.postId = selectedPostId;
     console.log("success", values);
     try {

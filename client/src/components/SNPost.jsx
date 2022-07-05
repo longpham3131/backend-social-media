@@ -20,7 +20,7 @@ import {
   CommentOutlined,
   LikeFilled,
 } from "@ant-design/icons";
-import { createElement, useState } from "react";
+import { createElement, useEffect, useState } from "react";
 import getAudience from "@/util/getAudience";
 import { formatMinutes } from "@/util/index";
 import { getUrlImage, getUrlVideo } from "@/util/index";
@@ -28,7 +28,9 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import SNAvatar from "./SNAvatar";
-
+import { Editor } from 'react-draft-wysiwyg';
+import htmlToDraft from "html-to-draftjs";
+import { ContentState, EditorState } from "draft-js";
 const { Meta } = Card;
 const SNPost = ({
   post,
@@ -39,6 +41,7 @@ const SNPost = ({
   onDeleteComment,
 }) => {
   const [isShowComment, setIsShowComment] = useState(false);
+  const [content,setContent]=useState(null)
   const myProfile = useSelector((state) => state.profile);
   const { poster, comments, like } = post;
   const [form] = Form.useForm();
@@ -47,6 +50,12 @@ const SNPost = ({
   const [dislikes, setDislikes] = useState(0);
   const [action, setAction] = useState(null);
 
+  useEffect(()=>{
+    let raw =htmlToDraft(post.text)
+    const contentState = ContentState.createFromBlockArray(raw.contentBlocks);
+    const editorState = EditorState.createWithContent(contentState);
+    setContent(editorState)
+  },[post])
   const likeComment = () => {
     setLikes(1);
     setDislikes(0);
@@ -166,7 +175,7 @@ const SNPost = ({
                   {like.length}
                 </span>
                 {like.findIndex((item) => item.user._id === myProfile._id) !==
-                -1 ? (
+                  -1 ? (
                   <LikeFilled className="text-green-3 text-md" />
                 ) : (
                   <LikeOutlined className="text-md" />
@@ -210,10 +219,7 @@ const SNPost = ({
                   </div>
                 </>
               }
-              description={
-                <p className=" font-quicksand text-gray-5 text-md">
-                  {post.text}
-                </p>
+              description={ <Editor editorState={content} readOnly={true} className="font-quicksand text-gray-5 text-md" toolbarHidden={true}/>
               }
             />
             {/* Attachment */}
@@ -244,9 +250,8 @@ const SNPost = ({
         {/* Card Bình luận */}
         {isShowComment && (
           <Card
-            title={`Comments ${
-              comments.length > 0 ? `- ${comments.length} Comments` : ""
-            }`}
+            title={`Comments ${comments.length > 0 ? `- ${comments.length} Comments` : ""
+              }`}
             className="w-full flex flex-col"
             bodyStyle={{
               padding: "1.6rem",

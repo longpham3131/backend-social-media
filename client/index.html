@@ -22,11 +22,28 @@
       rel="stylesheet"
     />
     <title>Vikinger</title>
+    <script>
+      var CKEDITOR_BASEPATH = "/alloy-editor/";
+    </script>
+    <link
+      href="node_modules\alloyeditor\dist\alloy-editor\assets\css\skin\ocean\main.css"
+      rel="stylesheet"
+    />
+    <script src="node_modules/alloyeditor/dist/alloy-editor/alloy-editor-all-min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/alloyeditor/2.14.7/alloy-editor-all-min.js"
+      integrity="sha512-KUVUx2hGMwCwcXS/68LgKkNJOIW1a/47GzUPPJ4isXOBLfW2FM20W6LoIuLNMm+gsXrH8i+/5WJFQxEaI/bSTQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script src="https://smtpjs.com/v3/smtp.js"></script>
+    <script>
+      const global = globalThis;
+    </script>
   </head>
+
   <body>
     <div id="root"></div>
-
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

@@ -10,23 +10,43 @@ const Group = new Schema({
     type: Schema.Types.ObjectId,
     ref: "users",
   },
-  groupName:{
+  isPrivate: {
+    type: Schema.Types.Boolean,
+    default: true
+  },
+  groupName: {
     type: String,
     required: true,
-    default:''
+    default: ''
   },
-  groupDescription:{
+  groupDescription: {
     type: String,
-    default:''
+    default: ''
   },
-  adminGroup:[{
+  cover: {
+    type: String,
+    default: ''
+  },
+  adminGroup: {
     type: Schema.Types.ObjectId,
     ref: "User",
+  },
+  members: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    role: {
+      type: Schema.Types.ObjectId,
+      ref: "RoleGroup",
+    },
   }],
-  member:[{
-    type: Schema.Types.ObjectId,
-    ref: "User",
-  }],
+  requestJoin: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    }
+  ],
   createAt: {
     type: Date,
     default: Date.now,
@@ -35,10 +55,10 @@ const Group = new Schema({
     type: Date,
     default: Date.now,
   },
-//   members:{
-//       type:Array<>,
-//       default:[]
-//   }
+  //   members:{
+  //       type:Array<>,
+  //       default:[]
+  //   }
 });
 
-module.exports = mongoose.model("group", Group);
+module.exports = mongoose.model("Group", Group);
