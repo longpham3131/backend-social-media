@@ -9,7 +9,6 @@ import Message from "@/pages/Social/Message";
 import Login from "@/pages/Auth/Login";
 import Register from "@/pages/Auth/Register";
 import ForgetPassword from "@/pages/Auth/ForgetPassword";
-
 const App = () => {
   return (
     <BrowserRouter>

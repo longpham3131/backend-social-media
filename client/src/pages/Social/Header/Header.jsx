@@ -15,7 +15,12 @@ import {
   Popover,
 } from "antd";
 import React, { useRef, useState, useEffect } from "react";
-import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
+import {
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+  AppstoreOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 
 import SNCreateEditPost from "@/components/SNCreateEditPost";
 
@@ -29,6 +34,7 @@ import Modal from "antd/lib/modal/Modal";
 import userAPI from "@/apis/userAPI";
 import { changePassword } from "@/store/profileSlice";
 import chatAPI from "@/apis/chatAPI";
+import Searchbar from "./Searchbar";
 const { Header } = Layout;
 const Headerbar = ({ collapsed, onToggle }) => {
   const navigate = useNavigate();
@@ -102,15 +108,32 @@ const Headerbar = ({ collapsed, onToggle }) => {
   };
 
   return (
-    <Header className="site-layout-background" style={{ padding: 0 }}>
-      <div className="flex items-center justify-between mx-[1.6rem]">
-        {React.createElement(
-          collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-          {
-            className: "trigger",
-            onClick: onToggle,
-          }
-        )}
+    <Header
+      className="bg-color-header-background h-[80px] flex items-center justify-between"
+      style={{ padding: 0 }}
+    >
+      <div className="flex items-center justify-between mx-[1.6rem] w-full">
+        {/* Logo */}
+        <div className="flex justify-center items-center gap-[1rem]">
+          <img
+            src="images/cropped-logovikinger.png"
+            alt="logo"
+            className="mx-auto"
+          />
+          <p className=" font-secondary font-bold text-[1.25rem] text-white leading-[1em]">
+            VIKINGER
+          </p>
+          <AppstoreOutlined
+            style={{
+              fontSize: "20px",
+              color: collapsed ? "var(--color-header-icon)" : "#fff",
+            }}
+            onClick={onToggle}
+          />
+        </div>
+
+        <Searchbar />
+
         <div className="flex items-center gap-[2rem]">
           {/* Create Post */}
           <Button type="primary" onClick={() => setShowCreatePost(true)}>
@@ -130,17 +153,7 @@ const Headerbar = ({ collapsed, onToggle }) => {
           <Notification />
 
           <Dropdown overlay={menu}>
-            <div className="flex items-center gap-[0.8rem]">
-              <SNAvatar
-                size={40}
-                src={myProfile?.avatar}
-                fullName={myProfile?.fullName}
-              />
-
-              <span className=" text-base text-gray-500 hidden lg:block">
-                {myProfile?.fullName}
-              </span>
-            </div>
+            <SettingOutlined style={{ fontSize: "20px", color: "#fff" }} />
           </Dropdown>
           <Modal
             title="Change password"

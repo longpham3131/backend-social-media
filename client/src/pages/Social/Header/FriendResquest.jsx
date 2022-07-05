@@ -90,7 +90,7 @@ const FriendRequest = () => {
     >
       <div>
         <Badge count={myProfile?.friendsRequest?.length ?? 0}>
-          <UsergroupAddOutlined style={{ fontSize: "20px" }} />
+          <UsergroupAddOutlined style={{ fontSize: "20px", color: "#fff" }} />
         </Badge>
       </div>
     </Popover>

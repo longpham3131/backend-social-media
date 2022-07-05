@@ -5,6 +5,8 @@ module.exports = {
       position: ["top", "left"],
     },
     boxShadow: {
+      "primary-shadow": "var(--color-primary-shadow)",
+      "color-box-shadow": "var(--color-box-shadow)",
       sm: "0px 4px 20px rgba(0, 0, 0, 0.03)",
       default: "0px 4px 10px var(--color-green-5)",
       1: "0px 4px 20px rgba(0, 0, 0, 0.03)",
@@ -27,7 +29,7 @@ module.exports = {
     },
     extend: {
       backgroundImage: {
-        "welcome-page": "url('/src/assets/images/background.jpg')",
+        "welcome-page": "url('images/background.jpg')",
       },
       fontFamily: {
         quicksand: "'Quicksand', serif",
@@ -67,22 +69,21 @@ module.exports = {
         xl: "24px",
         xxl: "32px",
       },
-      fontWeight: {
-        light: 100,
-        rg: 400,
-        md: 500,
-        "semi-bold": 700,
-        bold: 900,
-      },
+
       colors: {
         "color-text-alt-2": "var(--color-text-alt-2)",
         "color-primary": "var(--color-primary)",
         "color-text": "var(--color-text)",
-
+        "color-header-background": "var(--color-header-background)",
+        "color-header-text": "var(--color-header-text)",
+        "color-header-input-background": "var(--color-header-input-background)",
+        "color-header-icon": "var(--color-header-icon)",
+        "color-icon": "var(--color-icon)",
         "color-background": "var(--color-background)",
         "color-default-background": "var(--color-default-background)",
         "color-login-background": "var(--color-login-background)",
         "color-primary-linear": "var(--color-primary-linear-green)",
+
         "rgba-1": "var(--color-rgba-1)",
         "gray-0": "var(--color-gray-0)",
         "gray-1": "var(--color-gray-1)",

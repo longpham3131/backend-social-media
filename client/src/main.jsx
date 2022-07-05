@@ -10,7 +10,6 @@ import { Provider } from "react-redux";
 import store from "./store/store";
 import SocketService from "./service/socket/SocketService.jsx";
 
-import "./App.less";
 import "./styles/styles.scss";
 
 ReactDOM.render(
