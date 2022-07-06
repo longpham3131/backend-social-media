@@ -165,6 +165,7 @@ router.get("/", verifyToken, async (req, res) => {
       .skip(index * limitPost)
       .limit(10)
       .populate("poster")
+      .populate({path:"groupId",select:"_id groupName cover"})
       .populate({
         path: "comments",
         options: {
