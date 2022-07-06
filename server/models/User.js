@@ -53,7 +53,7 @@ const UserSchema = new mongoose.Schema(
         type: Schema.Types.ObjectId,
         ref: "User",
       },
-    ], 
+    ],
     friends: [
       {
         user: {
@@ -78,11 +78,55 @@ const UserSchema = new mongoose.Schema(
         },
       },
     ],
+    interests: [
+      {
+        title: {
+          type: String
+        },
+        context: {
+          type: String
+        }
+      }
+    ],
+    address: {
+      district: {
+        type: String
+      },
+      province: {
+        type: String
+      },
+    },
+    birthplace: {
+      district: {
+        type: String
+      },
+      province: {
+        type: String
+      },
+    },
+    achievements: [
+      {
+        icon: { type: String },
+        description: { type: String }
+      }
+    ],
+    facebook: {
+      type: String
+    },
+    insta: {
+      type: String
+    },
+    twitter: {
+      type: String
+    },
+    occupation: {
+      type: String
+    },
     isAdmin: {
       type: Boolean,
       default: false,
     },
-    isOnline:{
+    isOnline: {
       type: Boolean,
       default: false,
     },

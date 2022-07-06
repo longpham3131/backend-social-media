@@ -83,21 +83,16 @@ router.get("/search", verifyToken, (req, res) => {
 
 // UPDATE USER
 router.put("/", verifyToken, async (req, res) => {
-  const { fullName, newPassword, email, avatar, coverPicture, dateOfBirth } =
+  const data =
     req.body;
-
   const date = new Date();
   let updateData = {
-    fullName,
-    email,
-    avatar,
-    coverPicture,
-    dateOfBirth,
     updatedAt: date.getDate(),
+    ...data
   };
 
-  if (newPassword) {
-    updateData.password = await argon2.hash(newPassword);
+  if (data.newPassword) {
+    updateData.password = await argon2.hash(data.newPassword);
   }
 
   // console.log("ABC", req.userId);

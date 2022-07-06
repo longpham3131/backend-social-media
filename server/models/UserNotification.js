@@ -7,7 +7,7 @@ const UserNotification = new Schema({
   },
   type: {
     type: Number,
-    default: 0,//1:Like 2:Comment 3:Tags 4: likecomment 5:? 6:invite to group
+    default: 0,//1:Like 2:Comment 3:Tags 4: likecomment 5:? 6:loi moi vao nhom 7:thong bao da vao nhom thanh cong
   },
   fromUser: {
     type: Schema.Types.ObjectId,
