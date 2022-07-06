@@ -351,17 +351,18 @@ router.get("/getRoles", verifyToken, async (req, res) => {
 
 router.get("/getGroupUserJoined", verifyToken, async (req, res) => {
   try {
-    let rs = await Group.findOne({
+    let rs = await Group.find({
       members: {
         $elemMatch: {
           user: Object(req.userId)
         }
       }
     }).select("members groupName isPrivate cover _id").lean()
-    if (rs) {
-      rs.membersCount = rs.members.length
-    } 
-    delete rs.members
+    rs = rs.map(r => {
+      r.membersCount = r.members.length;
+      delete r.members
+      return r
+    })
     return res.json({
       success: true,
       data: rs

@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const moment = require("moment");
 const User = require("../models/User");
+const Post = require("../models/Post");
+const Group = require("../models/Group");
 const { ObjectId } = require("mongodb");
 const {
   FriendRequest,
@@ -137,19 +139,28 @@ router.post("/changePassword", verifyToken, async (req, res) => {
 
 // DETELE USER
 // router.put
-router.get("/profile", verifyToken, (req, res) => {
+router.get("/profile", verifyToken, async (req, res) => {
   // console.log("profile");
-  User.findById(req.userId)
-    .populate({ path: "friends.user", select: "fullName avatar isOnline" })
-    .populate({ path: "friendsRequest.user", select: "fullName avatar" })
-    .lean()
-    .then((user) => {
-      try {
-        res.json({ success: true, data: user });
-      } catch (error) {
-        return error500(res);
+  try {
+    let user = await User.findById(req.userId)
+      .populate({ path: "friends.user", select: "fullName avatar isOnline" })
+      .populate({ path: "friendsRequest.user", select: "fullName avatar" })
+      .lean()
+    let post = await Post.find({ poster: ObjectId(req.userId) })
+    let gr = await Group.find({
+      members: {
+        $elemMatch: {
+          user: Object(req.userId)
+        }
       }
-    });
+    }).select("members groupName isPrivate cover _id").lean()
+    user.groupCount = gr ? gr.length : 0
+    user.postCount = post ? post.length : 0
+    return res.json({ success: true, data: { ...user } });
+  }
+  catch (error) {
+    return error500(res);
+  }
 });
 
 router.get("/notification", verifyToken, (req, res) => {
@@ -163,21 +174,26 @@ router.get("/notification", verifyToken, (req, res) => {
   });
 });
 //GET USER DETAIL
-router.get("/:id", verifyToken, (req, res) => {
+router.get("/:id", verifyToken, async (req, res) => {
   try {
     const userId = req.params.id;
-    User.findById(userId)
+    let user = await User.findById(userId)
       .populate({ path: "friends.user", select: "fullName avatar isOnline" })
       .populate({ path: "friendsRequest.user", select: "fullName avatar" })
       .lean()
-      .then((user) => {
-        try {
-          res.json(user);
-        } catch (error) {
-          return error500(res);
+    let post = await Post.find({ poster: ObjectId(req.userId) })
+    let gr = await Group.find({
+      members: {
+        $elemMatch: {
+          user: Object(req.userId)
         }
-      });
-  } catch (err) {
+      }
+    }).select("members groupName isPrivate cover _id").lean()
+    user.groupCount = gr ? gr.length : 0
+    user.postCount = post ? post.length : 0
+    return res.json({ success: true, data: { ...user } });
+  }
+  catch (error) {
     return error500(res);
   }
 });
