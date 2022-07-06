@@ -5,7 +5,6 @@ import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import {
-  setPostList,
   editPost,
   deletePost,
   createComment,
@@ -14,6 +13,7 @@ import {
 import postAPI from "@/apis/postAPI";
 import { message, Modal } from "antd";
 import CreateEditPost from "@/components/SNCreateEditPost";
+import SNWidgetBoxItem from "@/components/SNWidgetBoxItem";
 const { confirm } = Modal;
 const Timeline = ({ user }) => {
   const postList = useSelector((state) => state.posts);
@@ -117,19 +117,50 @@ const Timeline = ({ user }) => {
             </>
           }
         />
+        <SNWidgetBox
+          title={"Friends"}
+          content={
+            user?.friends.length > 0 ? (
+              user?.friends.map((item, index) => (
+                <SNWidgetBoxItem
+                  key={index}
+                  srcAvatar={item.user.avatar}
+                  name={item.user.fullName}
+                  description={`@${item.user.username}`}
+                />
+              ))
+            ) : (
+              <p className="sn-no-result">No friends found</p>
+            )
+          }
+        />
       </div>
 
       <div className=" col-span-2">
-        {postList.map((post) => (
-          <SNPost
-            post={post}
-            key={post._id}
-            onDelete={handleDeletePost}
-            onEdit={showEdit}
-            onCommentPost={handleComment}
-            onLike={handleLikePost}
-          />
-        ))}
+        {postList.length ? (
+          postList.map((post) => (
+            <SNPost
+              post={post}
+              key={post._id}
+              onDelete={handleDeletePost}
+              onEdit={showEdit}
+              onCommentPost={handleComment}
+              onLike={handleLikePost}
+            />
+          ))
+        ) : (
+          <p className="sn-no-result">No post found</p>
+        )}
+      </div>
+      <div className="flex flex-col gap-[16px]">
+        <SNWidgetBox
+          title={"Photos"}
+          content={<p className="sn-no-result">No photos found</p>}
+        />
+        <SNWidgetBox
+          title={"Groups"}
+          content={<p className="sn-no-result">No groups found</p>}
+        />
       </div>
       <CreateEditPost
         ref={refAddEditPost}
