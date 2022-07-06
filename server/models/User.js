@@ -98,34 +98,51 @@ const UserSchema = new mongoose.Schema(
     },
     birthplace: {
       district: {
-        type: String
+        type: String,
+        default: "",
       },
       province: {
-        type: String
+        type: String,
+        default: "",
       },
     },
     achievements: [
       {
-        icon: { type: String },
-        description: { type: String }
+        icon: {
+          type: String,
+          default: "",
+        },
+        description: {
+          type: String,
+          default: "",
+        }
       }
     ],
     facebook: {
-      type: String
+      type: String,
+      default: "",
     },
     insta: {
-      type: String
+      type: String,
+      default: "",
     },
     twitter: {
-      type: String
+      type: String,
+      default: "",
     },
     occupation: {
-      type: String
+      type: String,
+      default: "",
     },
     isAdmin: {
       type: Boolean,
       default: false,
     },
+    cover: {
+      type: String,
+      default: "",
+    }
+    ,
     isOnline: {
       type: Boolean,
       default: false,
