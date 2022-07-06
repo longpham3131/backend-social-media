@@ -185,7 +185,7 @@ router.post("/responeIntiveToGroup", verifyToken, async (req, res) => {
 router.post("/joinGroup", verifyToken, async (req, res) => {
   try {
     let { groupId, userId, isJoin } = req.body;
-
+    const io = req.io;
 
     console.log('groupId', groupId)
     let group = await Group.findById(groupId)
@@ -233,6 +233,7 @@ router.post("/joinGroup", verifyToken, async (req, res) => {
     });
   }
   catch (err) {
+    console.log(err)
     error500(res)
   }
 });
