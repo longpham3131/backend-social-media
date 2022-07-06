@@ -166,6 +166,10 @@ router.post("/responeIntiveToGroup", verifyToken, async (req, res) => {
     if (isJoin) {
       let roleMember = await RoleGroup.findOne({ roleName: "member" })
       group.members.push({ user: ObjectId(req.userId), role: roleMember._id })
+      let usr = await User.findById(req.userId)
+      usr.groups = usr.groups.filter(g => g.toString() !== groupId)
+      usr.groups.push(ObjectId(groupId))
+      await usr.save()
     }
     let rs = await group.save()
     return res.json({
@@ -209,6 +213,10 @@ router.post("/joinGroup", verifyToken, async (req, res) => {
     if (isJoin) {
       group.members = group.members.filter(mem => mem.user.toString() !== userId)
       group.members.push({ user: ObjectId(userId), role: roleMember._id })
+      let usr = await User.findById(userId)
+      usr.groups = usr.groups.filter(g => g.toString() !== groupId)
+      usr.groups.push(ObjectId(groupId))
+      await usr.save()
       const noti = await UserNotification({
         data: group,
         type: 7
@@ -253,6 +261,9 @@ router.post("/kickOutOfGroup", verifyToken, async (req, res) => {
     }
     group.members = group.members.filter(mem => mem.user.toString() !== userId)
     const rs = await group.save()
+    let usr = await User.findById(userId)
+    usr.groups = usr.groups.filter(g => g.toString() !== groupId)
+    await usr.save()
     return res.json({
       success: true,
       data: rs
@@ -274,6 +285,9 @@ router.get("/requestQuitGroup/:groupId", verifyToken, async (req, res) => {
     }
     group.members = group.members.filter(mems => mems.user.toString() !== req.userId)
     const rs = await group.save()
+    let usr = await User.findById(req.userId)
+    usr.groups = usr.groups.filter(g => g.toString() !== groupId)
+    await usr.save()
     return res.json({
       success: true,
       data: rs
