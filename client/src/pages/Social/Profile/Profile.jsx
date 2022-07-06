@@ -1,44 +1,26 @@
-import { Button, Card, Image, message, Modal } from "antd";
+import { Image, message } from "antd";
 import userAPI from "@/apis/userAPI";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import postAPI from "@/apis/postAPI";
-import {
-  setPostList,
-  editPost,
-  deletePost,
-  createComment,
-  likePost,
-} from "@/store/postSlice";
+import { setPostList } from "@/store/postSlice";
 import { setProfile } from "@/store/profileSlice";
 import SNAvatar from "@/components/SNAvatar";
 import { getUrlImage } from "@/util/index";
 import "./styles/profile.scss";
-import SNPost from "@/components/SNPost";
 import {
-  ExclamationCircleOutlined,
   FacebookOutlined,
   TwitterOutlined,
   InstagramOutlined,
 } from "@ant-design/icons";
-import CreateEditPost from "@/components/SNCreateEditPost";
-import EditProfile from "./EditProfile";
-import { editProfile } from "@/store/profileSlice";
-import chatAPI from "@/apis/chatAPI";
 import SNButton from "@/components/SNButton";
 import SliderContents from "./SliderContents/SliderContents";
-const { confirm } = Modal;
-
 const Profile = () => {
   const myProfile = useSelector((state) => state.profile);
-  const postList = useSelector((state) => state.posts);
+
   const dispatch = useDispatch();
   const { userId } = useParams();
-  const [showEditPost, setShowEditPost] = useState(false);
-  const [showEditProfile, setShowEditProfile] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState("");
-  const refAddEditPost = useRef(null);
   const isMyProfile = myProfile._id === userId;
   const [isFriend, setFriend] = useState(false);
   const [profile, setProfileUser] = useState(null);
@@ -97,90 +79,6 @@ const Profile = () => {
       await dispatch(setPostList(postList.data));
     } catch (error) {
       message.error("Get posts failed!");
-    }
-  };
-
-  const handleEditPost = async (values) => {
-    values.postId = selectedPostId;
-    console.log("success", values);
-    try {
-      const res = await postAPI.editPost(values);
-      console.log("success", res.data);
-      dispatch(editPost(res.data));
-      message.success("Success!");
-      refAddEditPost.current.resetFields();
-      setShowEditPost(false);
-    } catch {
-      message.error("Edit post failed");
-    }
-  };
-  const handleDeletePost = async (postId) => {
-    confirm({
-      title: "Are you sure you want to delete this post?",
-      icon: <ExclamationCircleOutlined />,
-      okText: "Confirm",
-      cancelText: "Cancel",
-      onOk() {
-        try {
-          postAPI.deletePost(postId);
-          dispatch(deletePost(postId));
-          message.success("Success!");
-        } catch {
-          message.error("Failed!");
-        }
-      },
-      onCancel() {
-        console.log("Cancel");
-      },
-    });
-  };
-  const showEdit = async (post) => {
-    await refAddEditPost.current.setFields(
-      post.audience,
-      post.text,
-      post.attachments[0]
-    );
-    setShowEditPost(true);
-    setSelectedPostId(post._id);
-  };
-  const handleComment = async (values) => {
-    try {
-      const res = await postAPI.comment(values);
-      const dataDispatchStore = {
-        ...res.data.data,
-        user: {
-          _id: profile._id,
-          username: profile.username,
-          fullName: profile.fullName,
-          avatar: profile.avatar,
-        },
-      };
-      dispatch(
-        createComment({ postId: values.postId, comment: dataDispatchStore })
-      );
-      console.log("success", res.data);
-    } catch {
-      message.error("Failed!");
-    }
-  };
-  const handleLikePost = async (postId) => {
-    try {
-      const res = await postAPI.likePost(postId);
-      dispatch(likePost(res.data));
-    } catch {
-      message.error("Failed");
-    }
-  };
-  const handleEditProfile = async (dataSubmit) => {
-    console.log("dataSubmit", dataSubmit);
-    try {
-      const res = await userAPI.updateProfile(dataSubmit);
-      dispatch(editProfile(res.data));
-      await chatAPI.updateUser(res.data, dataSubmit.avatarForChat);
-      message.success("Edit success");
-      setShowEditProfile(false);
-    } catch {
-      message.error("Failed");
     }
   };
 
@@ -317,59 +215,9 @@ const Profile = () => {
             </div>
           </div>
 
-          <SliderContents />
-          <div className="mt-[3rem] flex flex-col lg:flex-row gap-[3rem] h-full px-[2rem] lg:px-0">
-            <Card
-              title="Profile"
-              style={{ height: "fit-content" }}
-              className="w-full lg:w-[35%] shadow-2 "
-              actions={[
-                <Button type="primary" onClick={() => setShowEditProfile(true)}>
-                  Edit personal profile
-                </Button>,
-              ]}
-            >
-              {/* <p className="flex items-center justify-between text-base">
-                <span>Followers: </span>
-                <span className="ml-auto">{profile.followers.length}</span>
-              </p>
-              <p className="flex items-center justify-between text-base">
-                <span>Followings: </span>
-                <span className="ml-auto">{profile.followings.length}</span>
-              </p> */}
-              <p className="flex items-center justify-between text-base">
-                <span>Friends List: </span>
-                <span className="ml-auto">{profile.friends.length}</span>
-              </p>
-            </Card>
-            <EditProfile
-              visible={showEditProfile}
-              onEdit={handleEditProfile}
-              onCancel={() => setShowEditProfile(false)}
-            />
-            <div className="w-full lg:w-[65%]">
-              {postList.map((post) => (
-                <SNPost
-                  post={post}
-                  key={post._id}
-                  onDelete={handleDeletePost}
-                  onEdit={showEdit}
-                  onCommentPost={handleComment}
-                  onLike={handleLikePost}
-                />
-              ))}
-            </div>
-          </div>
+          <SliderContents user={profile} />
         </>
       )}
-      <CreateEditPost
-        ref={refAddEditPost}
-        visible={showEditPost}
-        title="Edit post"
-        okText="Update"
-        onClose={() => setShowEditPost(false)}
-        onSubmit={handleEditPost}
-      />
     </div>
   );
 };

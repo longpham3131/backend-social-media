@@ -71,6 +71,7 @@ module.exports = {
       },
 
       colors: {
+        "color-text-alt": "var(--color-text-alt)",
         "color-text-alt-2": "var(--color-text-alt-2)",
         "color-primary": "var(--color-primary)",
         "color-text": "var(--color-text)",

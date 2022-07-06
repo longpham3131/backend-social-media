@@ -5,11 +5,7 @@ import {
   OneToOneOutlined,
   SmileOutlined,
   TeamOutlined,
-  ProfileOutlined,
-  CommentOutlined,
   FileImageOutlined,
-  PlayCircleOutlined,
-  VideoCameraOutlined,
 } from "@ant-design/icons";
 import "./index.scss";
 import About from "./Tabs/About";
@@ -19,7 +15,7 @@ import Groups from "./Tabs/Groups";
 import Photos from "./Tabs/Photos";
 
 const { TabPane } = Tabs;
-const SliderContents = () => {
+const SliderContents = ({ user }) => {
   const onChange = (key) => {
     console.log(key);
   };
@@ -28,13 +24,13 @@ const SliderContents = () => {
       icon: <UserOutlined />,
       name: "About",
       isDisable: false,
-      ele: <About />,
+      ele: <About user={user} />,
     },
     {
       icon: <OneToOneOutlined />,
       name: "Timeline",
       isDisable: false,
-      ele: <Timeline />,
+      ele: <Timeline user={user} />,
     },
     {
       icon: <SmileOutlined />,
@@ -58,7 +54,7 @@ const SliderContents = () => {
   ];
   return (
     <div className="mt-[16px] sn-slider-contents">
-      <Tabs defaultActiveKey="1" onChange={onChange}>
+      <Tabs defaultActiveKey="2" onChange={onChange}>
         {categories.map((item, index) => {
           return (
             <TabPane
@@ -70,7 +66,9 @@ const SliderContents = () => {
               }
               key={index + 1}
             >
-              <div className="grid grid-cols-4 gap-[16px]">{item.ele}</div>
+              <div className="grid grid-cols-4 gap-[16px] pb-[24px]">
+                {item.ele}
+              </div>
             </TabPane>
           );
         })}
