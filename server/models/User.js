@@ -32,7 +32,7 @@ const UserSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "",
+      default: "viking_uewep5.png",
     },
     coverPicture: {
       type: String,
