@@ -143,7 +143,7 @@ router.get("/profile", verifyToken, async (req, res) => {
   // console.log("profile");
   try {
     let user = await User.findById(req.userId)
-      .populate({ path: "friends.user", select: "fullName avatar isOnline" })
+      .populate({ path: "friends.user", select: "fullName avatar isOnline coverPicture" })
       .populate({ path: "friendsRequest.user", select: "fullName avatar" })
       .lean()
     let post = await Post.find({ poster: ObjectId(req.userId) })
@@ -178,7 +178,7 @@ router.get("/:id", verifyToken, async (req, res) => {
   try {
     const userId = req.params.id;
     let user = await User.findById(userId)
-      .populate({ path: "friends.user", select: "fullName avatar isOnline" })
+      .populate({ path: "friends.user", select: "fullName avatar isOnline coverPicture" })
       .populate({ path: "friendsRequest.user", select: "fullName avatar" })
       .lean()
     let post = await Post.find({ poster: ObjectId(req.userId) })
