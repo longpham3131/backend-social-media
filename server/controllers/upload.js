@@ -7,8 +7,9 @@ var fs = require("fs");
 const { default: axios } = require("axios");
 const singleFileUpload = async (req, res, next) => {
   try {
-    console.log(req.file);
+    // console.log(req.file);
     let body = req.body
+    console.log(body.tags);
     await console.log("----------------------------");
     let uploadRes = null;
     if (req.file.mimetype.split("/")[0] === "image") {
@@ -55,15 +56,16 @@ const singleFileUpload = async (req, res, next) => {
         }
       );
     }
-    console.log(uploadRes);
+    // console.log(uploadRes);
     const file = {
       fileName: uploadRes.original_filename,
       filePath: uploadRes.public_id,
       fileType: req.file.mimetype,
       fileSize: fileSizeFormatter(req.file.size, 2), // 0.00
+      tags:req.body.tags
     };
     var filePathDelete = "uploads\\" + req.file.path.split("\\")[1];
-    console.log(file);
+    // console.log(file);
     await fs.unlinkSync(filePathDelete);
     res.status(200).send({ message: "File upload successfully", data: file });
   } catch (er) {

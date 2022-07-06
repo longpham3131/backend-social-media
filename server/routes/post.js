@@ -71,6 +71,7 @@ router.post("/", verifyToken, async (req, res) => {
             fileType: e.type,
             fileSize: e.size, // 0.00
             user: req.userId,
+            tags:e.tags
           });
           await file.save();
           return { ...e, id: file._id };

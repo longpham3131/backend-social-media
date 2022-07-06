@@ -56,12 +56,12 @@ const CreateEditPost = React.forwardRef(
               type: file.response.data.fileType ?? file.type,
               name: file.response.data.fileName ?? file.name,
               size: file.response.data.fileSize ?? file.size,
+              tags:file.response.data.tags
             },
           ]
           : [],
         postParent: "",
       };
-      debugger
       if (editorState !== undefined) {
         onSubmit(post);
       }
