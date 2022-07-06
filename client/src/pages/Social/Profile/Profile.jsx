@@ -62,7 +62,8 @@ const Profile = () => {
   const fetchOtherUserProfile = async () => {
     try {
       const res = await userAPI.getProfile(userId);
-      setProfileUser(res.data);
+      console.log("profile", res.data);
+      setProfileUser(res.data.data);
     } catch {
       message.error("Get profile failed!");
     }
@@ -142,7 +143,7 @@ const Profile = () => {
               <div className="flex items-center gap-[60px] ">
                 <div>
                   <p className="text-[1.375rem] uppercase text-center font-bold text-color-text leading-[1em]">
-                    1
+                    {profile.postCount}
                   </p>
                   <p className=" text-[0.75rem] mt-[10px] text-color-text-alt-2 uppercase font-bold text-center">
                     post
@@ -150,7 +151,7 @@ const Profile = () => {
                 </div>
                 <div>
                   <p className="text-[1.375rem] uppercase text-center font-bold text-color-text leading-[1em]">
-                    5
+                    {profile.friends.length}
                   </p>
                   <p className=" text-[0.75rem] mt-[10px] text-color-text-alt-2 uppercase font-bold text-center">
                     friends
@@ -158,10 +159,10 @@ const Profile = () => {
                 </div>
                 <div>
                   <p className="text-[1.375rem] uppercase text-center font-bold text-color-text leading-[1em]">
-                    7
+                    {profile.groupCount}
                   </p>
                   <p className=" text-[0.75rem] mt-[10px] text-color-text-alt-2 uppercase font-bold text-center">
-                    commemts
+                    groups
                   </p>
                 </div>
               </div>
