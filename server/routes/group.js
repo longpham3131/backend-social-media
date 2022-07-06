@@ -23,6 +23,26 @@ router.get("/", verifyToken, async (req, res) => {
 
   }
 });
+router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!ObjectId.isValid(id))
+      return res.json({
+        success: false,
+      });
+    const groups = await Group.findById(ObjectId(id))
+      .populate("adminGroup")
+      .populate({ path: "members", select: "fullName avatar id" })
+      .populate({ path: "requestJoin", select: "fullName avatar id" }).lean()
+    return res.json({
+      success: true,
+      data: groups
+    });
+  }
+  catch (err) {
+
+  }
+});
 
 router.post("/", verifyToken, async (req, res) => {
   try {
@@ -160,7 +180,7 @@ router.post("/responeIntiveToGroup", verifyToken, async (req, res) => {
 
 router.post("/joinGroup", verifyToken, async (req, res) => {
   try {
-    let { groupId, userId } = req.body;
+    let { groupId, userId, isJoin } = req.body;
 
 
     console.log('groupId', groupId)
@@ -186,9 +206,18 @@ router.post("/joinGroup", verifyToken, async (req, res) => {
       }
     }
     group.requestJoin = group.requestJoin.filter(user => user.toString() !== userId)
-    group.members = group.members.filter(mem => mem.user.toString() !== userId)
-    group.members.push({ user: ObjectId(userId), role: roleMember._id })
-
+    if (isJoin) {
+      group.members = group.members.filter(mem => mem.user.toString() !== userId)
+      group.members.push({ user: ObjectId(userId), role: roleMember._id })
+      const noti = await UserNotification({
+        data: group,
+        type: 7
+      });
+      await noti.save();
+      io.sockets.to(`user_${userId}`).emit("notification", {
+        data: noti,
+      });
+    }
     const rs = await group.save()
     return res.json({
       success: true,
@@ -320,6 +349,28 @@ router.get("/getRoles", verifyToken, async (req, res) => {
   }
 });
 
-
+router.get("/getGroupUserJoined", verifyToken, async (req, res) => {
+  try {
+    let rs = await Group.findOne({
+      members: {
+        $elemMatch: {
+          user: Object(req.userId)
+        }
+      }
+    }).select("members groupName isPrivate cover _id").lean()
+    if (rs) {
+      rs.membersCount = rs.members.length
+    } 
+    delete rs.members
+    return res.json({
+      success: true,
+      data: rs
+    });
+  }
+  catch (err) {
+    console.log(err)
+    error500(res)
+  }
+});
 
 module.exports = router;
