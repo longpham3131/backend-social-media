@@ -36,13 +36,13 @@ const SliderContents = ({ user }) => {
       icon: <SmileOutlined />,
       name: "Friends",
       isDisable: false,
-      ele: <Friends />,
+      ele: <Friends user={user} />,
     },
     {
       icon: <TeamOutlined />,
       name: "Groups",
       isDisable: false,
-      ele: <Groups />,
+      ele: <Groups user={user} />,
     },
 
     {
@@ -54,7 +54,7 @@ const SliderContents = ({ user }) => {
   ];
   return (
     <div className="mt-[16px] sn-slider-contents">
-      <Tabs defaultActiveKey="2" onChange={onChange}>
+      <Tabs defaultActiveKey="4" onChange={onChange}>
         {categories.map((item, index) => {
           return (
             <TabPane
