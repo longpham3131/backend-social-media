@@ -32,11 +32,11 @@ const UserSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "",
+      default: "viking_uewep5.png",
     },
     coverPicture: {
       type: String,
-      default: "",
+      default: "5f6d2f8173860-bp-cover-image_gw7shw.jpg",
     },
     imageList: {
       type: Array,
@@ -137,10 +137,6 @@ const UserSchema = new mongoose.Schema(
     isAdmin: {
       type: Boolean,
       default: false,
-    },
-    cover: {
-      type: String,
-      default: "",
     }
     ,
     isOnline: {
