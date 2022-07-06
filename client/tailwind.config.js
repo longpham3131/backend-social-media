@@ -71,6 +71,7 @@ module.exports = {
       },
 
       colors: {
+        "color-text-alt": "var(--color-text-alt)",
         "color-text-alt-2": "var(--color-text-alt-2)",
         "color-primary": "var(--color-primary)",
         "color-text": "var(--color-text)",
@@ -79,6 +80,7 @@ module.exports = {
         "color-header-input-background": "var(--color-header-input-background)",
         "color-header-icon": "var(--color-header-icon)",
         "color-icon": "var(--color-icon)",
+        "color-icon-highlighted": "var(--color-icon-highlighted)",
         "color-background": "var(--color-background)",
         "color-default-background": "var(--color-default-background)",
         "color-login-background": "var(--color-login-background)",

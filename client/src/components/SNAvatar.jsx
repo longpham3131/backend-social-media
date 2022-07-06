@@ -31,7 +31,10 @@ const SNAvatar = ({
       >
         {getFirstLetter(fullName)}
       </Avatar> */}
-      <div className="sn-avatar-outside" style={{ width: `${size}px` }}>
+      <div
+        className="sn-avatar-outside"
+        style={{ width: `${size}px`, height: `${size}px` }}
+      >
         <StyledAvatar src={src} className="sn-avatar-inner" />
         {/* <div className="sn-avatar-inner"></div> */}
       </div>

@@ -48,7 +48,6 @@ const Headerbar = ({ collapsed, onToggle }) => {
   const logOut = () => {
     localStorage.clear();
     navigate("/login");
-    window.location.reload();
   };
   const handleCreatePost = async (values) => {
     try {

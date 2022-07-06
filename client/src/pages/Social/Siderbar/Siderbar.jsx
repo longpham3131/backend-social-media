@@ -48,7 +48,7 @@ const Siderbar = ({ collapsed, onClose }) => {
             </Link>
           </Menu.Item>
 
-          <hr className="w-[90%] my-[1rem]" />
+          {/* <hr className="w-[90%] my-[1rem]" /> */}
           <Menu.Item
             key="/"
             icon={<DesktopOutlined style={{ fontSize: `${sizeIcon}px` }} />}
