@@ -36,7 +36,7 @@ const UserSchema = new mongoose.Schema(
     },
     coverPicture: {
       type: String,
-      default: "",
+      default: "5f6d2f8173860-bp-cover-image_gw7shw.jpg",
     },
     imageList: {
       type: Array,
@@ -137,10 +137,6 @@ const UserSchema = new mongoose.Schema(
     isAdmin: {
       type: Boolean,
       default: false,
-    },
-    cover: {
-      type: String,
-      default: "",
     }
     ,
     isOnline: {
