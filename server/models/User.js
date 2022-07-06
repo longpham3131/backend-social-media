@@ -38,6 +38,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "5f6d2f8173860-bp-cover-image_gw7shw.jpg",
     },
+    groups: [{
+      type: Schema.Types.ObjectId,
+      ref: "Group",
+    }],
     imageList: {
       type: Array,
       default: [],
