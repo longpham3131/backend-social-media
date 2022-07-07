@@ -49,12 +49,12 @@ const SliderContents = ({ user }) => {
       icon: <FileImageOutlined />,
       name: "Photos",
       isDisable: false,
-      ele: <Photos />,
+      ele: <Photos user={user} />,
     },
   ];
   return (
     <div className="mt-[16px] sn-slider-contents">
-      <Tabs defaultActiveKey="4" onChange={onChange}>
+      <Tabs defaultActiveKey="2" onChange={onChange}>
         {categories.map((item, index) => {
           return (
             <TabPane

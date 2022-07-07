@@ -49,7 +49,8 @@ const CustomStyleTextField = styled(TextField)({
 });
 
 const SNTextField = (props) => {
-  const { name, type, rules, label, control, error, helperText } = props;
+  const { name, type, rules, label, control, error, helperText, onEnter } =
+    props;
   const isTypePass = type === "password";
   const [showPassword, setShowPassword] = useState(false);
   return (
@@ -62,6 +63,14 @@ const SNTextField = (props) => {
           <CustomStyleTextField
             label={label}
             onChange={field.onChange}
+            onKeyPress={(ev) => {
+              if (ev.key === "Enter") {
+                // Do code here
+                console.log("Enter");
+                ev.preventDefault();
+                return onEnter();
+              }
+            }}
             required={rules?.required ? true : false}
             helperText={helperText}
             variant="outlined"

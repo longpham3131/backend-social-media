@@ -61,9 +61,9 @@ const Social = () => {
           collapsed={collapsed}
           onClose={() => setCollapsed(!collapsed)}
         />
-        <Content className="site-layout-background min-h-[28rem] w-full m-0 lg:mt-[2.4rem] lg:mx-[1.6rem]">
+        <Content className="site-layout-background min-h-[28rem] w-full m-0 lg:mt-[2.4rem] lg:mx-[1.6rem] overflow-auto">
           <div className="w-full h-full">
-            <div className={`h-full w-[1184px] mx-auto`}>
+            <div className={`h-full w-[1184px] mx-auto `}>
               <Banner />
               <Routes>
                 <Route path="/" element={<Newsfeed />} />

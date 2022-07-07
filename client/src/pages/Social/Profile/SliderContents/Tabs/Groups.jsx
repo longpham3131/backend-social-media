@@ -13,7 +13,7 @@ const Groups = ({ user }) => {
           {user.groupCount}
         </span>
       </p>
-      <div className="mt-[100px]">
+      <div className="mt-[32px]">
         <SNNoResult />
       </div>
     </div>

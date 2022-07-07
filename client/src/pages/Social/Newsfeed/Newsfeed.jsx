@@ -1,34 +1,20 @@
 import React, { useRef, useState } from "react";
 import { message, Modal, Skeleton, Divider } from "antd";
 import postAPI from "@/apis/postAPI";
-import SNPost from "@/components/SNPost";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setPostList,
-  deletePost,
-  editPost,
-  createComment,
-  likePost,
-  addMorePost,
-  deletePostComment,
-} from "@/store/postSlice";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
-import CreateEditPost from "@/components/SNCreateEditPost";
+import { setPostList, addMorePost } from "@/store/postSlice";
 import InfiniteScroll from "react-infinite-scroll-component";
 import SNWidgetBox from "@/components/SNWidgetBox";
 import SNWidgetBoxItem from "@/components/SNWidgetBoxItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEarthAmericas, faLock } from "@fortawesome/free-solid-svg-icons";
-const { confirm } = Modal;
+import SNPost2 from "@/components/SNPost2";
 
 const Newsfeed = () => {
   const dispatch = useDispatch();
   const postList = useSelector((state) => state.posts);
   const profile = useSelector((state) => state.profile);
-  const [showEditPost, setShowEditPost] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState("");
-  const refAddEditPost = useRef(null);
   const [loadMore, setLoadMore] = useState(true);
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -50,102 +36,6 @@ const Newsfeed = () => {
       message.error("get post failed!");
     }
   };
-  const handleEditPost = async (values) => {
-    values.postId = selectedPostId;
-    console.log("success", values);
-    try {
-      const res = await postAPI.editPost(values);
-      console.log("success", res.data);
-      dispatch(editPost(res.data));
-      message.success("Edit post success.");
-      refAddEditPost.current.resetFields();
-      setShowEditPost(false);
-    } catch {
-      message.error("Edit post failed!");
-    }
-  };
-
-  const handleDeletePost = async (postId) => {
-    confirm({
-      title: "Do you want to delete this post?",
-      icon: <ExclamationCircleOutlined />,
-      okText: "Confirm",
-      cancelText: "Cancel",
-      onOk() {
-        try {
-          postAPI.deletePost(postId);
-          dispatch(deletePost(postId));
-          message.success("Delete post success!");
-        } catch {
-          message.error("Delete post failed!");
-        }
-      },
-      onCancel() {
-        console.log("Cancel");
-      },
-    });
-  };
-
-  const handleDeletePostComment = async (data) => {
-    confirm({
-      title: "Do you want to delete this post?",
-      icon: <ExclamationCircleOutlined />,
-      okText: "Confirm",
-      cancelText: "Cancel",
-      async onOk() {
-        try {
-          await postAPI.deleteComment(data);
-          await dispatch(deletePostComment(data));
-          message.success("Delete post success!");
-        } catch (err) {
-          console.log(err);
-          message.error("Delete post failed!");
-        }
-      },
-      onCancel() {
-        console.log("Cancel");
-      },
-    });
-  };
-
-  const showEdit = async (post) => {
-    await refAddEditPost.current.setFields(
-      post.audience,
-      post.text,
-      post.attachments[0]
-    );
-    setShowEditPost(true);
-    setSelectedPostId(post._id);
-  };
-  const handleComment = async (values) => {
-    try {
-      const res = await postAPI.comment(values);
-      const dataDispatchStore = {
-        ...res.data.data,
-        user: {
-          _id: profile._id,
-          username: profile.username,
-          fullName: profile.fullName,
-          avatar: profile.avatar,
-        },
-      };
-      dispatch(
-        createComment({ postId: values.postId, comment: dataDispatchStore })
-      );
-      console.log("success", res.data);
-    } catch {
-      message.error("Post comment failed!");
-    }
-  };
-  const handleLikePost = async (postId) => {
-    try {
-      const res = await postAPI.likePost(postId);
-      dispatch(likePost(res.data));
-    } catch {
-      message.error("Liked the failed post!");
-    }
-  };
-
   const loadMoreData = () => {
     console.log("loadmore");
     if (loading) {
@@ -252,70 +142,56 @@ const Newsfeed = () => {
   ];
   // End data member
   return (
-    <div className="grid grid-cols-4 gap-4 mt-[32px]">
-      <SNWidgetBox
-        title={"Newest Members"}
-        content={members.map((item, index) => (
-          <SNWidgetBoxItem
-            key={index}
-            srcAvatar={item.avatar}
-            name={item.name}
-            description={item.description}
-          />
-        ))}
-      />
-
-      <div id="scrollablePost" className=" col-span-2">
-        <InfiniteScroll
-          dataLength={postList?.length ?? 0}
-          next={loadMoreData}
-          hasMore={loadMore}
-          loader={
-            <Skeleton
-              className="w-[30rem]"
-              avatar
-              paragraph={{ rows: 1 }}
-              active
+    <div className="h-full">
+      <div className="grid grid-cols-4 gap-4 mt-[32px] h-full">
+        <SNWidgetBox
+          title={"Newest Members"}
+          content={members.map((item, index) => (
+            <SNWidgetBoxItem
+              key={index}
+              srcAvatar={item.avatar}
+              name={item.name}
+              description={item.description}
             />
-          }
-          endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
-          scrollableTarget="scrollablePost"
-        >
-          {postList.length > 0 &&
-            postList.map((post) => (
-              <SNPost
-                post={post}
-                key={post._id}
-                onDelete={handleDeletePost}
-                onDeleteComment={handleDeletePostComment}
-                onEdit={showEdit}
-                onCommentPost={handleComment}
-                onLike={handleLikePost}
-              />
-            ))}
-        </InfiniteScroll>
+          ))}
+        />
 
-        <CreateEditPost
-          ref={refAddEditPost}
-          visible={showEditPost}
-          title="Edit post"
-          okText="Update"
-          onClose={() => setShowEditPost(false)}
-          onSubmit={handleEditPost}
+        <div id="scrollablePost" className=" col-span-2">
+          <InfiniteScroll
+            dataLength={postList?.length ?? 0}
+            next={loadMoreData}
+            hasMore={loadMore}
+            loader={
+              <Skeleton
+                className="w-[30rem]"
+                avatar
+                paragraph={{ rows: 1 }}
+                active
+              />
+            }
+            endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+            scrollableTarget="scrollablePost"
+          >
+            <div className="col-span-2">
+              {postList.length > 0 &&
+                postList.map((post) => <SNPost2 post={post} key={post._id} />)}
+            </div>
+          </InfiniteScroll>
+        </div>
+
+        <SNWidgetBox
+          title={"Groups"}
+          content={groups.map((item, index) => (
+            <SNWidgetBoxItem
+              key={index}
+              srcAvatar={item.avatar}
+              name={item.name}
+              description={item.member}
+              leftIcon={item.leftIcon}
+            />
+          ))}
         />
       </div>
-      <SNWidgetBox
-        title={"Groups"}
-        content={groups.map((item, index) => (
-          <SNWidgetBoxItem
-            key={index}
-            srcAvatar={item.avatar}
-            name={item.name}
-            description={item.member}
-            leftIcon={item.leftIcon}
-          />
-        ))}
-      />
     </div>
   );
 };

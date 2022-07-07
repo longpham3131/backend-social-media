@@ -17,6 +17,12 @@ const userAPI = {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
   },
+  getFriends(id) {
+    const url = `${BASE_URL}/getFriends/${id}`;
+    return axios.get(url, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+  },
   updateProfile(newProfile) {
     const url = `${BASE_URL}`;
     return axios.put(url, newProfile, config);
@@ -37,15 +43,15 @@ const userAPI = {
     const url = `${BASE_URL}/getFriendRequest`;
     return axios.get(url, config);
   },
-  getImageUser(data) {
-    const url = `${HTTP_CONNECT}/upload/getAllMediaByUserId?userId=${data}`;
+  getImageUser(userId) {
+    const url = `${HTTP_CONNECT}/upload/getAllMediaByUserId?userId=${userId}`;
     return axios.get(url, config);
   },
   getSearch(keySearch) {
     const url = `${BASE_URL}/search/${keySearch}`;
     return axios.get(url, config);
   },
-  checkInAtivity(){
+  checkInAtivity() {
     const url = `${HTTP_CONNECT}/admin/checkInActivity`;
     return axios.get(url, config);
   },
