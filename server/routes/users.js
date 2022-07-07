@@ -234,7 +234,7 @@ router.get("/getUsers2", verifyToken, async (req, res) => {
   let users = await User.find()
     .skip(page)
     .limit(pageSize)
-    .select("_id fullName avatar isOnline username groups")
+    .select("_id fullName avatar coverPicture isOnline username groups friends")
     .lean();
 
   for (const fr of users) {

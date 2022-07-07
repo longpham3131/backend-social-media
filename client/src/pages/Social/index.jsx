@@ -20,6 +20,8 @@ import SNAvatar from "@/components/SNAvatar";
 import Message from "./Message";
 import { makeid } from "@/util/index";
 import Banner from "./Banner/Banner";
+import Members from "./Members";
+import Groups from "./Groups";
 const { Content } = Layout;
 
 const Social = () => {
@@ -70,6 +72,8 @@ const Social = () => {
                 <Route path="/profile/:userId" element={<Profile />} />
                 <Route path="/post/:postId" element={<PostDetail />} />
                 <Route path="/search-friend" element={<SearchFriend />} />
+                <Route path="/members" element={<Members />} />
+                <Route path="/groups" element={<Groups />} />
                 <Route path="/message" element={<Message />} />
               </Routes>
             </div>

@@ -59,6 +59,12 @@ const userAPI = {
     const url = `${BASE_URL}/changePassword`;
     return axios.post(url, data, config);
   },
+  getMembers() {
+    const url = `${BASE_URL}/getUsers2?page=0&pageSize=1000`;
+    return axios.get(url, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+  },
 };
 
 export default userAPI;
