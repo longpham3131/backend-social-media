@@ -24,6 +24,22 @@ router.get("/", verifyToken, async (req, res) => {
 
   }
 });
+
+router.delete("/:id", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const rs = await Group.findByIdAndDelete(id)
+    await Post.deleteMany({ groupId: ObjectId(id) })
+    return res.json({
+      success: true,
+      data: rs
+    });
+  }
+  catch (err) {
+
+  }
+});
+
 router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -391,5 +407,7 @@ router.get("/getGroupUserJoined", verifyToken, async (req, res) => {
     error500(res)
   }
 });
+
+
 
 module.exports = router;
