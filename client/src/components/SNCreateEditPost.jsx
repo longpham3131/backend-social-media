@@ -4,21 +4,20 @@ import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
 import React, { useEffect, useImperativeHandle } from "react";
 import { useState } from "react";
-import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import SNUpload from "./SNUpload";
 const CreateEditPost = React.forwardRef(
   ({ title, visible, okText, onClose, onSubmit }, ref) => {
     const [file, setFile] = useState("");
     const [form] = Form.useForm();
-    const [editorState, setEditorState] = useState('')
+    const [editorState, setEditorState] = useState("");
     useImperativeHandle(ref, () => ({
       resetFields,
       setFields,
     }));
 
-    useEffect(() => {
-    })
+    useEffect(() => {});
     useEffect(() => {
       resetFields();
     }, []);
@@ -35,15 +34,15 @@ const CreateEditPost = React.forwardRef(
       form.setFieldsValue({
         audience,
       });
-      let raw =htmlToDraft(content)
+      let raw = htmlToDraft(content);
       const contentState = ContentState.createFromBlockArray(raw.contentBlocks);
       const editorState = EditorState.createWithContent(contentState);
-      setEditorState(editorState)
+      setEditorState(editorState);
       setFile(attach ? attach : "");
+      console.log("attach", attach);
     };
 
     const handleOk = () => {
-
       form.submit();
       const values = form.getFieldsValue();
       const post = {
@@ -51,14 +50,14 @@ const CreateEditPost = React.forwardRef(
         audience: values.audience,
         attachments: file
           ? [
-            {
-              file: file.response.data.filePath ?? file.file,
-              type: file.response.data.fileType ?? file.type,
-              name: file.response.data.fileName ?? file.name,
-              size: file.response.data.fileSize ?? file.size,
-              tags:file.response.data.tags
-            },
-          ]
+              {
+                file: file?.response?.data.filePath ?? file.file,
+                type: file?.response?.data.fileType ?? file.type,
+                name: file?.response?.data.fileName ?? file.name,
+                size: file?.response?.data.fileSize ?? file.size,
+                tags: file?.response?.data.tags,
+              },
+            ]
           : [],
         postParent: "",
       };
@@ -72,12 +71,12 @@ const CreateEditPost = React.forwardRef(
     };
     const onEditorStateChange = (value) => {
       // setEditorState(value)
-      let html= draftToHtml(convertToRaw(value.getCurrentContent()))
-      console.log('html',html.toString())
-      let raw =htmlToDraft(html)
+      let html = draftToHtml(convertToRaw(value.getCurrentContent()));
+      console.log("html", html.toString());
+      let raw = htmlToDraft(html);
       const contentState = ContentState.createFromBlockArray(raw.contentBlocks);
       const editorState = EditorState.createWithContent(contentState);
-      setEditorState(value)
+      setEditorState(value);
       // console.log('content',draftToHtml(convertToRaw(value.getCurrentContent())))
     };
     return (
@@ -110,7 +109,10 @@ const CreateEditPost = React.forwardRef(
           >
             <Input.TextArea />
           </Form.Item> */}
-          <Editor editorState={editorState} onEditorStateChange={onEditorStateChange} />
+          <Editor
+            editorState={editorState}
+            onEditorStateChange={onEditorStateChange}
+          />
           <Form.Item label="Attach your photo or video" name="file">
             <SNUpload
               onUploadSuccess={(value) => setFile(value)}

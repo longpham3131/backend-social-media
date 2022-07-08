@@ -36,20 +36,20 @@ const SliderContents = ({ user }) => {
       icon: <SmileOutlined />,
       name: "Friends",
       isDisable: false,
-      ele: <Friends />,
+      ele: <Friends user={user} />,
     },
     {
       icon: <TeamOutlined />,
       name: "Groups",
       isDisable: false,
-      ele: <Groups />,
+      ele: <Groups user={user} />,
     },
 
     {
       icon: <FileImageOutlined />,
       name: "Photos",
       isDisable: false,
-      ele: <Photos />,
+      ele: <Photos user={user} />,
     },
   ];
   return (

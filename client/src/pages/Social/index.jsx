@@ -20,6 +20,8 @@ import SNAvatar from "@/components/SNAvatar";
 import Message from "./Message";
 import { makeid } from "@/util/index";
 import Banner from "./Banner/Banner";
+import Members from "./Members";
+import Groups from "./Groups";
 const { Content } = Layout;
 
 const Social = () => {
@@ -61,15 +63,17 @@ const Social = () => {
           collapsed={collapsed}
           onClose={() => setCollapsed(!collapsed)}
         />
-        <Content className="site-layout-background min-h-[28rem] w-full m-0 lg:mt-[2.4rem] lg:mx-[1.6rem]">
+        <Content className="site-layout-background min-h-[28rem] w-full m-0 lg:mt-[2.4rem] lg:mx-[1.6rem] overflow-auto">
           <div className="w-full h-full">
-            <div className={`h-full w-[1184px] mx-auto`}>
+            <div className={`h-full w-[1184px] mx-auto `}>
               <Banner />
               <Routes>
                 <Route path="/" element={<Newsfeed />} />
                 <Route path="/profile/:userId" element={<Profile />} />
                 <Route path="/post/:postId" element={<PostDetail />} />
                 <Route path="/search-friend" element={<SearchFriend />} />
+                <Route path="/members" element={<Members />} />
+                <Route path="/groups" element={<Groups />} />
                 <Route path="/message" element={<Message />} />
               </Routes>
             </div>

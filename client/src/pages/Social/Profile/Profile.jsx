@@ -51,6 +51,7 @@ const Profile = () => {
       fetchOtherUserProfile();
     }
     fetchPostListByProfile();
+    console.log("thay doi user id");
   }, [userId]);
 
   useEffect(() => {
@@ -120,7 +121,7 @@ const Profile = () => {
     setProfileUser(res[1].data);
   };
   return (
-    <div className="flex flex-col p-0 lg:px-[4rem] profile-user h-full overflow-auto section--hidden-scroll-y">
+    <div className="flex flex-col p-0 lg:px-[4rem] ">
       {profile && (
         <>
           <div className="shadow-2 pb-[1rem] rounded-xl bg-white">

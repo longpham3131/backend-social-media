@@ -29,7 +29,7 @@ module.exports = {
     },
     extend: {
       backgroundImage: {
-        "welcome-page": "url('images/background.jpg')",
+        "welcome-page": "url('/images/background.jpg')",
       },
       fontFamily: {
         quicksand: "'Quicksand', serif",
@@ -74,6 +74,7 @@ module.exports = {
         "color-text-alt": "var(--color-text-alt)",
         "color-text-alt-2": "var(--color-text-alt-2)",
         "color-primary": "var(--color-primary)",
+        "color-primary-dark": "var(--color-primary-dark)",
         "color-text": "var(--color-text)",
         "color-header-background": "var(--color-header-background)",
         "color-header-text": "var(--color-header-text)",
@@ -85,7 +86,9 @@ module.exports = {
         "color-default-background": "var(--color-default-background)",
         "color-login-background": "var(--color-login-background)",
         "color-primary-linear": "var(--color-primary-linear-green)",
-
+        "color-divider": "var(--color-divider)",
+        "color-box-background-alt": "var(--color-box-background-alt)",
+        "color-overlay": "rgba(21, 21, 31, 0.96)",
         "rgba-1": "var(--color-rgba-1)",
         "gray-0": "var(--color-gray-0)",
         "gray-1": "var(--color-gray-1)",
