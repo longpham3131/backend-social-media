@@ -18,7 +18,7 @@ router.get("/", verifyToken, async (req, res) => {
 
     for (const gr of groups) {
       const post = await Post.find(
-        { groupId: ObjectId(gr.id) }
+        { groupId: ObjectId(gr._id) }
       )
       gr.postCount = post ? post.length : 0;
     }
