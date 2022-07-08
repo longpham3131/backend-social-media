@@ -15,6 +15,14 @@ router.get("/", verifyToken, async (req, res) => {
     const groups = await Group.find().skip(index * pageSize).limit(pageSize)
       .populate({ path: "members", select: "fullName avatar id" })
       .populate({ path: "requestJoin", select: "fullName avatar id" }).lean()
+
+    for (const gr of groups) {
+      const post = await Post.find(
+        { groupId: ObjectId(gr.id) }
+      )
+      gr.postCount = post ? post.length : 0;
+    }
+
     return res.json({
       success: true,
       data: groups
@@ -24,6 +32,22 @@ router.get("/", verifyToken, async (req, res) => {
 
   }
 });
+
+router.delete("/:id", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const rs = await Group.findByIdAndDelete(id)
+    await Post.deleteMany({ groupId: ObjectId(id) })
+    return res.json({
+      success: true,
+      data: rs
+    });
+  }
+  catch (err) {
+
+  }
+});
+
 router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -391,5 +415,7 @@ router.get("/getGroupUserJoined", verifyToken, async (req, res) => {
     error500(res)
   }
 });
+
+
 
 module.exports = router;

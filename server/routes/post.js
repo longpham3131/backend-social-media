@@ -71,7 +71,7 @@ router.post("/", verifyToken, async (req, res) => {
             fileType: e.type,
             fileSize: e.size, // 0.00
             user: req.userId,
-            tags:e.tags
+            tags: e.tags
           });
           await file.save();
           return { ...e, id: file._id };
@@ -101,18 +101,17 @@ router.get("/v2", verifyToken, async (req, res) => {
   const { limitPost, index, profile, userId, postId = "", groupId = "" } = req.query;
   console.log(typeof limitPost === "string", index, profile, userId);
   try {
-    let data = postId != "" ? { _id: ObjectId(postId), status: 1 } : { status: 1 };
-    if (profile == 1) {
-      const userIdReq = userId != "0" ? userId : req.userId;
-      data = { poster: userIdReq, status: 1 };
-    }
+    let user = await User.findById(req.userId)
+    let frs = user.friends.map(f => f.user)
+
+    data = { $or: [{ audience: "public" }, { poster: { $in: [frs] } }, { poster: ObjectId(req.userId) }, { groupId: { $in: [user.groups] } }] }
     if (groupId !== "") { data.groupId = groupId }
     const result = await Post.find(data)
       .sort({ createAt: -1 })
       .skip(index * limitPost)
       .limit(10)
       .populate("poster")
-      .populate({path:"groupId",select:"_id groupName cover"})
+      .populate({ path: "groupId", select: "_id groupName cover" })
       .populate({
         path: "comments",
         options: {
@@ -146,6 +145,7 @@ router.get("/v2", verifyToken, async (req, res) => {
     return error500(res);
   }
 });
+
 // DELETE POST
 router.delete("/delete/:id", verifyToken, async (req, res) => {
   try {
@@ -204,18 +204,29 @@ router.get("/", verifyToken, async (req, res) => {
   const { limitPost, index, profile, userId, postId = "", groupId = "" } = req.query;
   console.log(typeof limitPost === "string", index, profile, userId);
   try {
-    let data = postId != "" ? { _id: ObjectId(postId), status: 1 } : { status: 1 };
-    if (profile == 1) {
-      const userIdReq = userId != "0" ? userId : req.userId;
-      data = { poster: userIdReq, status: 1 };
+    let query = []
+    if (groupId !== "") { query = [{ groupId: ObjectId(groupId), status: 1 }] }
+    else if (profile == 1) {
+      query = [{ poster: ObjectId(req.userId), status: 1 }]
     }
-    if (groupId !== "") { data.groupId = groupId }
-    const result = await Post.find(data)
+    else if (postId !== "") {
+      query = [{ _id: ObjectId(postId), status: 1 }]
+    }
+    else {
+      let user = await User.findById(req.userId)
+      let frs = user.friends.map(f => f.user)
+      query = [{ audience: "public", status: 1 },
+      { poster: { $in: [frs] }, status: 1 },
+      { poster: ObjectId(req.userId), status: 1 },
+      { groupId: { $in: [user.groups] }, status: 1 }]
+    }
+
+    const result = await Post.find({ $or: query })
       .sort({ createAt: -1 })
       .skip(index * limitPost)
       .limit(10)
       .populate("poster")
-      .populate({path:"groupId",select:"_id groupName cover"})
+      .populate({ path: "groupId", select: "_id groupName cover" })
       .populate({
         path: "comments",
         options: {
