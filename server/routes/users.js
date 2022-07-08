@@ -241,7 +241,6 @@ router.get("/getUsers2", verifyToken, async (req, res) => {
     let post = await Post.find({ poster: ObjectId(fr._id) });
     fr.postCount = post ? post.length : 0;
     delete fr.createAt;
-    delete fr._id;
   }
   let count = await User.count();
   return res.json({

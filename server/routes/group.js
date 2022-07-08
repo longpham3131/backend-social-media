@@ -15,6 +15,14 @@ router.get("/", verifyToken, async (req, res) => {
     const groups = await Group.find().skip(index * pageSize).limit(pageSize)
       .populate({ path: "members", select: "fullName avatar id" })
       .populate({ path: "requestJoin", select: "fullName avatar id" }).lean()
+
+    for (const gr of groups) {
+      const post = await Post.find(
+        { groupId: ObjectId(gr.id) }
+      )
+      gr.postCount = post ? post.length : 0;
+    }
+
     return res.json({
       success: true,
       data: groups

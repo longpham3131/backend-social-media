@@ -221,7 +221,6 @@ router.get("/", verifyToken, async (req, res) => {
       { groupId: { $in: [user.groups] }, status: 1 }]
     }
 
-
     const result = await Post.find({ $or: query })
       .sort({ createAt: -1 })
       .skip(index * limitPost)
