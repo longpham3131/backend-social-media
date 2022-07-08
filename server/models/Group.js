@@ -25,7 +25,11 @@ const Group = new Schema({
   },
   cover: {
     type: String,
-    default: ''
+    default: '5f6d2f8173860-bp-cover-image_gw7shw.jpg'
+  },
+  avatar: {
+    type: String,
+    default: '166258_miyrwl.png'
   },
   adminGroup: {
     type: Schema.Types.ObjectId,

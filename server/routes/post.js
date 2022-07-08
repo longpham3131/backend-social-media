@@ -97,6 +97,55 @@ router.post("/", verifyToken, async (req, res) => {
     return error500(res);
   }
 });
+router.get("/v2", verifyToken, async (req, res) => {
+  const { limitPost, index, profile, userId, postId = "", groupId = "" } = req.query;
+  console.log(typeof limitPost === "string", index, profile, userId);
+  try {
+    let data = postId != "" ? { _id: ObjectId(postId), status: 1 } : { status: 1 };
+    if (profile == 1) {
+      const userIdReq = userId != "0" ? userId : req.userId;
+      data = { poster: userIdReq, status: 1 };
+    }
+    if (groupId !== "") { data.groupId = groupId }
+    const result = await Post.find(data)
+      .sort({ createAt: -1 })
+      .skip(index * limitPost)
+      .limit(10)
+      .populate("poster")
+      .populate({path:"groupId",select:"_id groupName cover"})
+      .populate({
+        path: "comments",
+        options: {
+          skip: 0,
+          perDocumentLimit: 10,
+          sort: { createAt: "descending" },
+        },
+        populate: [
+          {
+            path: "user",
+            select: "username fullName avatar like",
+          },
+          {
+            path: "like.user",
+            select: "username fullName avatar like",
+          },
+          {
+            path: "file",
+          },
+        ],
+      })
+      .populate({
+        path: "like",
+        populate: { path: "user", select: "username fullName avatar" },
+      })
+      .lean();
+    // result.comments=result.comments?.reverse()
+    return res.json(result);
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
 // DELETE POST
 router.delete("/delete/:id", verifyToken, async (req, res) => {
   try {

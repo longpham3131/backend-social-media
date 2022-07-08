@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const Post = require("../models/Post");
 const UserNotification = require("../models/UserNotification");
 const Group = require("../models/Group");
 const RoleGroup = require("../models/RoleGroup");
@@ -34,6 +35,8 @@ router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
       .populate("adminGroup")
       .populate({ path: "members", select: "fullName avatar id" })
       .populate({ path: "requestJoin", select: "fullName avatar id" }).lean()
+    const post = await Post.find({ groupId: ObjectId(id) })
+    groups.postCount = post ? post.length : 0;
     return res.json({
       success: true,
       data: groups

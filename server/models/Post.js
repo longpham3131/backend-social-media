@@ -22,11 +22,11 @@ const PostSchema = new Schema({
     type: Number,
     default: 1
   },
-  isGroup:{
-    type:Boolean,
-    default:false
+  isGroup: {
+    type: Boolean,
+    default: false
   },
-  groupId:{
+  groupId: {
     type: Schema.Types.ObjectId,
     ref: "Group",
   },
@@ -48,7 +48,6 @@ const PostSchema = new Schema({
       ref: "Comment",
     },
   ],
-
   share: { type: Number, default: 0 },
   attachments: {
     type: Array,
