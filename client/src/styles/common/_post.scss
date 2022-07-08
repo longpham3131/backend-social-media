@@ -4,7 +4,7 @@
     @apply flex justify-between items-center  px-[28px];
 
     &-user {
-      @apply flex gap-[12px];
+      @apply flex gap-[12px] items-center;
       &-info {
         @apply text-color-text font-bold text-[1rem];
       }
@@ -28,7 +28,7 @@
       @apply text-[0.75rem] font-bold text-color-text leading-[1em];
     }
     &-like {
-      @apply rounded-tl-xl rounded-bl-xl w-[80px] h-[30px] p-[5px] cursor-pointer border transition-all duration-500;
+      @apply rounded-tl-xl rounded-bl-xl w-[80px] h-[30px] p-[5px] cursor-pointer border transition-all duration-500 border-r-0;
 
       p {
         @apply text-color-header-background font-bold text-center;

@@ -11,56 +11,39 @@ import {
   likePost,
 } from "@/store/postSlice";
 import postAPI from "@/apis/postAPI";
-import { message, Modal } from "antd";
+import { Badge, message, Modal } from "antd";
 import CreateEditPost from "@/components/SNCreateEditPost";
 import SNWidgetBoxItem from "@/components/SNWidgetBoxItem";
 import { useParams } from "react-router";
 import userAPI from "@/apis/userAPI";
 import SNImage from "@/components/SNImage";
 import SNPost2 from "@/components/SNPost2";
+import SNListPost from "@/components/SNListPost";
+import { Link } from "react-router-dom";
 
-const GroupTimeline = ({ user }) => {
-  const postList = useSelector((state) => state.posts);
-  const { userId } = useParams();
-  const [photos, setPhotos] = useState([]);
-  const fetchAllImage = async () => {
-    try {
-      const res = await userAPI.getImageUser(userId);
-      setPhotos(res.data.data);
-    } catch (erorr) {
-      console.log("error get image");
-    }
-  };
-  useEffect(() => {
-    fetchAllImage();
-  }, [userId]);
-
+const GroupTimeline = ({ group }) => {
   return (
     <>
       <div className="flex flex-col gap-[16px]">
         <SNWidgetBox
-          title={"About Me"}
+          title={"Group Info"}
           content={
             <>
-              <p>Welcome to my profile!</p>
+              <p>{group.groupDescription}</p>
               <div className="flex flex-col gap-[14px]">
                 <div className="flex justify-between">
-                  <p className=" text-color-text-alt">Joined</p>
-                  <p>{moment(user.createAt).format("MMMM Do YYYY")}</p>
+                  <p className=" text-color-text-alt">Created</p>
+                  <p>{moment(group.createAt).format("MMMM Do YYYY")}</p>
                 </div>
                 <div className="flex justify-between">
-                  <p className=" text-color-text-alt">From</p>
-                  <p>
-                    {user?.address
-                      ? user?.address?.district + ", " + user?.address?.province
-                      : "No results found"}
-                  </p>
+                  <p className=" text-color-text-alt">Type</p>
+                  <p>{group?.isPrivate ? "Private" : "Public"}</p>
                 </div>
               </div>
             </>
           }
         />
-        <SNWidgetBox
+        {/* <SNWidgetBox
           title={"Friends"}
           content={
             user?.friends.length > 0 ? (
@@ -76,33 +59,26 @@ const GroupTimeline = ({ user }) => {
               <p className="sn-no-result">No friends found</p>
             )
           }
-        />
+        /> */}
       </div>
 
-      <div className=" col-span-2">
-        {postList.length ? (
-          postList.map((post) => <SNPost2 post={post} key={post._id} />)
-        ) : (
-          <p className="sn-no-result">No post found</p>
-        )}
-      </div>
+      <SNListPost showButtonCreatePost={group.isMember} />
       <div className="flex flex-col gap-[16px]">
         <SNWidgetBox
-          title={"Photos"}
+          title={"Group Administrators"}
           content={
-            photos.length ? (
-              <div className="grid grid-cols-4 gap-[2px]">
-                {photos.map((item, index) => (
-                  <SNImage
-                    urlImage={item.filePath}
-                    key={index}
-                    isHiddenOverlay={true}
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="sn-no-result">No photos found</p>
-            )
+            <Link to={`/profile/${group.adminGroup._id}`}>
+              <SNWidgetBoxItem
+                srcAvatar={group.adminGroup.avatar}
+                name={
+                  <>
+                    {group.adminGroup.fullName}{" "}
+                    <Badge color="#87d068" dot={group.adminGroup.isOnline} />
+                  </>
+                }
+                description={"@" + group.adminGroup.username}
+              />
+            </Link>
           }
         />
         <SNWidgetBox

@@ -1,4 +1,4 @@
-import { Image, message } from "antd";
+import { Button, Image, message } from "antd";
 import userAPI from "@/apis/userAPI";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -50,8 +50,6 @@ const Profile = () => {
     } else {
       fetchOtherUserProfile();
     }
-    fetchPostListByProfile();
-    console.log("thay doi user id");
   }, [userId]);
 
   useEffect(() => {
@@ -63,24 +61,9 @@ const Profile = () => {
   const fetchOtherUserProfile = async () => {
     try {
       const res = await userAPI.getProfile(userId);
-      console.log("profile", res.data);
       setProfileUser(res.data.data);
     } catch {
       message.error("Get profile failed!");
-    }
-  };
-
-  const fetchPostListByProfile = async () => {
-    try {
-      const postList = await postAPI.getPostList({
-        limitPost: 10,
-        index: 0,
-        profile: 1,
-        userId,
-      });
-      await dispatch(setPostList(postList.data));
-    } catch (error) {
-      message.error("Get posts failed!");
     }
   };
 
@@ -174,6 +157,42 @@ const Profile = () => {
                 <p className="text-[0.875] font-medium text-color-text leading-[1em] mt-[6px] text-center">
                   @{profile.username}
                 </p>
+                <div className="text-center pt-[5px]">
+                  {!isMyProfile && (
+                    <>
+                      {isFriend ? (
+                        <Button
+                          type="primary"
+                          shape="round"
+                          onClick={() => Unfriend()}
+                        >
+                          Unfriend
+                        </Button>
+                      ) : (
+                        <>
+                          {!isFriendRequest && (
+                            <Button
+                              type="primary"
+                              shape="round"
+                              onClick={() => handleFriendRequest(1)}
+                            >
+                              Send invite
+                            </Button>
+                          )}
+                          {!!isFriendRequest && (
+                            <Button
+                              type="primary"
+                              shape="round"
+                              onClick={() => handleFriendRequest(0)}
+                            >
+                              Cancel invite
+                            </Button>
+                          )}
+                        </>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
 
               <div className=" flex gap-[12px]">
@@ -185,33 +204,6 @@ const Profile = () => {
                 </div>
                 <div className="w-[40px] h-[40px] bg-[#f8468d] rounded-xl flex items-center justify-center">
                   <InstagramOutlined style={{ color: "white" }} />
-                </div>
-                <div className="">
-                  {!isMyProfile && (
-                    <>
-                      {isFriend ? (
-                        <SNButton
-                          text={"Unfriend"}
-                          onClick={() => Unfriend()}
-                        />
-                      ) : (
-                        <>
-                          {!isFriendRequest && (
-                            <SNButton
-                              text={"Add friend"}
-                              onClick={() => handleFriendRequest(1)}
-                            />
-                          )}
-                          {!!isFriendRequest && (
-                            <SNButton
-                              text={"Cancel friend request"}
-                              onClick={() => handleFriendRequest(0)}
-                            />
-                          )}
-                        </>
-                      )}
-                    </>
-                  )}
                 </div>
               </div>
             </div>

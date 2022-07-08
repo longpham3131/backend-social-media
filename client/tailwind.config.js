@@ -1,5 +1,8 @@
 module.exports = {
   content: ["./public/**/*.html", "./src/**/*.{js,jsx,ts,tsx,vue}"],
+  // corePlugins: {
+  //   preflight: false,
+  // },
   theme: {
     debugScreens: {
       position: ["top", "left"],

@@ -12,11 +12,10 @@ const SNCard = ({
   username,
   coverPicture,
   avatar,
-  groupCount,
-  friendCount,
-  postCount,
-  memberCount,
   onClick,
+  quantityCount,
+  description,
+  isGroup = false,
 }) => {
   return (
     <div className="sn-card cursor-pointer" onClick={onClick}>
@@ -41,48 +40,46 @@ const SNCard = ({
             <p className="text-[1.5rem] font-bold text-color-text leading-[1em]">
               {name}
             </p>
-            <p className="text-[0.875] font-medium text-color-text leading-[1em] mt-[6px] text-center">
-              @{username}
-            </p>
+            {username && (
+              <p className="text-[0.875] font-medium text-color-text leading-[1em] mt-[6px] text-center">
+                @{username}
+              </p>
+            )}
+            {description && (
+              <p className="text-[0.875] font-medium text-color-text leading-[1em] mt-[6px] text-center">
+                {description}
+              </p>
+            )}
           </div>
           <div className="flex items-center gap-[60px] ">
-            <div>
-              <p className="text-[1.375rem] uppercase text-center font-bold text-color-text leading-[1em]">
-                {postCount}
-              </p>
-              <p className=" text-[0.75rem] mt-[10px] text-color-text-alt-2 uppercase font-bold text-center">
-                post
-              </p>
-            </div>
-            <div>
-              <p className="text-[1.375rem] uppercase text-center font-bold text-color-text leading-[1em]">
-                {friendCount}
-              </p>
-              <p className=" text-[0.75rem] mt-[10px] text-color-text-alt-2 uppercase font-bold text-center">
-                friends
-              </p>
-            </div>
-            <div>
-              <p className="text-[1.375rem] uppercase text-center font-bold text-color-text leading-[1em]">
-                {groupCount}
-              </p>
-              <p className=" text-[0.75rem] mt-[10px] text-color-text-alt-2 uppercase font-bold text-center">
-                groups
-              </p>
-            </div>
+            {quantityCount.length &&
+              quantityCount.map((item, index) => {
+                return (
+                  <div key={index}>
+                    <p className="text-[1.375rem] uppercase text-center font-bold text-color-text leading-[1em]">
+                      {item.quantity}
+                    </p>
+                    <p className=" text-[0.75rem] mt-[10px] text-color-text-alt-2 uppercase font-bold text-center">
+                      {item.name}
+                    </p>
+                  </div>
+                );
+              })}
           </div>
 
-          <div className=" flex gap-[12px]">
-            <div className="w-[40px] h-[40px] bg-[#3763d2] rounded-xl flex items-center justify-center">
-              <FacebookOutlined style={{ color: "white" }} />
+          {!isGroup && (
+            <div className=" flex gap-[12px]">
+              <div className="w-[40px] h-[40px] bg-[#3763d2] rounded-xl flex items-center justify-center">
+                <FacebookOutlined style={{ color: "white" }} />
+              </div>
+              <div className="w-[40px] h-[40px] bg-[#1abcff] rounded-xl flex items-center justify-center">
+                <TwitterOutlined style={{ color: "white" }} />
+              </div>
+              <div className="w-[40px] h-[40px] bg-[#f8468d] rounded-xl flex items-center justify-center">
+                <InstagramOutlined style={{ color: "white" }} />
+              </div>
             </div>
-            <div className="w-[40px] h-[40px] bg-[#1abcff] rounded-xl flex items-center justify-center">
-              <TwitterOutlined style={{ color: "white" }} />
-            </div>
-            <div className="w-[40px] h-[40px] bg-[#f8468d] rounded-xl flex items-center justify-center">
-              <InstagramOutlined style={{ color: "white" }} />
-            </div>
-          </div>
+          )}
         </div>
       </div>
       <div className="w-full h-[65px] rounded-b-xl border-t-[1px] border-t-color-divider bg-color-box-background-alt"></div>

@@ -3,6 +3,7 @@ import userAPI from "@/apis/userAPI";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import SNCard from "@/components/SNCard";
+import { Link } from "react-router-dom";
 
 const Friends = ({ user }) => {
   const location = useLocation();
@@ -39,20 +40,31 @@ const Friends = ({ user }) => {
       <div className="grid grid-cols-4 gap-[16px] mt-[32px]">
         {friends.length > 0 ? (
           friends.map((item, index) => (
-            <SNCard
-              key={index}
-              name={item.user.fullName}
-              coverPicture={item.user.coverPicture}
-              avatar={item.user.avatar}
-              groupCount={item.user.groups.length}
-              postCount={item.user.postCount}
-              friendCount={item.user.friends.length}
-              username={item.user.username}
-              onClick={() => handleClickCard(item.user._id)}
-            />
+            <Link key={index} to={`/profile/${item.user._id}`}>
+              <SNCard
+                name={item.user.fullName}
+                coverPicture={item.user.coverPicture}
+                avatar={item.user.avatar}
+                quantityCount={[
+                  {
+                    name: "posts",
+                    quantity: item.user.postCount,
+                  },
+                  {
+                    name: "friends",
+                    quantity: item.user.friends.length,
+                  },
+                  {
+                    name: "groups",
+                    quantity: item.user.groups.length,
+                  },
+                ]}
+                username={item.user.username}
+              />
+            </Link>
           ))
         ) : (
-          <div className="mt-[32px]">
+          <div className="col-span-4 mt-[32px]">
             <SNNoResult />
           </div>
         )}

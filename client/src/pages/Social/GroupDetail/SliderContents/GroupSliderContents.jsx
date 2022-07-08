@@ -24,21 +24,21 @@ const GroupSliderContents = ({ group }) => {
     },
     {
       icon: <SmileOutlined />,
-      name: "Friends",
+      name: "Members",
       isDisable: false,
       ele: <GroupMembers group={group} />,
     },
 
-    {
-      icon: <FileImageOutlined />,
-      name: "Photos",
-      isDisable: false,
-      ele: <GroupPhotos group={group} />,
-    },
+    // {
+    //   icon: <FileImageOutlined />,
+    //   name: "Photos",
+    //   isDisable: false,
+    //   ele: <GroupPhotos group={group} />,
+    // },
   ];
   return (
     <div className="mt-[16px] sn-slider-contents">
-      <Tabs defaultActiveKey="2" onChange={onChange}>
+      <Tabs defaultActiveKey="1" onChange={onChange}>
         {categories.map((item, index) => {
           return (
             <TabPane
