@@ -22,6 +22,7 @@ import { makeid } from "@/util/index";
 import Banner from "./Banner/Banner";
 import Members from "./Members";
 import Groups from "./Groups";
+import GroupDetail from "./GroupDetail/GroupDetail";
 const { Content } = Layout;
 
 const Social = () => {
@@ -74,6 +75,7 @@ const Social = () => {
                 <Route path="/search-friend" element={<SearchFriend />} />
                 <Route path="/members" element={<Members />} />
                 <Route path="/groups" element={<Groups />} />
+                <Route path="/groups/:groupId" element={<GroupDetail />} />
                 <Route path="/message" element={<Message />} />
               </Routes>
             </div>
