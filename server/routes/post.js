@@ -230,8 +230,6 @@ router.get("/", verifyToken, async (req, res) => {
       //profile
       query = [{ poster: ObjectId(req.userId), status: 1 }];
     } else if (userId !== req.userId && userId) {
-      let user = await User.findById(userId);
-      let frs = user.friends.map((f) => f.user);
       query = [{ poster: ObjectId(userId), audience: "public" }];
     } else if (postId !== "") {
       // post detail
