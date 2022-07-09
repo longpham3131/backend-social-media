@@ -11,11 +11,11 @@ const About = ({ user }) => {
           <>
             <p>Welcome to my profile!</p>
             <div className="flex flex-col gap-[14px]">
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-[10px] justify-between">
                 <p className=" text-color-text-alt">Joined</p>
                 <p>{moment(user.createAt).format("MMMM Do YYYY")}</p>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-[10px] justify-between">
                 <p className=" text-color-text-alt">From</p>
                 <p>
                   {user?.address
@@ -37,7 +37,7 @@ const About = ({ user }) => {
                   <p className=" text-color-text text-[0.875rem] font-bold">
                     {item.title}
                   </p>
-                  <p>{item.context}</p>
+                  <p className="mt-[10px]">{item.context}</p>
                 </div>
               )) ?? <p>No results found</p>}
             </div>
@@ -49,15 +49,15 @@ const About = ({ user }) => {
         content={
           <>
             <div className="flex flex-col gap-[14px]">
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-[10px] justify-between">
                 <p className=" text-color-text-alt">Email</p>
                 <p>{user?.email}</p>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-[10px] justify-between">
                 <p className=" text-color-text-alt">Occupation</p>
                 <p>{user?.occupation ?? "No results found"}</p>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-[10px] justify-between">
                 <p className=" text-color-text-alt">Birthplace</p>
                 <p>
                   {user?.birthplace

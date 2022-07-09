@@ -10,11 +10,16 @@ const CustomStyleButton = styled(Button)({
   fontSize: "1rem",
   fontWeight: "700",
   textTransform: "none",
+  width: "100%",
 });
 
 const SNButton = ({ text, onClick }) => {
   return (
-    <CustomStyleButton variant="contained" onClick={() => onClick()}>
+    <CustomStyleButton
+      type="submit"
+      variant="contained"
+      onClick={() => onClick}
+    >
       {text}
     </CustomStyleButton>
   );

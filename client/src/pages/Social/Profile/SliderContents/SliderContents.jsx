@@ -6,70 +6,80 @@ import {
   SmileOutlined,
   TeamOutlined,
   FileImageOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
-import "./index.scss";
 import About from "./Tabs/About";
 import Timeline from "./Tabs/Timeline";
 import Friends from "./Tabs/Friends";
 import Groups from "./Tabs/Groups";
 import Photos from "./Tabs/Photos";
+import UserSettings from "./Tabs/Settings/UserSettings";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router";
 
 const { TabPane } = Tabs;
 const SliderContents = ({ user }) => {
-  const onChange = (key) => {
-    console.log(key);
-  };
+  const { userId } = useParams();
+  const myProfile = useSelector((state) => state.profile);
   const categories = [
     {
       icon: <UserOutlined />,
       name: "About",
-      isDisable: false,
+      isDisable: true,
       ele: <About user={user} />,
     },
     {
       icon: <OneToOneOutlined />,
       name: "Timeline",
-      isDisable: false,
+      isDisable: true,
       ele: <Timeline user={user} />,
     },
     {
       icon: <SmileOutlined />,
       name: "Friends",
-      isDisable: false,
+      isDisable: true,
       ele: <Friends user={user} />,
     },
     {
       icon: <TeamOutlined />,
       name: "Groups",
-      isDisable: false,
+      isDisable: true,
       ele: <Groups user={user} />,
     },
 
     {
       icon: <FileImageOutlined />,
       name: "Photos",
-      isDisable: false,
+      isDisable: true,
       ele: <Photos user={user} />,
+    },
+    {
+      icon: <SettingOutlined />,
+      name: "Settings",
+      isDisable: userId === myProfile._id,
+      ele: <UserSettings />,
     },
   ];
   return (
     <div className="mt-[16px] sn-slider-contents">
-      <Tabs defaultActiveKey="2" onChange={onChange}>
+      <Tabs defaultActiveKey="2">
         {categories.map((item, index) => {
           return (
-            <TabPane
-              tab={
-                <div className="sn-slider-contents-item">
-                  {item.icon}
-                  <p>{item.name}</p>
+            item.isDisable && (
+              <TabPane
+                tab={
+                  <div className="sn-slider-contents-item">
+                    {item.icon}
+                    <p>{item.name}</p>
+                  </div>
+                }
+                key={index + 1}
+              >
+                <div className="grid grid-cols-4 gap-[16px] pb-[24px]">
+                  {item.ele}
                 </div>
-              }
-              key={index + 1}
-            >
-              <div className="grid grid-cols-4 gap-[16px] pb-[24px]">
-                {item.ele}
-              </div>
-            </TabPane>
+              </TabPane>
+            )
           );
         })}
       </Tabs>

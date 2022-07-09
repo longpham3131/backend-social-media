@@ -59,11 +59,11 @@ const Timeline = ({ user }) => {
             <>
               <p>Welcome to my profile!</p>
               <div className="flex flex-col gap-[14px]">
-                <div className="flex justify-between">
+                <div className="flex flex-col gap-[10px] justify-between">
                   <p className=" text-color-text-alt">Joined</p>
                   <p>{moment(user.createAt).format("MMMM Do YYYY")}</p>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex flex-col gap-[10px] justify-between">
                   <p className=" text-color-text-alt">From</p>
                   <p>
                     {user?.address

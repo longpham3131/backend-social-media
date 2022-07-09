@@ -42,7 +42,7 @@ const Login = () => {
         label={"Password"}
         type={"password"}
         control={control}
-        rules={{ required: "Username is required" }}
+        rules={{ required: "Password is required" }}
         error={!!errors.password}
         helperText={errors.password?.message}
       />
