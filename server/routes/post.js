@@ -56,7 +56,8 @@ router.get("/getPostByIdImage/:id", verifyToken, async (req, res) => {
 
 // CREATE POST
 router.post("/", verifyToken, async (req, res) => {
-  const { title, text, audience, attachments, postParent, isGroup, groupId } = req.body;
+  const { title, text, audience, attachments, postParent, isGroup, groupId } =
+    req.body;
   req.io.sockets.emit("post", "post noti");
   if (!text && attachments.length === 0)
     return error400(res, "Nội dung bài đăng không được trống");
@@ -71,7 +72,7 @@ router.post("/", verifyToken, async (req, res) => {
             fileType: e.type,
             fileSize: e.size, // 0.00
             user: req.userId,
-            tags: e.tags
+            tags: e.tags,
           });
           await file.save();
           return { ...e, id: file._id };
@@ -86,7 +87,7 @@ router.post("/", verifyToken, async (req, res) => {
       attachments: attachFile,
       postParent,
       isGroup,
-      groupId
+      groupId,
     });
     await newPost.save();
     const newPoster = await User.findById(req.userId);
@@ -98,14 +99,30 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 router.get("/v2", verifyToken, async (req, res) => {
-  const { limitPost, index, profile, userId, postId = "", groupId = "" } = req.query;
+  const {
+    limitPost,
+    index,
+    profile,
+    userId,
+    postId = "",
+    groupId = "",
+  } = req.query;
   console.log(typeof limitPost === "string", index, profile, userId);
   try {
-    let user = await User.findById(req.userId)
-    let frs = user.friends.map(f => f.user)
+    let user = await User.findById(req.userId);
+    let frs = user.friends.map((f) => f.user);
 
-    data = { $or: [{ audience: "public" }, { poster: { $in: [frs] } }, { poster: ObjectId(req.userId) }, { groupId: { $in: [user.groups] } }] }
-    if (groupId !== "") { data.groupId = groupId }
+    data = {
+      $or: [
+        { audience: "public" },
+        { poster: { $in: [frs] } },
+        { poster: ObjectId(req.userId) },
+        { groupId: { $in: [user.groups] } },
+      ],
+    };
+    if (groupId !== "") {
+      data.groupId = groupId;
+    }
     const result = await Post.find(data)
       .sort({ createAt: -1 })
       .skip(index * limitPost)
@@ -201,27 +218,32 @@ router.put("/", verifyToken, async (req, res) => {
 // });
 // GET POST PROFILE
 router.get("/", verifyToken, async (req, res) => {
-  const { limitPost, index, profile, userId, postId = "", groupId = "" } = req.query;
-  console.log(typeof limitPost === "string", index, profile, userId);
+  const { limitPost, index, userId, postId = "", groupId = "" } = req.query;
+  console.log(typeof limitPost === "string", index, userId);
+  console.log("user req", req.userId);
   try {
-    let query = []
-    if (groupId !== "") { query = [{ groupId: ObjectId(groupId), status: 1 }] }
-    else if (profile == 1) {
-      query = [{ poster: ObjectId(req.userId), status: 1 }]
-    }
-    else if (postId !== "") {
-      query = [{ _id: ObjectId(postId), status: 1 }]
-    }
-    else if (userId) {
-      query = [{ poster: ObjectId(userId) }]
-    }
-    else {
-      let user = await User.findById(req.userId)
-      let frs = user.friends.map(f => f.user)
-      query = [{ audience: "public", status: 1 },
-      { poster: { $in: [frs] }, status: 1 },
-      { poster: ObjectId(req.userId), status: 1 },
-      { groupId: { $in: [user.groups] }, status: 1 }]
+    let query = [];
+    if (groupId !== "") {
+      // group
+      query = [{ groupId: ObjectId(groupId), status: 1 }];
+    } else if (userId == req.userId) {
+      //profile
+      query = [{ poster: ObjectId(req.userId), status: 1 }];
+    } else if (userId !== req.userId && userId) {
+      query = [{ poster: ObjectId(userId), audience: "public" }];
+    } else if (postId !== "") {
+      // post detail
+      query = [{ _id: ObjectId(postId), status: 1 }];
+    } else {
+      // newsfeed
+      let user = await User.findById(req.userId);
+      let frs = user.friends.map((f) => f.user);
+      query = [
+        { audience: "public", status: 1 },
+        { poster: { $in: [frs] }, status: 1 },
+        { poster: ObjectId(req.userId), status: 1 },
+        { groupId: { $in: [user.groups] }, status: 1 },
+      ];
     }
 
     const result = await Post.find({ $or: query })

@@ -9,6 +9,7 @@ import {
   MoreOutlined,
   CommentOutlined,
   LikeFilled,
+  DeploymentUnitOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import CreateEditPost from "./SNCreateEditPost";
@@ -28,6 +29,9 @@ import { useForm } from "react-hook-form";
 import SNTextField from "./SNTextField";
 import SNWidgetBoxItem from "./SNWidgetBoxItem";
 import SNComment from "./SNComment";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEarthAmericas, faLock } from "@fortawesome/free-solid-svg-icons";
+import SNCreateEditPost from "./SNCreateEditPost";
 const { confirm } = Modal;
 const SNPost2 = ({ post }) => {
   const {
@@ -44,13 +48,15 @@ const SNPost2 = ({ post }) => {
     _id,
     createAt,
     username,
+    audience,
+    groupId,
   } = post;
   const { avatar, fullName } = poster;
   const myProfile = useSelector((state) => state.profile);
   const isPoster = myProfile?._id === poster?._id ?? false;
   const hasMedia = attachments.length ? true : false;
   const liked =
-    like.findIndex((item) => item.user._id === myProfile._id) !== -1;
+    like.findIndex((item) => item.user._id === myProfile?._id) !== -1;
   const dispatch = useDispatch();
   const [showEditPost, setShowEditPost] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState("");
@@ -135,7 +141,6 @@ const SNPost2 = ({ post }) => {
       )}
     </Menu>
   );
-  console.log("post", post);
   return (
     <>
       <div className="sn-post">
@@ -148,11 +153,32 @@ const SNPost2 = ({ post }) => {
                 <Link to={`/profile/${poster._id}`}>{fullName}</Link>
                 <span className="sn-post-header-user-des">
                   {" "}
-                  posted an {hasMedia ? "photo" : ""} update
+                  posted an {hasMedia ? "photo" : ""} update{" "}
+                  {isGroup && groupId && (
+                    <span>
+                      in the group{" "}
+                      <Link className="font-bold" to={`/groups/${groupId._id}`}>
+                        {groupId.groupName}
+                      </Link>
+                    </span>
+                  )}
                 </span>
               </p>
-              <p className="sn-post-header-user-create-post">
-                {formatMinutes(createAt)}
+              <p className="sn-post-header-user-create-post flex items-center gap-[5px]">
+                {audience === "public" ? (
+                  <FontAwesomeIcon
+                    icon={faEarthAmericas}
+                    className=" text-[14px] text-color-text"
+                  />
+                ) : audience === "private" ? (
+                  <FontAwesomeIcon
+                    icon={faLock}
+                    className=" text-[14px] text-color-text"
+                  />
+                ) : (
+                  <DeploymentUnitOutlined />
+                )}{" "}
+                <span>{formatMinutes(createAt)}</span>
               </p>
             </div>
           </div>
@@ -203,7 +229,7 @@ const SNPost2 = ({ post }) => {
         <SNComment postId={_id} comments={comments} />
       </div>
 
-      <CreateEditPost
+      <SNCreateEditPost
         ref={refAddEditPost}
         visible={showEditPost}
         title="Edit post"

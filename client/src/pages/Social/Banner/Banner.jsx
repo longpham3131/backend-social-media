@@ -4,7 +4,8 @@ import { useLocation } from "react-router";
 
 const Banner = () => {
   const { pathname } = useLocation();
-  const isInvisible = pathname.includes("/profile");
+  const visiblePath = ["/", "/groups", "/search", "/members"];
+  const isVisible = visiblePath.includes(pathname);
   const [title, setTitle] = useState("");
   const [des, setDes] = useState("");
   const [img, setImg] = useState("");
@@ -39,7 +40,7 @@ const Banner = () => {
     <div
       className={classNames(
         "bg-[url('/images/banner-bg.png')] bg-cover bg-no-repeat w-full h-[160px] relative rounded-xl pl-[200px] pt-[52px] pr-[60px] pb-0 mb-[32px]",
-        { hidden: isInvisible }
+        { hidden: !isVisible }
       )}
     >
       <img src={img} alt="" className=" absolute bottom-0 left-0 " />

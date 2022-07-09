@@ -1,15 +1,14 @@
 import { HTTP_CONNECT } from "@/config";
 import axios from "axios";
-import { useSelector } from "react-redux";
+
 const BASE_URL = `${HTTP_CONNECT}/users`;
-const config = {
-  headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-};
 
 const userAPI = {
   getProfile(userId) {
     const url = `${BASE_URL}/${userId}`;
-    return axios.get(url, config);
+    return axios.get(url, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
   },
   getMyProfile() {
     const url = `${BASE_URL}/profile`;
@@ -25,39 +24,57 @@ const userAPI = {
   },
   updateProfile(newProfile) {
     const url = `${BASE_URL}`;
-    return axios.put(url, newProfile, config);
+    return axios.put(url, newProfile, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
   },
   friendRequest(data) {
     const url = `${BASE_URL}/friendRequest`;
-    return axios.post(url, data, config);
+    return axios.post(url, data, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
   },
   friendRespone(data) {
     const url = `${BASE_URL}/friendRespone`;
-    return axios.post(url, data, config);
+    return axios.post(url, data, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
   },
   unfriend(data) {
     const url = `${BASE_URL}/unfriend`;
-    return axios.post(url, data, config);
+    return axios.post(url, data, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
   },
   getFriendsRequest() {
     const url = `${BASE_URL}/getFriendRequest`;
-    return axios.get(url, config);
+    return axios.get(url, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
   },
   getImageUser(userId) {
     const url = `${HTTP_CONNECT}/upload/getAllMediaByUserId?userId=${userId}`;
-    return axios.get(url, config);
+    return axios.get(url, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
   },
   getSearch(keySearch) {
     const url = `${BASE_URL}/search/${keySearch}`;
-    return axios.get(url, config);
+    return axios.get(url, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
   },
   checkInAtivity() {
     const url = `${HTTP_CONNECT}/admin/checkInActivity`;
-    return axios.get(url, config);
+    return axios.get(url, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
   },
   updatePassword(data) {
     const url = `${BASE_URL}/changePassword`;
-    return axios.post(url, data, config);
+    return axios.post(url, data, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
   },
   getMembers() {
     const url = `${BASE_URL}/getUsers2?page=0&pageSize=1000`;

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import {
   Avatar,
@@ -41,26 +41,14 @@ const Headerbar = ({ collapsed, onToggle }) => {
   const refAddEditPost = useRef(null);
   const dispatch = useDispatch();
   const myProfile = useSelector((state) => state?.profile);
-  const [showCreatePost, setShowCreatePost] = useState(false);
+
   const [openModalPass, setOpenModalPass] = useState(false);
+  const { groupId } = useParams();
   const [form] = Form.useForm();
 
   const logOut = () => {
     localStorage.clear();
     navigate("/login");
-  };
-  const handleCreatePost = async (values) => {
-    try {
-      const res = await postAPI.createPost(values);
-      console.log("success", res.data);
-      dispatch(createPost(res.data));
-      message.success("Create post success.");
-      refAddEditPost.current.resetFields();
-      setShowCreatePost(false);
-    } catch {
-      message.error("Create post fail !");
-    }
-    console.log("Submit values", values);
   };
 
   const handleChangePassword = async (values) => {
@@ -135,17 +123,7 @@ const Headerbar = ({ collapsed, onToggle }) => {
 
         <div className="flex items-center gap-[2rem]">
           {/* Create Post */}
-          <Button type="primary" onClick={() => setShowCreatePost(true)}>
-            Create Post
-          </Button>
-          <SNCreateEditPost
-            ref={refAddEditPost}
-            visible={showCreatePost}
-            title="Create Post"
-            okText="Create"
-            onClose={() => setShowCreatePost(false)}
-            onSubmit={handleCreatePost}
-          />
+
           <FriendRequest />
 
           {/* Danh sách thông báo */}

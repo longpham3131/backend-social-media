@@ -19,7 +19,7 @@ const Login = () => {
     const { username, password } = data;
     try {
       const res = await authAPI.login({ username, password });
-      await localStorage.setItem("token", res.data.accessToken);
+      localStorage.setItem("token", res.data.accessToken);
       navigate("/");
     } catch (error) {
       console.log("error");

@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import SNUpload from "./SNUpload";
-const CreateEditPost = React.forwardRef(
+const SNCreateEditPost = React.forwardRef(
   ({ title, visible, okText, onClose, onSubmit }, ref) => {
     const [file, setFile] = useState("");
     const [form] = Form.useForm();
@@ -124,4 +124,4 @@ const CreateEditPost = React.forwardRef(
     );
   }
 );
-export default CreateEditPost;
+export default SNCreateEditPost;
