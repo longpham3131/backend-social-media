@@ -481,4 +481,32 @@ router.get("/getGroupUserJoined/:userId", verifyToken, async (req, res) => {
   }
 });
 
+router.get("/getImages/:id", verifyToken, async (req, res) => {
+  try {
+    let groupId = req.params.id
+    let group = await Group.findById(groupId)
+    let isMember = group.members.find(
+      (mems) => mems.user.toString() === req.userId
+    );
+    if (!isMember) {
+      return res.json({
+        success: false,
+        data: "You are not the member of this group",
+      });
+    }
+    let posts = await Post.find({ $and: [{ groupId: ObjectId(groupId) }, { attachments: { $ne: [] } }] }).sort({ createAt: -1 })
+    let listImages=[]
+    for (const p of posts) {
+      listImages=listImages.concat(p.attachments)
+    }
+    return res.json({
+      success: true,
+      data: listImages,
+    });
+  } catch (err) {
+
+  }
+})
+
+
 module.exports = router;
