@@ -212,6 +212,9 @@ router.get("/", verifyToken, async (req, res) => {
     else if (postId !== "") {
       query = [{ _id: ObjectId(postId), status: 1 }]
     }
+    else if (userId) {
+      query = [{ poster: ObjectId(userId) }]
+    }
     else {
       let user = await User.findById(req.userId)
       let frs = user.friends.map(f => f.user)

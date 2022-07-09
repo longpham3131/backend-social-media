@@ -57,8 +57,13 @@ router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
       });
     const groups = await Group.findById(ObjectId(id))
       .populate("adminGroup")
-      .populate({ path: "members", select: "fullName avatar id" })
-      .populate({ path: "requestJoin", select: "fullName avatar id" }).lean()
+      .populate({ path: "members.user", select: "fullName avatar _id coverPicture username avatar" })
+      .populate({ path: "members.role", select: "roleName" })
+      .populate({ path: "requestJoin", select: "fullName avatar _id coverPicture username avatar" }).lean()
+    for (const mem of groups.members) {
+      let post = await Post.find({ poster: ObjectId(mem.user._id) })
+      mem.postCount = post ? post.length : 0
+    }
     const post = await Post.find({ groupId: ObjectId(id) })
     groups.postCount = post ? post.length : 0;
     return res.json({

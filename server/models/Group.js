@@ -35,6 +35,9 @@ const Group = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+  tags: [{
+    type: String
+  }],
   members: [{
     user: {
       type: Schema.Types.ObjectId,
