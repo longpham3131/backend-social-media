@@ -28,7 +28,7 @@ router.get("/", verifyToken, async (req, res) => {
       success: true,
       data: groups,
     });
-  } catch (err) { }
+  } catch (err) {}
 });
 
 router.delete("/:id", verifyToken, async (req, res) => {
@@ -40,7 +40,7 @@ router.delete("/:id", verifyToken, async (req, res) => {
       success: true,
       data: rs,
     });
-  } catch (err) { }
+  } catch (err) {}
 });
 
 router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
@@ -86,7 +86,7 @@ router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
       success: true,
       data: groups,
     });
-  } catch (err) { }
+  } catch (err) {}
 });
 
 router.post("/", verifyToken, async (req, res) => {
@@ -145,7 +145,9 @@ router.post("/requestJoinGroup", verifyToken, async (req, res) => {
       });
     }
     if (!group.isPrivate) {
-      group.members = group.members.filter(m => m.user.toString() !== req.userId)
+      group.members = group.members.filter(
+        (m) => m.user.toString() !== req.userId
+      );
       let role = await RoleGroup.findOne({ roleName: "member" });
       group.members.push({ user: ObjectId(req.userId), role });
       let rs = await group.save();
@@ -166,7 +168,7 @@ router.post("/requestJoinGroup", verifyToken, async (req, res) => {
     }
     if (!requestJoin) {
       group.requestJoin = group.requestJoin.filter(
-        r => r.toString() !== req.userId
+        (r) => r.toString() !== req.userId
       );
     } else {
       let isInRequestJoin = group.requestJoin.find(
