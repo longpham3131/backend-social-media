@@ -5,6 +5,7 @@ import {
   SmileOutlined,
   FileImageOutlined,
   SettingOutlined,
+  ScheduleOutlined,
 } from "@ant-design/icons";
 import "./index.scss";
 import GroupTimeline from "./Tabs/GroupTimeline";
@@ -12,12 +13,10 @@ import GroupMembers from "./Tabs/GroupMembers";
 import GroupPhotos from "./Tabs/GroupPhotos";
 import GroupSettings from "./Tabs/GroupSettings/GroupSettings";
 import { useParams } from "react-router";
+import GroupInviteAndRequest from "./Tabs/GroupInviteAndRequest";
 
 const { TabPane } = Tabs;
 const GroupSliderContents = ({ isAdmin }) => {
-  const onChange = (key) => {
-    console.log(key);
-  };
   const categories = [
     {
       icon: <OneToOneOutlined />,
@@ -30,6 +29,12 @@ const GroupSliderContents = ({ isAdmin }) => {
       name: "Members",
       isDisable: true,
       ele: <GroupMembers />,
+    },
+    {
+      icon: <ScheduleOutlined />,
+      name: "Manage Member",
+      isDisable: isAdmin,
+      ele: <GroupInviteAndRequest />,
     },
 
     // {
@@ -47,7 +52,7 @@ const GroupSliderContents = ({ isAdmin }) => {
   ];
   return (
     <div className="mt-[16px] sn-slider-contents">
-      <Tabs defaultActiveKey="3" onChange={onChange}>
+      <Tabs defaultActiveKey="1">
         {categories.map((item, index) => {
           return (
             item.isDisable && (

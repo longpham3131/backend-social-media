@@ -3,6 +3,7 @@ import { Tabs } from "antd";
 
 import UpdateGroupInfo from "./Tabs/UpdateGroupInformation";
 import UpdateAvatar from "./Tabs/UpdateAvatar";
+import DeleteGroup from "./Tabs/DeleteGroup";
 const { TabPane } = Tabs;
 const GroupSettings = () => {
   const categories = [
@@ -13,6 +14,10 @@ const GroupSettings = () => {
     {
       name: "Update Avatar & Cover Picture",
       ele: <UpdateAvatar />,
+    },
+    {
+      name: "Delete your group",
+      ele: <DeleteGroup />,
     },
   ];
   return (

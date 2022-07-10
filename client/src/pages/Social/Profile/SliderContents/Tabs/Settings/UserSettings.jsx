@@ -1,6 +1,6 @@
 import { Tabs } from "antd";
 import React from "react";
-import { KeyOutlined, ProfileOutlined } from "@ant-design/icons";
+
 import UpdateBiography from "./Tabs/UpdateBiography";
 import UpdatePassword from "./Tabs/UpdatePassword";
 import UpdateInterests from "./Tabs/UpdateInterests";

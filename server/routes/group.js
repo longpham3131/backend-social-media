@@ -28,7 +28,7 @@ router.get("/", verifyToken, async (req, res) => {
       success: true,
       data: groups,
     });
-  } catch (err) { }
+  } catch (err) {}
 });
 
 router.delete("/:id", verifyToken, async (req, res) => {
@@ -40,7 +40,7 @@ router.delete("/:id", verifyToken, async (req, res) => {
       success: true,
       data: rs,
     });
-  } catch (err) { }
+  } catch (err) {}
 });
 
 router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
@@ -58,7 +58,14 @@ router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
         select:
           "fullName avatar _id coverPicture friends groups username avatar",
       })
-
+      .populate({
+        path: "invited.invitedUser",
+        select: "fullName avatar _id username avatar",
+      })
+      .populate({
+        path: "invited.member",
+        select: "fullName avatar _id username avatar",
+      })
       .populate({ path: "members.role", select: "roleName" })
       .populate({
         path: "requestJoin",
@@ -86,7 +93,7 @@ router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
       success: true,
       data: groups,
     });
-  } catch (err) { }
+  } catch (err) {}
 });
 
 router.post("/", verifyToken, async (req, res) => {
@@ -199,11 +206,14 @@ router.post("/inviteToGroup", verifyToken, async (req, res) => {
         success: false,
       });
     }
-    let roleRequire = await RoleGroup.find({ $or: [{ roleName: "administrators" }, { roleName: "manager" }] })
-    console.log('roleRequire', roleRequire)
+    let roleRequire = await RoleGroup.find({
+      $or: [{ roleName: "administrators" }, { roleName: "manager" }],
+    });
     let isAllow = group.members.find(
-      (mem) => mem.user.toString() === req.userId &&
-        (mem.role.toString() === roleRequire[0]._id.toString() || mem.role.toString() === roleRequire[1]._id.toString())
+      (mem) =>
+        mem.user.toString() === req.userId &&
+        (mem.role.toString() === roleRequire[0]._id.toString() ||
+          mem.role.toString() === roleRequire[1]._id.toString())
     );
     if (!isAllow) {
       return res.json({
@@ -221,15 +231,18 @@ router.post("/inviteToGroup", verifyToken, async (req, res) => {
         data: "You are already in group",
       });
     }
-    group.invited = group.invited.filter(i => i.invitedUser.toString() !== userId)
+    group.invited = group.invited.filter(
+      (i) => i.invitedUser.toString() !== userId
+    );
     if (isInvite) {
       group.invited.push({
         member: ObjectId(req.userId),
         invitedUser: ObjectId(userId),
       });
-    }
-    else {
-
+    } else {
+      group.invited = group.invited.filter(
+        (invite) => invite.invitedUser._id !== userId
+      );
     }
     const rs = await group.save();
     const noti = await UserNotification({
@@ -246,7 +259,7 @@ router.post("/inviteToGroup", verifyToken, async (req, res) => {
       data: rs,
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     error500(res);
   }
 });
@@ -495,7 +508,7 @@ router.get("/getRoles", verifyToken, async (req, res) => {
 
 router.get("/getGroupUserJoined/:userId", verifyToken, async (req, res) => {
   try {
-    let userId = req.params.userId
+    let userId = req.params.userId;
     let rs = await Group.find({
       members: {
         $elemMatch: {
@@ -505,7 +518,7 @@ router.get("/getGroupUserJoined/:userId", verifyToken, async (req, res) => {
     })
       .select("members groupName isPrivate avatar groupDescription cover _id")
       .lean();
-    console.log('rs', rs)
+    console.log("rs", rs);
     rs = rs.map((r) => {
       r.membersCount = r.members.length;
       delete r.members;
@@ -568,8 +581,11 @@ router.get("/getUsersNotJoinedGroup/:id", verifyToken, async (req, res) => {
         data: "You are not the member of this group",
       });
     }
-    let listMem = group.members.map(r => r.user)
-    let users = await User.find({ _id: { $nin: listMem } })
+    let listMem = group.members.map((r) => r.user);
+    let listInvtedUserInGroup = group.invited.map((u) => u.invitedUser);
+    let users = await User.find({
+      _id: { $nin: [...listMem, ...listInvtedUserInGroup] },
+    });
     return res.json({
       success: true,
       data: users,

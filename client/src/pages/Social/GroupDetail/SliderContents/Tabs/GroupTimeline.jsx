@@ -4,20 +4,11 @@ import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import {
-  editPost,
-  deletePost,
-  createComment,
-  likePost,
-} from "@/store/postSlice";
-import postAPI from "@/apis/postAPI";
-import { Badge, message, Modal } from "antd";
-import CreateEditPost from "@/components/SNCreateEditPost";
+
+import { Badge } from "antd";
+
 import SNWidgetBoxItem from "@/components/SNWidgetBoxItem";
 import { useParams } from "react-router";
-import userAPI from "@/apis/userAPI";
-import SNImage from "@/components/SNImage";
-import SNPost2 from "@/components/SNPost2";
 import SNListPost from "@/components/SNListPost";
 import { Link } from "react-router-dom";
 import { isEmpty } from "lodash";
