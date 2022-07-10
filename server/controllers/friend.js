@@ -26,7 +26,6 @@ const FriendRequest = async (req, res) => {
     user = await User.findById(userId)
       .populate({ path: "friends.user", select: "fullName avatar" })
       .populate({ path: "friendsRequest.user", select: "fullName avatar" });
-    console.log("alo");
     io.sockets
       .to(`user_${userId}`)
       .emit("friendRequest", { type: 1, userRequest: user });
