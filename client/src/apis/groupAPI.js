@@ -27,9 +27,9 @@ const groupAPI = {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
   },
-  requestJoinGroup(groupId) {
-    const url = `${BASE_URL}/requestJoinGroup/${groupId} `;
-    return axios.get(url, {
+  requestJoinGroup(data) {
+    const url = `${BASE_URL}/requestJoinGroup`;
+    return axios.post(url, data, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
   },

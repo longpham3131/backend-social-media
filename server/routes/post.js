@@ -184,7 +184,22 @@ router.put("/", verifyToken, async (req, res) => {
   const { postId, text, audience, attachments } = req.body;
   const date = new Date();
   const poster = await User.findById(req.userId).then((user) => user);
-
+  const post = await Post.findById(postId).populate({
+    path: "comments",
+    populate: [
+      {
+        path: "user",
+        select: "username fullName avatar like",
+      },
+      {
+        path: "like.user",
+        select: "username fullName avatar like",
+      },
+      {
+        path: "file",
+      },
+    ],
+  });
   const update = await {
     text,
     audience,
@@ -195,6 +210,7 @@ router.put("/", verifyToken, async (req, res) => {
     .setOptions({ new: true })
     .then((result) => {
       result.poster = poster;
+      result.comments = post.comments;
       res.json(result);
     })
     .catch((err) => {
@@ -219,8 +235,6 @@ router.put("/", verifyToken, async (req, res) => {
 // GET POST PROFILE
 router.get("/", verifyToken, async (req, res) => {
   const { limitPost, index, userId, postId = "", groupId = "" } = req.query;
-  console.log(typeof limitPost === "string", index, userId);
-  console.log("user req", req.userId);
   try {
     let query = [];
     if (groupId !== "") {
@@ -230,7 +244,12 @@ router.get("/", verifyToken, async (req, res) => {
       //profile
       query = [{ poster: ObjectId(req.userId), status: 1 }];
     } else if (userId !== req.userId && userId) {
+      let user = await User.findById(userId)
+      let isFriend = user.friends.find(f => f.user.toString()===req.userId)
       query = [{ poster: ObjectId(userId), audience: "public" }];
+      if (!!isFriend) {
+        query.push({ poster: ObjectId(userId), audience: "friends" })
+      }
     } else if (postId !== "") {
       // post detail
       query = [{ _id: ObjectId(postId), status: 1 }];

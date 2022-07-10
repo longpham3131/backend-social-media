@@ -38,9 +38,8 @@ const GroupDetail = () => {
     if (group.isMember) {
       await groupAPI.requestLeaveGroup(groupId);
       fetchGroupDetail();
-    } else if (isRequested()) {
     } else {
-      await groupAPI.requestJoinGroup(groupId);
+      await groupAPI.requestJoinGroup({ groupId, requestJoin: isRequested() });
       fetchGroupDetail();
     }
   };

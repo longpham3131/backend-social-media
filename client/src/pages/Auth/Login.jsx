@@ -16,6 +16,7 @@ const Login = () => {
   } = useForm();
 
   const onFinish = async (data) => {
+    console.log("call data");
     const { username, password } = data;
     try {
       const res = await authAPI.login({ username, password });
