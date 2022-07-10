@@ -525,7 +525,35 @@ router.get("/getImages/:id", verifyToken, async (req, res) => {
       success: true,
       data: listImages,
     });
-  } catch (err) { }
+  } catch (err) {
+    console.log(err);
+    error500(res);
+  }
+});
+
+router.get("/getUsersNotJoinedGroup/:id", verifyToken, async (req, res) => {
+  try {
+    let groupId = req.params.id;
+    let group = await Group.findById(groupId);
+    let isMember = group.members.find(
+      (mems) => mems.user.toString() === req.userId
+    );
+    if (!isMember) {
+      return res.json({
+        success: false,
+        data: "You are not the member of this group",
+      });
+    }
+    let listMem = group.members.map(r => r.user)
+    let users = await User.find({ _id: {$nin:listMem} })
+    return res.json({
+      success: true,
+      data: users,
+    });
+  } catch (err) {
+    console.log(err);
+    error500(res);
+  }
 });
 
 module.exports = router;
