@@ -11,6 +11,7 @@ import {
   LikeFilled,
   DeploymentUnitOutlined,
   ExclamationCircleOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import CreateEditPost from "./SNCreateEditPost";
 import postAPI from "@/apis/postAPI";
@@ -60,7 +61,6 @@ const SNPost2 = ({ post }) => {
   const dispatch = useDispatch();
   const [showEditPost, setShowEditPost] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState("");
-  const [content, setContent] = useState(null);
 
   const refAddEditPost = useRef(null);
   const handleDeletePost = async (postId) => {
@@ -116,12 +116,6 @@ const SNPost2 = ({ post }) => {
     }
   };
 
-  useEffect(() => {
-    let raw = htmlToDraft(text);
-    const contentState = ContentState.createFromBlockArray(raw.contentBlocks);
-    const editorState = EditorState.createWithContent(contentState);
-    setContent(editorState);
-  }, [post]);
   const menu = (
     <Menu>
       {isPoster && (
@@ -141,6 +135,37 @@ const SNPost2 = ({ post }) => {
       )}
     </Menu>
   );
+
+  const handleAudience = (audience) => {
+    switch (audience) {
+      case "public":
+        return (
+          <FontAwesomeIcon
+            icon={faEarthAmericas}
+            className=" text-[14px] text-color-text"
+          />
+        );
+      case "friends":
+        return (
+          <TeamOutlined
+            style={{ fontSize: "14px", color: "var(text-color-text)" }}
+          />
+        );
+      case "private":
+        return (
+          <FontAwesomeIcon
+            icon={faLock}
+            className=" text-[14px] text-color-text"
+          />
+        );
+      default:
+        return (
+          <DeploymentUnitOutlined
+            style={{ fontSize: "14px", color: "var(text-color-text)" }}
+          />
+        );
+    }
+  };
   return (
     <>
       <div className="sn-post">
@@ -165,19 +190,7 @@ const SNPost2 = ({ post }) => {
                 </span>
               </p>
               <p className="sn-post-header-user-create-post flex items-center gap-[5px]">
-                {audience === "public" ? (
-                  <FontAwesomeIcon
-                    icon={faEarthAmericas}
-                    className=" text-[14px] text-color-text"
-                  />
-                ) : audience === "private" ? (
-                  <FontAwesomeIcon
-                    icon={faLock}
-                    className=" text-[14px] text-color-text"
-                  />
-                ) : (
-                  <DeploymentUnitOutlined />
-                )}{" "}
+                {handleAudience(audience)}{" "}
                 <span>{formatMinutes(createAt)}</span>
               </p>
             </div>
@@ -194,12 +207,7 @@ const SNPost2 = ({ post }) => {
         {/* Content */}
         <div className="sn-post-content">
           <div className="px-[28px]">
-            <Editor
-              editorState={content}
-              readOnly={true}
-              className="sn-post-content-text"
-              toolbarHidden={true}
-            />
+            <p className="sn-post-content-text">{text}</p>
           </div>
           {/* Image or Video */}
           {hasMedia ? (

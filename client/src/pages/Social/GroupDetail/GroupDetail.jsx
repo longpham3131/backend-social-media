@@ -22,13 +22,28 @@ const GroupDetail = () => {
       const res = await groupAPI.getGroupDetail(groupId);
       setGroup(res.data.data);
       const group = res.data.data;
-      setHiddenButtonJoin(
-        group.isAdmin || (group.isPrivate && !group.isMember)
-      );
+      setHiddenButtonJoin(group.isAdmin);
     } catch (error) {
       message.error("Get detail group fail!");
     }
   };
+  const isRequested = () => {
+    if (
+      group.requestJoin.findIndex((user) => user._id === myProfile._id) !== -1
+    )
+      return true;
+    return false;
+  };
+  const handleClickBtnJoin = async () => {
+    if (group.isMember) {
+      await groupAPI.requestLeaveGroup(groupId);
+      fetchGroupDetail();
+    } else {
+      await groupAPI.requestJoinGroup(groupId);
+      fetchGroupDetail();
+    }
+  };
+
   useEffect(() => {
     fetchGroupDetail();
   }, []);
@@ -68,8 +83,16 @@ const GroupDetail = () => {
                     {group.groupName}
                   </p>
                   {!hiddenButtonJoin && (
-                    <Button type="primary" shape="round">
-                      {group.isMember ? "Leave this group" : "Join"}
+                    <Button
+                      type="primary"
+                      shape="round"
+                      onClick={handleClickBtnJoin}
+                    >
+                      {group.isMember
+                        ? "Leave this group"
+                        : isRequested()
+                        ? "Cancel request"
+                        : "Join"}
                     </Button>
                   )}
                 </div>

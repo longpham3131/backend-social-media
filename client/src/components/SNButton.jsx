@@ -13,10 +13,10 @@ const CustomStyleButton = styled(Button)({
   width: "100%",
 });
 
-const SNButton = ({ text, onClick }) => {
+const SNButton = ({ text, onClick, isSubmit = true }) => {
   return (
     <CustomStyleButton
-      type="submit"
+      type={isSubmit ? "submit" : "button"}
       variant="contained"
       onClick={() => onClick}
     >

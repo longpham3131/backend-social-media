@@ -21,6 +21,24 @@ const groupAPI = {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
   },
+  createGroup(data) {
+    const url = `${BASE_URL}`;
+    return axios.post(url, data, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+  },
+  requestJoinGroup(groupId) {
+    const url = `${BASE_URL}/requestJoinGroup/${groupId} `;
+    return axios.get(url, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+  },
+  requestLeaveGroup(groupId) {
+    const url = `${BASE_URL}/requestQuitGroup/${groupId} `;
+    return axios.get(url, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+  },
 };
 
 export default groupAPI;

@@ -73,7 +73,7 @@ const Newsfeed = () => {
         <SNWidgetBox
           title={"Friends"}
           content={
-            profile?.length ? (
+            profile?.friends?.length ? (
               profile?.friends?.map((item, index) => (
                 <Link key={index} to={`/profile/${item.user._id}`}>
                   <SNWidgetBoxItem

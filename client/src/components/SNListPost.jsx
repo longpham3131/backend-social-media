@@ -10,7 +10,7 @@ import { setPostList } from "@/store/postSlice";
 import SNCreateEditPost from "./SNCreateEditPost";
 
 import { createPost } from "@/store/postSlice";
-const SNListPost = ({ showButtonCreatePost = true }) => {
+const SNListPost = ({ showButtonCreatePost = true, isGroupPrivate }) => {
   const postList = useSelector((state) => state.posts);
   const dispatch = useDispatch();
   const [loadMore, setLoadMore] = useState(true);
@@ -50,6 +50,11 @@ const SNListPost = ({ showButtonCreatePost = true }) => {
       const res = await postAPI.createPost({
         ...values,
         groupId,
+        audience: groupId
+          ? isGroupPrivate
+            ? "group private"
+            : "group public"
+          : values.audience,
         isGroup: groupId ? true : false,
       });
       console.log("success", res.data);

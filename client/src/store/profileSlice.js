@@ -9,9 +9,8 @@ const profile = createSlice({
       return state;
     },
     editProfile: (state, action) => {
-      const { coverPicture, avatar, fullName, email, dateOfBirth } =
-        action.payload;
-      state = { ...state, coverPicture, avatar, fullName, email, dateOfBirth };
+      const payload = action.payload;
+      state = { ...state, payload };
       return state;
     },
     changePassword: (state, action) => {
