@@ -28,18 +28,16 @@ const GroupDetail = () => {
     }
   };
   const isRequested = () => {
-    if (
+    return (
       group.requestJoin.findIndex((user) => user._id === myProfile._id) !== -1
-    )
-      return true;
-    return false;
+    );
   };
   const handleClickBtnJoin = async () => {
     if (group.isMember) {
       await groupAPI.requestLeaveGroup(groupId);
       fetchGroupDetail();
     } else {
-      await groupAPI.requestJoinGroup({ groupId, requestJoin: isRequested() });
+      await groupAPI.requestJoinGroup({ groupId, requestJoin: !isRequested() });
       fetchGroupDetail();
     }
   };

@@ -145,7 +145,7 @@ router.post("/requestJoinGroup", verifyToken, async (req, res) => {
       });
     }
     if (!group.isPrivate) {
-      let role = await RoleGroup.find({ roleName: "member" });
+      let role = await RoleGroup.findOne({ roleName: "member" });
       group.members.push({ user: ObjectId(req.userId), role });
       let rs = await group.save();
       return res.json({
