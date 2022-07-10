@@ -134,9 +134,9 @@ router.put("/", verifyToken, async (req, res) => {
     error500(res);
   }
 });
-router.get("/requestJoinGroup/:groupId", verifyToken, async (req, res) => {
+router.post("/requestJoinGroup", verifyToken, async (req, res) => {
   try {
-    let groupId = req.params.groupId;
+    let { groupId, requestJoin } = req.body;
     console.log("groupId", groupId);
     let group = await Group.findById(groupId);
     if (!group) {
@@ -144,20 +144,34 @@ router.get("/requestJoinGroup/:groupId", verifyToken, async (req, res) => {
         success: false,
       });
     }
+    if (!group.isPrivate) {
+      group.members.push({ user: ObjectId(req.userId) })
+      let rs = await group.save()
+      return res.json({
+        success: true,
+        data: rs,
+      });
+    }
     let isMember = group.members.find(
       (mems) => mems.user.toString() === req.userId
     );
+
     if (isMember) {
       return res.json({
         success: false,
         data: "You are already in group",
       });
     }
-    let isInRequestJoine = group.requestJoin.find(
-      (user) => user.toString() === req.userId
-    );
-    if (!isInRequestJoine) {
-      group.requestJoin.push(ObjectId(req.userId));
+    if (!requestJoin) {
+      group.requestJoin = group.requestJoin.filter(r => r.user.toString() !== req.userId)
+    }
+    else {
+      let isInRequestJoin = group.requestJoin.find(
+        (user) => user.toString() === req.userId
+      );
+      if (!isInRequestJoin) {
+        group.requestJoin.push(ObjectId(req.userId));
+      }
     }
     const rs = await group.save();
     return res.json({
@@ -495,9 +509,9 @@ router.get("/getImages/:id", verifyToken, async (req, res) => {
       });
     }
     let posts = await Post.find({ $and: [{ groupId: ObjectId(groupId) }, { attachments: { $ne: [] } }] }).sort({ createAt: -1 })
-    let listImages=[]
+    let listImages = []
     for (const p of posts) {
-      listImages=listImages.concat(p.attachments)
+      listImages = listImages.concat(p.attachments)
     }
     return res.json({
       success: true,

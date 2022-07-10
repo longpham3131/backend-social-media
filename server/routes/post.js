@@ -219,8 +219,6 @@ router.put("/", verifyToken, async (req, res) => {
 // GET POST PROFILE
 router.get("/", verifyToken, async (req, res) => {
   const { limitPost, index, userId, postId = "", groupId = "" } = req.query;
-  console.log(typeof limitPost === "string", index, userId);
-  console.log("user req", req.userId);
   try {
     let query = [];
     if (groupId !== "") {
@@ -230,7 +228,12 @@ router.get("/", verifyToken, async (req, res) => {
       //profile
       query = [{ poster: ObjectId(req.userId), status: 1 }];
     } else if (userId !== req.userId && userId) {
+      let user = await User.findById(userId)
+      let isFriend = user.friends.find(f => f.user.toString()===req.userId)
       query = [{ poster: ObjectId(userId), audience: "public" }];
+      if (!!isFriend) {
+        query.push({ poster: ObjectId(userId), audience: "friends" })
+      }
     } else if (postId !== "") {
       // post detail
       query = [{ _id: ObjectId(postId), status: 1 }];
