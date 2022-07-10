@@ -145,6 +145,9 @@ router.post("/requestJoinGroup", verifyToken, async (req, res) => {
       });
     }
     if (!group.isPrivate) {
+      group.members = group.members.filter(
+        (m) => m.user.toString() !== req.userId
+      );
       let role = await RoleGroup.findOne({ roleName: "member" });
       group.members.push({ user: ObjectId(req.userId), role });
       let rs = await group.save();
@@ -165,7 +168,7 @@ router.post("/requestJoinGroup", verifyToken, async (req, res) => {
     }
     if (!requestJoin) {
       group.requestJoin = group.requestJoin.filter(
-        (r) => r.user.toString() !== req.userId
+        (r) => r.toString() !== req.userId
       );
     } else {
       let isInRequestJoin = group.requestJoin.find(
