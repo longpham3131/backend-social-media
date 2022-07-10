@@ -10,17 +10,20 @@ import SNAvatar from "@/components/SNAvatar";
 import SNButton from "@/components/SNButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEarthAmericas, faLock } from "@fortawesome/free-solid-svg-icons";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import classNames from "classnames";
+import { setGroup } from "@/store/groupSlice";
+import { isEmpty } from "lodash";
 const GroupDetail = () => {
   const myProfile = useSelector((state) => state.profile);
   const { groupId } = useParams();
-  const [group, setGroup] = useState();
+  const dispatch = useDispatch();
+  const group = useSelector((state) => state.group);
   const [hiddenButtonJoin, setHiddenButtonJoin] = useState(false);
   const fetchGroupDetail = async () => {
     try {
       const res = await groupAPI.getGroupDetail(groupId);
-      setGroup(res.data.data);
+      dispatch(setGroup(res.data.data));
       const group = res.data.data;
       setHiddenButtonJoin(group.isAdmin);
     } catch (error) {
@@ -47,7 +50,7 @@ const GroupDetail = () => {
   }, []);
   return (
     <div className="flex flex-col p-0 lg:px-[4rem] ">
-      {group && (
+      {!isEmpty(group) && (
         <>
           <div className="shadow-2 pb-[1rem] rounded-xl bg-white">
             <div className="relative">
@@ -128,8 +131,7 @@ const GroupDetail = () => {
               </div>
             </div>
           </div>
-
-          <GroupSliderContents group={group} />
+          <GroupSliderContents isAdmin={group.isAdmin} />
         </>
       )}
     </div>

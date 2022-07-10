@@ -4,11 +4,13 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import SNCard from "@/components/SNCard";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-const GroupMembers = ({ group }) => {
+const GroupMembers = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [friends, setFriends] = useState([]);
+  const group = useSelector((state) => state.group);
 
   return (
     <div className="col-span-4">

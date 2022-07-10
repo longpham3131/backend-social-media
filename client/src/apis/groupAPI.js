@@ -39,6 +39,12 @@ const groupAPI = {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
   },
+  updateGroupInfo(data) {
+    const url = `${BASE_URL}`;
+    return axios.put(url, data, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+  },
 };
 
 export default groupAPI;

@@ -38,10 +38,7 @@ const Headerbar = ({ collapsed, onToggle }) => {
 
   const menu = (
     <Menu>
-      <Menu.Item>
-        <Link to={`/profile/${myProfile._id}`}>Profile</Link>
-      </Menu.Item>
-      <Menu.Item>
+      <Menu.Item key={"logOut"}>
         <p onClick={logOut}>Log out</p>
       </Menu.Item>
     </Menu>

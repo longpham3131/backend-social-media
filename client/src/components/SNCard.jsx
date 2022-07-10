@@ -37,7 +37,7 @@ const SNCard = ({
         </div>
         <div className="flex flex-col gap-[16px] items-center justify-between pt-[52px] px-[32px] ">
           <div className="">
-            <p className="text-[18px] font-bold text-color-text leading-[1em]">
+            <p className="text-[18px] font-bold text-center text-color-text leading-[1em]">
               {name}
             </p>
             {username && (

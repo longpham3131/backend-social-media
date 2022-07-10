@@ -20,8 +20,10 @@ import SNImage from "@/components/SNImage";
 import SNPost2 from "@/components/SNPost2";
 import SNListPost from "@/components/SNListPost";
 import { Link } from "react-router-dom";
-
-const GroupTimeline = ({ group }) => {
+import { isEmpty } from "lodash";
+const GroupTimeline = () => {
+  const group = useSelector((state) => state.group);
+  console.log("emty", isEmpty(group));
   return (
     <>
       <div className="flex flex-col gap-[16px]">
@@ -67,18 +69,20 @@ const GroupTimeline = ({ group }) => {
         <SNWidgetBox
           title={"Group Administrators"}
           content={
-            <Link to={`/profile/${group.adminGroup._id}`}>
-              <SNWidgetBoxItem
-                srcAvatar={group.adminGroup.avatar}
-                name={
-                  <>
-                    {group.adminGroup.fullName}{" "}
-                    <Badge color="#87d068" dot={group.adminGroup.isOnline} />
-                  </>
-                }
-                description={"@" + group.adminGroup.username}
-              />
-            </Link>
+            !isEmpty(group) && (
+              <Link to={`/profile/${group.adminGroup._id}`}>
+                <SNWidgetBoxItem
+                  srcAvatar={group.adminGroup.avatar}
+                  name={
+                    <>
+                      {group.adminGroup.fullName}{" "}
+                      <Badge color="#87d068" dot={group.adminGroup.isOnline} />
+                    </>
+                  }
+                  description={"@" + group.adminGroup.username}
+                />
+              </Link>
+            )
           }
         />
         <SNWidgetBox

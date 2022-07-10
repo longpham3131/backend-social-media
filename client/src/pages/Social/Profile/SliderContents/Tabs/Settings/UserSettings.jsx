@@ -4,22 +4,24 @@ import { KeyOutlined, ProfileOutlined } from "@ant-design/icons";
 import UpdateBiography from "./Tabs/UpdateBiography";
 import UpdatePassword from "./Tabs/UpdatePassword";
 import UpdateInterests from "./Tabs/UpdateInterests";
+import UpdateAvatarUser from "./Tabs/UpdateAvatarUser";
 const { TabPane } = Tabs;
 const UserSettings = () => {
   const categories = [
     {
-      name: "Biography",
-      isDisable: false,
+      name: "Update avatar & cover picture",
+      ele: <UpdateAvatarUser />,
+    },
+    {
+      name: "Update profile",
       ele: <UpdateBiography />,
     },
     {
       name: "Update interests",
-      isDisable: false,
       ele: <UpdateInterests />,
     },
     {
       name: "Update password",
-      isDisable: false,
       ele: <UpdatePassword />,
     },
   ];
