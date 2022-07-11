@@ -21,6 +21,9 @@ import userAPI from "@/apis/userAPI";
 import { setProfile } from "@/store/profileSlice";
 import axios from "axios";
 import { useDispatch } from "react-redux";
+import SNWidgetBoxItem from "@/components/SNWidgetBoxItem";
+import { EyeOutlined } from "@ant-design/icons";
+import classNames from "classnames";
 const Notification = () => {
   const navigate = useNavigate();
   const [notificationState, setNotificationState] = useState({});
@@ -64,6 +67,7 @@ const Notification = () => {
               <SNAvatar
                 src={msg.data.fromUser.avatar}
                 className="mr-2"
+                size={50}
                 // fullName={msg.data.fromUser.fullName}
               />
               <span>{getFirstWord(msg.data.fromUser.fullName)} </span>
@@ -117,7 +121,7 @@ const Notification = () => {
         setLoading(false);
       });
   };
-
+  const isSeenNoti = (statusNoti) => statusNoti === 1;
   const notificationSeen = async (id) => {
     console.log("id", id);
     await notificationAPI.seenNotify(id);
@@ -136,6 +140,7 @@ const Notification = () => {
         maxHeight: "50rem",
         overflow: "auto",
       }}
+      overlayClassName="sn-notifications"
       content={
         notificationState && (
           <InfiniteScroll
@@ -167,43 +172,25 @@ const Notification = () => {
                       : `/profile/${item.fromUser._id}`
                   }
                 >
-                  <List.Item
-                    onClick={() => notificationSeen(item._id)}
-                    // actions={[
-                    //   <a key="list-loadmore-edit">
-
-                    //   </a>,
-                    // ]}
-                    className=""
+                  <div
+                    className={classNames("p-[12px]", {
+                      "bg-[#eae6ee]": !isSeenNoti(item.status),
+                    })}
                   >
-                    <List.Item.Meta
-                      avatar={
-                        <SNAvatar
-                          src={item.fromUser.avatar}
-                          fullName={item.fromUser.fullName}
-                        />
+                    <SNWidgetBoxItem
+                      srcAvatar={item.fromUser.avatar}
+                      name={
+                        <>
+                          {item.fromUser.fullName}{" "}
+                          <span className=" font-medium">
+                            {descriptionNoti(item.type)}
+                          </span>
+                        </>
                       }
-                      title={
-                        <span
-                          className={
-                            item.status == 1 ? "" : "text-green-primary"
-                          }
-                        >
-                          {item.fromUser.fullName}
-                        </span>
-                      }
-                      description={
-                        <div
-                          className={
-                            item.status == 1 ? "" : "text-green-primary"
-                          }
-                        >
-                          <div>{descriptionNoti(item.type)}</div>
-                          <div>{formatMinutes(item.createAt)}</div>
-                        </div>
-                      }
+                      description={formatMinutes(item.createAt)}
+                      leftIcon={isSeenNoti(item.status) ? "" : <EyeOutlined />}
                     />
-                  </List.Item>
+                  </div>
                 </Link>
               )}
             />
