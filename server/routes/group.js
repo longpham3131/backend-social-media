@@ -28,7 +28,7 @@ router.get("/", verifyToken, async (req, res) => {
       success: true,
       data: groups,
     });
-  } catch (err) {}
+  } catch (err) { }
 });
 
 router.delete("/:id", verifyToken, async (req, res) => {
@@ -40,7 +40,7 @@ router.delete("/:id", verifyToken, async (req, res) => {
       success: true,
       data: rs,
     });
-  } catch (err) {}
+  } catch (err) { }
 });
 
 router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
@@ -93,7 +93,7 @@ router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
       success: true,
       data: groups,
     });
-  } catch (err) {}
+  } catch (err) { }
 });
 
 router.post("/", verifyToken, async (req, res) => {
@@ -246,13 +246,14 @@ router.post("/inviteToGroup", verifyToken, async (req, res) => {
     }
     const rs = await group.save();
     const noti = await UserNotification({
+      user: ObjectId(userId),
       data: group,
-      type: 5,
+      type: 6,
       fromUser: req.userId,
     });
     await noti.save();
     io.sockets.to(`user_${userId}`).emit("notification", {
-      data: noti,
+      data: noti
     });
     return res.json({
       success: true,
@@ -341,6 +342,7 @@ router.post("/joinGroup", verifyToken, async (req, res) => {
       const noti = await UserNotification({
         data: group,
         type: 7,
+        user: ObjectId(userId)
       });
       await noti.save();
       io.sockets.to(`user_${userId}`).emit("notification", {
