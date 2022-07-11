@@ -28,7 +28,7 @@ router.get("/", verifyToken, async (req, res) => {
       success: true,
       data: groups,
     });
-  } catch (err) { }
+  } catch (err) {}
 });
 
 router.delete("/:id", verifyToken, async (req, res) => {
@@ -40,7 +40,7 @@ router.delete("/:id", verifyToken, async (req, res) => {
       success: true,
       data: rs,
     });
-  } catch (err) { }
+  } catch (err) {}
 });
 
 router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
@@ -93,7 +93,7 @@ router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
       success: true,
       data: groups,
     });
-  } catch (err) { }
+  } catch (err) {}
 });
 
 router.post("/", verifyToken, async (req, res) => {
@@ -114,6 +114,10 @@ router.post("/", verifyToken, async (req, res) => {
     };
     const group = new Group(data);
     const rs = await group.save();
+    let usr = await User.findById(req.userId);
+    console.log("Groups", rs);
+    usr.groups.push(rs._id);
+    await usr.save();
     return res.json({
       success: true,
       data: rs,
@@ -253,7 +257,7 @@ router.post("/inviteToGroup", verifyToken, async (req, res) => {
     });
     await noti.save();
     io.sockets.to(`user_${userId}`).emit("notification", {
-      data: noti
+      data: noti,
     });
     return res.json({
       success: true,
@@ -342,7 +346,7 @@ router.post("/joinGroup", verifyToken, async (req, res) => {
       const noti = await UserNotification({
         data: group,
         type: 7,
-        user: ObjectId(userId)
+        user: ObjectId(userId),
       });
       await noti.save();
       io.sockets.to(`user_${userId}`).emit("notification", {

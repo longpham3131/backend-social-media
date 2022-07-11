@@ -6,12 +6,14 @@ import SNWidgetBoxItem from "./SNWidgetBoxItem";
 import { useDispatch, useSelector } from "react-redux";
 import { createComment } from "@/store/postSlice";
 import classNames from "classnames";
+import { useParams } from "react-router";
 
-const SNComment = ({ postId, comments }) => {
+const SNComment = ({ postId, comments, isShowAllComment }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const myProfile = useSelector((state) => state.profile);
   const [isShowComment, setIsShowComment] = useState(false);
+
   const handleComment = async (values) => {
     try {
       console.log("comment", values);
@@ -50,7 +52,7 @@ const SNComment = ({ postId, comments }) => {
           <>
             <div
               className={classNames(" sn-comment-list-wrapper", {
-                show: isShowComment,
+                show: isShowComment || isShowAllComment,
               })}
             >
               {comments.map((item, index) => (
@@ -70,12 +72,14 @@ const SNComment = ({ postId, comments }) => {
               ))}
             </div>
 
-            <p
-              className={"sn-comment-list-show-btn"}
-              onClick={() => setIsShowComment(!isShowComment)}
-            >
-              {isShowComment ? "Hide" : "Show list comment"}
-            </p>
+            {!isShowAllComment && (
+              <p
+                className={"sn-comment-list-show-btn"}
+                onClick={() => setIsShowComment(!isShowComment)}
+              >
+                {isShowComment ? "Hide" : "Show list comment"}
+              </p>
+            )}
           </>
         ) : (
           <></>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import SNAvatar from "./SNAvatar";
 import { formatMinutes } from "@/util/index";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Dropdown, Form, Input, Menu, message, Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -61,7 +61,7 @@ const SNPost2 = ({ post }) => {
   const dispatch = useDispatch();
   const [showEditPost, setShowEditPost] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState("");
-
+  const { postId } = useParams();
   const refAddEditPost = useRef(null);
   const handleDeletePost = async (postId) => {
     confirm({
@@ -106,7 +106,6 @@ const SNPost2 = ({ post }) => {
     console.log("success", values);
     try {
       const res = await postAPI.editPost(values);
-      console.log("success", res.data);
       dispatch(editPost(res.data));
       message.success("Success!");
       refAddEditPost.current.resetFields();
@@ -206,11 +205,11 @@ const SNPost2 = ({ post }) => {
         </div>
         {/* Content */}
         <div className="sn-post-content">
-          <div className="px-[28px]">
+          <div className="px-[28px] pt-[28px]">
             <p className="sn-post-content-text">{text}</p>
           </div>
           {/* Image or Video */}
-          {hasMedia ? (
+          {hasMedia && !postId ? (
             <SNImage urlImage={attachments[0]?.file} hasRounded={false} />
           ) : (
             <></>
@@ -234,7 +233,11 @@ const SNPost2 = ({ post }) => {
           </div>
         </div>
         {/* Comment */}
-        <SNComment postId={_id} comments={comments} />
+        <SNComment
+          postId={_id}
+          comments={comments}
+          isShowAllComment={postId ? true : false}
+        />
       </div>
 
       <SNCreateEditPost

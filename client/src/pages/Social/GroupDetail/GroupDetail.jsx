@@ -20,12 +20,18 @@ const GroupDetail = () => {
   const dispatch = useDispatch();
   const group = useSelector((state) => state.group);
   const [hiddenButtonJoin, setHiddenButtonJoin] = useState(false);
+  const [isInvited, setIsInvited] = useState(false);
   const fetchGroupDetail = async () => {
     try {
       const res = await groupAPI.getGroupDetail(groupId);
       dispatch(setGroup(res.data.data));
       const group = res.data.data;
       setHiddenButtonJoin(group.isAdmin);
+      setIsInvited(
+        group.invited.findIndex(
+          (inv) => inv.invitedUser._id === myProfile._id
+        ) !== -1
+      );
     } catch (error) {
       message.error("Get detail group fail!");
     }
@@ -43,6 +49,11 @@ const GroupDetail = () => {
       await groupAPI.requestJoinGroup({ groupId, requestJoin: !isRequested() });
       fetchGroupDetail();
     }
+  };
+  const handleResponseInvite = async (isJoin) => {
+    await groupAPI.responeIntiveToGroup({ isJoin, groupId });
+    fetchGroupDetail();
+    isJoin && message.success(`Welcome to ${group.groupName} group`);
   };
 
   useEffect(() => {
@@ -83,19 +94,37 @@ const GroupDetail = () => {
                   >
                     {group.groupName}
                   </p>
-                  {!hiddenButtonJoin && (
-                    <Button
-                      type="primary"
-                      shape="round"
-                      onClick={handleClickBtnJoin}
-                    >
-                      {group.isMember
-                        ? "Leave this group"
-                        : isRequested()
-                        ? "Cancel request"
-                        : "Join"}
-                    </Button>
-                  )}
+                  {!hiddenButtonJoin &&
+                    (!isInvited ? (
+                      <Button
+                        type="primary"
+                        shape="round"
+                        onClick={handleClickBtnJoin}
+                      >
+                        {group.isMember
+                          ? "Leave this group"
+                          : isRequested()
+                          ? "Cancel request"
+                          : "Join"}
+                      </Button>
+                    ) : (
+                      <div className="flex gap-[10px]">
+                        <Button
+                          type="primary"
+                          shape="round"
+                          onClick={() => handleResponseInvite(true)}
+                        >
+                          Accept to join group
+                        </Button>
+                        <Button
+                          type="primary"
+                          shape="round"
+                          onClick={() => handleResponseInvite(false)}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    ))}
                 </div>
               </div>
             </div>

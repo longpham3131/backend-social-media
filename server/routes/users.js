@@ -146,6 +146,11 @@ router.get("/profile", verifyToken, async (req, res) => {
         path: "friends.user",
         select: "fullName avatar isOnline username",
       })
+      .populate({
+        path: "groups",
+        select: "groupName avatar members isPrivate",
+      })
+
       .populate({ path: "friendsRequest.user", select: "fullName avatar" })
       .lean();
     let post = await Post.find({ poster: ObjectId(req.userId) });

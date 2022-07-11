@@ -1,4 +1,4 @@
-import { Button, Card, Image, message, Modal } from "antd";
+import { Button, Card, Carousel, Image, message, Modal } from "antd";
 import userAPI from "@/apis/userAPI";
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,19 +20,19 @@ import { ExclamationCircleOutlined, WarningOutlined } from "@ant-design/icons";
 import CreateEditPost from "@/components/SNCreateEditPost";
 import { editProfile } from "@/store/profileSlice";
 import { SocketContext } from "@/service/socket/SocketContext";
+import SNWidgetBoxItem from "@/components/SNWidgetBoxItem";
+import SNPost2 from "@/components/SNPost2";
+import classNames from "classnames";
+import { getUrlVideo } from "util";
 const { confirm } = Modal;
 
 const PostDetail = () => {
   const navigate = useNavigate();
   const myProfile = useSelector((state) => state.profile);
-  const postList = useSelector((state) => state.posts[0]);
   const dispatch = useDispatch();
   const { postId } = useParams();
-  const [showEditPost, setShowEditPost] = useState(false);
-  const [showEditProfile, setShowEditProfile] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState("");
-  const refAddEditPost = useRef(null);
-  const [post, setPost] = useState(null);
+  const post = useSelector((state) => state.posts[0]);
+  const [hasAtt, setHasAtt] = useState(false);
   const socket = useContext(SocketContext);
 
   useEffect(() => {
@@ -50,105 +50,58 @@ const PostDetail = () => {
   const fetchPostListByProfile = async () => {
     console.log(postId);
     try {
-      const postList = await postAPI.getPostList({
+      const res = await postAPI.getPostList({
         limitPost: 10,
         index: 0,
         profile: 0,
         postId: postId,
       });
-      await dispatch(setPostList(postList.data));
+      setHasAtt(res.data[0].attachments.length > 0 ? true : false);
+      await dispatch(setPostList(res.data));
     } catch (error) {
       console.log(error);
       message.error("Get posts failed!");
     }
   };
 
-  const handleEditPost = async (values) => {
-    values.postId = selectedPostId;
-    console.log("success", values);
-    try {
-      const res = await postAPI.editPost(values);
-      console.log("success", res.data);
-      dispatch(editPost(res.data));
-      message.success("Edit post successfully!");
-      refAddEditPost.current.resetFields();
-      setShowEditPost(false);
-    } catch {
-      message.error("Edit post failed!");
-    }
-  };
-
-  const handleComment = async (values) => {
-    try {
-      const res = await postAPI.comment(values);
-      const dataDispatchStore = {
-        ...res.data.data,
-        user: {
-          _id: myProfile._id,
-          username: myProfile.username,
-          fullName: myProfile.fullName,
-          avatar: myProfile.avatar,
-        },
-      };
-      dispatch(
-        createComment({ postId: values.postId, comment: dataDispatchStore })
-      );
-      console.log("success", res.data);
-    } catch {
-      message.error("Post comment failed!");
-    }
-  };
-  const handleDeletePost = async (postId) => {
-    confirm({
-      title: "Do you want to delete this post?",
-      icon: <ExclamationCircleOutlined />,
-      okText: "Confirm",
-      cancelText: "Cancel",
-      onOk() {
-        try {
-          postAPI.deletePost(postId);
-          dispatch(deletePost(postId));
-          navigate("/");
-          message.success("Post deleted successfully!");
-        } catch (err) {
-          console.log(err);
-          message.error("Failed!");
-        }
-      },
-      onCancel() {
-        console.log("Cancel");
-      },
-    });
-  };
-
-  const handleLikePost = async (postId) => {
-    try {
-      const res = await postAPI.likePost(postId);
-      dispatch(likePost(res.data));
-    } catch {
-      message.error("Failed");
-    }
-  };
-
-  const showEdit = async (post) => {
-    await refAddEditPost.current.setFields(
-      post.audience,
-      post.text,
-      post.attachments[0]
-    );
-    setShowEditPost(true);
-    setSelectedPostId(post._id);
-  };
   return (
-    <div className="flex flex-col px-[4rem] profile-user h-full overflow-auto section--hidden-scroll-y">
-      {postList ? (
-        <SNPost
-          post={postList}
-          onDelete={handleDeletePost}
-          onEdit={showEdit}
-          onCommentPost={handleComment}
-          onLike={handleLikePost}
-        ></SNPost>
+    <>
+      {post ? (
+        <div className="flex items-center justify-center h-full">
+          <div
+            className={classNames("bg-white rounded-xl h-[80%]", {
+              " grid grid-cols-3": hasAtt,
+            })}
+          >
+            {hasAtt && (
+              <div className="bg-black col-span-2 rounded-tl-xl rounded-bl-xl">
+                <Carousel arrows={true}>
+                  {post.attachments.map((att, index) => (
+                    <div key={index}>
+                      <div className="flex items-center justify-center h-full w-full">
+                        {att.type === "video/mp4" ? (
+                          <video controls key={index}>
+                            <source src={getUrlVideo(att.file)} />
+                          </video>
+                        ) : (
+                          <img
+                            src={getUrlImage(att.file)}
+                            className=" object-cover"
+                            alt=""
+                          />
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </Carousel>
+              </div>
+            )}
+            <div>
+              <SNPost2 post={post} />
+              {/* <SNWidgetBoxItem srcAvatar={post.poster.avatar} name={post.poster.fullName} description={getAudience(post.audience) + {" "} + } /> */}
+            </div>
+          </div>
+        </div>
       ) : (
         <div className="flex justify-center items-center flex-col mt-6">
           <WarningOutlined className="WarningOutlined" />
@@ -160,15 +113,7 @@ const PostDetail = () => {
           </div>
         </div>
       )}
-      <CreateEditPost
-        ref={refAddEditPost}
-        visible={showEditPost}
-        title="Edit post"
-        okText="Save"
-        onClose={() => setShowEditPost(false)}
-        onSubmit={handleEditPost}
-      />
-    </div>
+    </>
   );
 };
 export default PostDetail;

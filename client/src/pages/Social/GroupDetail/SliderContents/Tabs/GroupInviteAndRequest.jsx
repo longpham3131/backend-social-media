@@ -52,7 +52,7 @@ const GroupInviteAndRequest = () => {
     await groupAPI.inviteUser({ groupId, userId: _id, isInvite: false });
     dispatch(
       editGroup({
-        invited: group.invited.filter((user) => user.inviteUser._id !== _id),
+        invited: group.invited.filter((user) => user.invitedUser._id !== _id),
       })
     );
     const filterUserList = [...userList, { _id, fullName, avatar, username }];
@@ -201,7 +201,7 @@ const GroupInviteAndRequest = () => {
                       />
                       <CloseCircleOutlined
                         className=" cursor-pointer "
-                        onClick={() => handleCancelInvite(user)}
+                        onClick={() => handleCancelInvite(user.invitedUser)}
                       />
                     </div>
                   ))

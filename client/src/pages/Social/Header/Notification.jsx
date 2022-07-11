@@ -96,6 +96,10 @@ const Notification = () => {
         return "liked your commment.";
       case 5:
         return "replied to your comment.";
+      case 6:
+        return "has invited you to the group";
+      case 7:
+        return "approved you to be a member of the group";
       default:
         return "accepted your friend request.";
     }
@@ -128,7 +132,10 @@ const Notification = () => {
     const res = await notificationAPI.getNotify();
     setNotificationState(res.data);
   };
-
+  const handleRedirect = (noti) => {
+    if (noti.type === 6 || noti.type === 7) return `/groups/${noti.data._id}`;
+    return `/post/${noti.postId}`;
+  };
   return (
     <Popover
       id="scrollableDiv"
@@ -165,17 +172,14 @@ const Notification = () => {
               itemLayout="horizontal"
               dataSource={notificationState.data}
               renderItem={(item) => (
-                <Link
-                  to={
-                    item
-                      ? `/post/${item.postId}`
-                      : `/profile/${item.fromUser._id}`
-                  }
-                >
+                <Link to={handleRedirect(item)}>
                   <div
                     className={classNames("p-[12px]", {
                       "bg-[#eae6ee]": !isSeenNoti(item.status),
                     })}
+                    onClick={() => {
+                      notificationSeen(item._id);
+                    }}
                   >
                     <SNWidgetBoxItem
                       srcAvatar={item.fromUser.avatar}
@@ -184,7 +188,14 @@ const Notification = () => {
                           {item.fromUser.fullName}{" "}
                           <span className=" font-medium">
                             {descriptionNoti(item.type)}
-                          </span>
+                          </span>{" "}
+                          {item.type === 6 || item.type === 7 ? (
+                            <span className="font-bold">
+                              {item.data.groupName}
+                            </span>
+                          ) : (
+                            ""
+                          )}
                         </>
                       }
                       description={formatMinutes(item.createAt)}

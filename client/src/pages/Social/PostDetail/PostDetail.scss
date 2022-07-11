@@ -6,10 +6,24 @@
     @apply left-0 right-0;
   }
 }
-.WarningOutlined{
-  svg{
+.WarningOutlined {
+  svg {
     width: 100px;
     height: 100px;
     color: #57d9a7;
   }
+}
+.ant-carousel,
+.ant-carousel > div *,
+.ant-carousel > div {
+  @apply h-full;
+}
+.ant-carousel > div * {
+  @apply h-full;
+}
+.slick-list {
+  @apply rounded-xl;
+}
+.ant-carousel img {
+  @apply h-auto;
 }

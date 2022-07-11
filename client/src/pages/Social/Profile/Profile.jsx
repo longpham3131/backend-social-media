@@ -135,7 +135,7 @@ const Profile = () => {
                 </div>
                 <div>
                   <p className="text-[1.375rem] uppercase text-center font-bold text-color-text leading-[1em]">
-                    {profile.friends.length}
+                    {profile.friends?.length}
                   </p>
                   <p className=" text-[0.75rem] mt-[10px] text-color-text-alt-2 uppercase font-bold text-center">
                     friends

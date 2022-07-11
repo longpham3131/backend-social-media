@@ -13,6 +13,8 @@ import { faEarthAmericas, faLock } from "@fortawesome/free-solid-svg-icons";
 import groupAPI from "@/apis/groupAPI";
 import { Link } from "react-router-dom";
 import SNListPost from "@/components/SNListPost";
+import userAPI from "@/apis/userAPI";
+import { setProfile } from "@/store/profileSlice";
 
 const Newsfeed = () => {
   const dispatch = useDispatch();
@@ -24,6 +26,7 @@ const Newsfeed = () => {
 
   useEffect(() => {
     fetchGroups();
+    userAPI.getMyProfile().then((rs) => dispatch(setProfile(rs.data.data)));
   }, []);
 
   const fetchGroups = async () => {
@@ -41,13 +44,13 @@ const Newsfeed = () => {
         <SNWidgetBox
           title={"Groups"}
           content={
-            groups.length ? (
-              groups.map((item, index) => (
+            profile?.groups?.length ? (
+              profile.groups.map((item, index) => (
                 <Link key={index} to={`/groups/${item._id}`}>
                   <SNWidgetBoxItem
                     srcAvatar={item.avatar}
                     name={item.groupName}
-                    description={item.members.length + " members"}
+                    description={item?.members?.length + " members"}
                     leftIcon={
                       item.isPrivate ? (
                         <FontAwesomeIcon

@@ -8,6 +8,8 @@ import { setProfile } from "@/store/profileSlice";
 import { Link } from "react-router-dom";
 import { UsergroupAddOutlined } from "@ant-design/icons";
 import SNAvatar from "@/components/SNAvatar";
+import SNWidgetBoxItem from "@/components/SNWidgetBoxItem";
+import { formatMinutes } from "@/util/index";
 const FriendRequest = () => {
   const socket = useContext(SocketContext);
   const dispatch = useDispatch();
@@ -37,7 +39,7 @@ const FriendRequest = () => {
       placement="bottom"
       title={"Friend request"}
       overlayInnerStyle={{
-        minWidth: "35rem",
+        minWidth: "30rem",
         maxHeight: "50rem",
         overflow: "auto",
       }}
@@ -50,6 +52,7 @@ const FriendRequest = () => {
               actions={[
                 <span
                   key="list-loadmore-edit"
+                  className=" cursor-pointer"
                   onClick={() =>
                     handleFriendRequestRespone({
                       userId: item.user._id,
@@ -57,10 +60,11 @@ const FriendRequest = () => {
                     })
                   }
                 >
-                  Chấp nhận
+                  Accept
                 </span>,
                 <span
                   key="list-loadmore-more"
+                  className=" cursor-pointer"
                   onClick={() =>
                     handleFriendRequestRespone({
                       userId: item.user._id,
@@ -68,18 +72,15 @@ const FriendRequest = () => {
                     })
                   }
                 >
-                  Hủy
+                  Delete
                 </span>,
               ]}
             >
               <Link to={`/profile/${item.user._id}`}>
-                <List.Item.Meta
-                  avatar={<SNAvatar src={item.user.avatar} />}
-                  title={
-                    <p className="overflow-hidden overflow-ellipsis whitespace-nowrap w-[200px] mt-2">
-                      {item.user.fullName}
-                    </p>
-                  }
+                <SNWidgetBoxItem
+                  srcAvatar={item.user.avatar}
+                  name={item.user.fullName}
+                  description={formatMinutes(item.createAt)}
                 />
               </Link>
             </List.Item>

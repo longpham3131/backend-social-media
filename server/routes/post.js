@@ -244,11 +244,11 @@ router.get("/", verifyToken, async (req, res) => {
       //profile
       query = [{ poster: ObjectId(req.userId), status: 1 }];
     } else if (userId !== req.userId && userId) {
-      let user = await User.findById(userId)
-      let isFriend = user.friends.find(f => f.user.toString()===req.userId)
+      let user = await User.findById(userId);
+      let isFriend = user.friends.find((f) => f.user.toString() === req.userId);
       query = [{ poster: ObjectId(userId), audience: "public" }];
       if (!!isFriend) {
-        query.push({ poster: ObjectId(userId), audience: "friends" })
+        query.push({ poster: ObjectId(userId), audience: "friends" });
       }
     } else if (postId !== "") {
       // post detail
@@ -257,11 +257,12 @@ router.get("/", verifyToken, async (req, res) => {
       // newsfeed
       let user = await User.findById(req.userId);
       let frs = user.friends.map((f) => f.user);
+      console.log("user", frs);
       query = [
         { audience: "public", status: 1 },
-        { poster: { $in: [frs] }, status: 1 },
+        { poster: { $in: frs }, status: 1 },
         { poster: ObjectId(req.userId), status: 1 },
-        { groupId: { $in: [user.groups] }, status: 1 },
+        { groupId: { $in: user.groups }, status: 1 },
       ];
     }
 
