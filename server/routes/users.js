@@ -82,6 +82,52 @@ router.get("/search", verifyToken, (req, res) => {
       return error500(err);
     });
 });
+router.get("/v2/search", verifyToken, async (req, res) => {
+  const searchKey = req.query.key;
+  const page = Number.parseInt(req.query.page);
+  const pageSize = Number.parseInt(req.query.pageSize);
+
+  let users = await User.find({
+    $or: [
+      { fullName: new RegExp(searchKey, 'i') },
+      { username: new RegExp(searchKey, 'i') }
+    ]
+  })
+    .sort({ fullName: "asc" })
+    .limit(pageSize)
+  let groups = await Group.find({
+    $or: [{
+      groupName: new RegExp(searchKey, 'i'),
+    },
+    { groupDescription: new RegExp(searchKey, 'i') }
+    ]
+  })
+    .sort({ fullName: "asc" })
+    .limit(pageSize)
+  let uCount=await User.countDocuments({ $or: [
+    { fullName: new RegExp(searchKey, 'i') },
+    { username: new RegExp(searchKey, 'i') }
+  ]});
+  let gCount=await Group.countDocuments({$or: [{
+    groupName: new RegExp(searchKey, 'i'),
+  },
+  { groupDescription: new RegExp(searchKey, 'i') }
+  ]});
+  res.json({
+    data: {
+      users,
+      groups,
+      pagination: {
+        page,
+        pageSize,
+        totalElementsUser: uCount,
+        totalElementsGroup: gCount,
+        numberOfElementsUser: users.length,
+        numberOfElementsGroup: groups.length,
+      },
+    },
+  });
+});
 
 // UPDATE USER
 router.put("/", verifyToken, async (req, res) => {

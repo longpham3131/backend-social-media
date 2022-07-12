@@ -7,7 +7,7 @@ var fs = require("fs");
 const { default: axios } = require("axios");
 const singleFileUpload = async (req, res, next) => {
   try {
-    // console.log(req.file);
+    console.log('req.file',req.file);
     let body = req.body
     console.log(body.tags);
     await console.log("----------------------------");
