@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Upload, message, Button } from "antd";
+import { Upload, message, Button, Progress } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { getUrlImage } from "@/util/index";
 import "@tensorflow/tfjs-backend-cpu";
@@ -14,11 +14,11 @@ export default function SNUpload({
   fileProp,
   onRemove,
 }) {
-  const [loading, setLoading] = useState(false);
   // const [tags, setTags] = useState([])
   const [defaultFileList, setDefaultFileList] = useState([]);
 
   useEffect(() => {
+    console.log("data input", fileProp);
     setDefaultFileList(
       fileProp.map((f, index) => ({
         uid: f._id,
@@ -100,15 +100,12 @@ export default function SNUpload({
   };
 
   const uploadImage = async (options) => {
-    const { onSuccess, onError, file, onProgress } = options;
-    console.log("file upload", file);
-    let tags = await getTags(file);
+    const { onSuccess, onError, file } = options;
+    // let tags = await getTags(file);
+    let tags = [];
     const fmData = new FormData();
     const config = {
       headers: { "content-type": "multipart/form-data" },
-      onUploadProgress: (event) => {
-        onProgress({ percent: (event.loaded / event.total) * 100 });
-      },
     };
     fmData.append("file", file);
     fmData.append("tags", tags);
@@ -118,8 +115,8 @@ export default function SNUpload({
         fmData,
         config
       );
-      onSuccess(res.data);
-      console.log("server res: ", res);
+      console.log("data out", res.data);
+      onUploadSuccess(res.data.data);
     } catch (err) {
       console.log("Eroor: ", err, "file", file);
       const error = new Error("Some error");
@@ -127,33 +124,25 @@ export default function SNUpload({
     }
   };
 
-  const handleChangeAvatar = ({ fileList }) => {
-    console.log(fileList);
-    // setLoading(true);
-    // if (file.status === "done") {
-    //   // setAvatar(file?.response?.data?.filePath);
-    //   console.log("alo", file);
-    //   onUploadSuccess(file);
-    //   setLoading(false);
-    // } else if (file.status === "error") {
-    //   setLoading(false);
-    //   message.error("Upload fail");
-    // }
+  const handleChange = ({ file, fileList }) => {
+    setDefaultFileList(fileList);
   };
 
   return (
-    <Upload
-      className="avatar-uploader"
-      listType="picture"
-      fileList={defaultFileList}
-      // action="https://uploadfile0510.herokuapp.com/api/upload/singleFile"
-      customRequest={uploadImage}
-      beforeUpload={beforeUpload}
-      onChange={handleChangeAvatar}
-      onRemove={onRemove}
-    >
-      <Button icon={<UploadOutlined />}>Upload</Button>
-    </Upload>
+    <>
+      <Upload
+        className="avatar-uploader"
+        listType="picture"
+        fileList={defaultFileList}
+        // action="https://uploadfile0510.herokuapp.com/api/upload/singleFile"
+        customRequest={uploadImage}
+        beforeUpload={beforeUpload}
+        onChange={handleChange}
+        onRemove={onRemove}
+      >
+        <Button icon={<UploadOutlined />}>Upload</Button>
+      </Upload>
+    </>
   );
 }
 // {!loading && fileProp ? (
