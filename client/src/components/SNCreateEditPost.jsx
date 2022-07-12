@@ -39,6 +39,18 @@ const SNCreateEditPost = React.forwardRef(
       console.log("attach", attach);
     };
 
+    const getFiles = (files) => {
+      return files.map(f => {
+        return {
+          file: f?.response?.data.filePath ?? f.file,
+          type: f?.response?.data.fileType ?? f.type,
+          name: f?.response?.data.fileName ?? f.name,
+          size: f?.response?.data.fileSize ?? f.size,
+          tags: f?.response?.data.tags
+        }
+      })
+    }
+
     const handleOk = () => {
       form.submit();
       const values = form.getFieldsValue();
@@ -46,15 +58,7 @@ const SNCreateEditPost = React.forwardRef(
         text: values.content,
         audience: values.audience.toLowerCase(),
         attachments: file
-          ? [
-              {
-                file: file?.response?.data.filePath ?? file.file,
-                type: file?.response?.data.fileType ?? file.type,
-                name: file?.response?.data.fileName ?? file.name,
-                size: file?.response?.data.fileSize ?? file.size,
-                tags: file?.response?.data.tags,
-              },
-            ]
+          ? getFiles(file)
           : [],
         postParent: "",
       };
@@ -94,7 +98,7 @@ const SNCreateEditPost = React.forwardRef(
           </Form.Item>
           <Form.Item label="Attach your photo or video" name="file">
             <SNUpload
-              onUploadSuccess={(value) => setFile(value)}
+              onUploadSuccess={(value) => setFile([...file, value])}
               fileProp={file}
             />
           </Form.Item>

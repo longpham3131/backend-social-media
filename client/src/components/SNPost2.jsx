@@ -210,7 +210,7 @@ const SNPost2 = ({ post }) => {
           </div>
           {/* Image or Video */}
           {hasMedia && !postId ? (
-            <SNImage urlImage={attachments[0]?.file} hasRounded={false} />
+            <SNImage urlImage={attachments[0]?.filePath} hasRounded={false} />
           ) : (
             <></>
           )}

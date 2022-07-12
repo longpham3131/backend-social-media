@@ -3,6 +3,7 @@ const router = express.Router();
 const argon2 = require("argon2");
 const Post = require("../models/Post");
 const Comment = require("../models/comment");
+const Group = require("../models/Group");
 const Like = require("../models/Like");
 const User = require("../models/User");
 const UserNotification = require("../models/UserNotification");
@@ -75,7 +76,7 @@ router.post("/", verifyToken, async (req, res) => {
             tags: e.tags,
           });
           await file.save();
-          return { ...e, id: file._id };
+          return ObjectId(file._id);
         })
       );
     }
@@ -293,6 +294,7 @@ router.get("/", verifyToken, async (req, res) => {
           },
         ],
       })
+      .populate("attachments")
       .populate({
         path: "like",
         populate: { path: "user", select: "username fullName avatar" },
@@ -464,11 +466,33 @@ router.get("/deleteall", verifyToken, async (req, res) => {
     return error500(res);
   }
 });
+
+router.get("/ultimateSearch", verifyToken, async (req, res) => {
+  try {
+    let rs = await SingleFile.aggregate([
+      {
+        $lookup: {
+          from: "post",
+          localField: ""
+        }
+      }
+    ])
+    return res.json({
+      success: true,
+      data: rs,
+    });
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
 async function performComplexTasks(req) {
   const post = new Post({ poster: req.userId });
   await post.save();
   await new Promise((resolve) => setTimeout(resolve, 2000));
 }
+
+
 
 module.exports = router;
 // router.post("/likepost/:id", verifyToken, async (req, res) => {

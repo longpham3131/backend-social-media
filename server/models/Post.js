@@ -49,10 +49,10 @@ const PostSchema = new Schema({
     },
   ],
   share: { type: Number, default: 0 },
-  attachments: {
-    type: Array,
-    default: [],
-  },
+  attachments: [{
+    type: Schema.Types.ObjectId,
+    ref:"SingleFile"
+  }],
   postParent: { type: String, default: "" },
   createAt: {
     type: Date,

@@ -85,7 +85,7 @@ const PostDetail = () => {
                           </video>
                         ) : (
                           <img
-                            src={getUrlImage(att.file)}
+                            src={getUrlImage(att.filePath)}
                             className=" object-cover"
                             alt=""
                           />
