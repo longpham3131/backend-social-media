@@ -201,10 +201,27 @@ router.put("/", verifyToken, async (req, res) => {
       },
     ],
   });
+  let attachFile = post.attachments;
+  if (attachments.length > 0) {
+    attachFile = await Promise.all(
+      attachments.map(async (e) => {
+        const file = new SingleFile({
+          fileName: e.name,
+          filePath: e.file,
+          fileType: e.type,
+          fileSize: e.size, // 0.00
+          user: req.userId,
+          tags: e.tags,
+        });
+        await file.save();
+        return ObjectId(file._id);
+      })
+    );
+  }
   const update = await {
     text,
     audience,
-    attachments,
+    attachments:attachFile,
     updatedAt: date.getDate(),
   };
   Post.findByIdAndUpdate(postId, update)
@@ -505,7 +522,43 @@ router.get("/ultimateSearch", verifyToken, async (req, res) => {
   }
 });
 
-
+router.get("/ultimateSearch", verifyToken, async (req, res) => {
+  try {
+    let rs = await SingleFile.aggregate([
+      { $match: { $text: { $search: "Wallpapers_dxgh6t" } } }
+      ,
+      {
+        $lookup: {
+          from: "posts",
+          let: { "id": "$_id" },
+          pipeline: [
+            { $match: { "$expr": { "$in": ["$$id", "$attachments"] } } },
+            {
+              $lookup: {
+                from: "users",
+                let: { poster: "$poster" },
+                pipeline: [
+                  { $match: { $expr: { $eq: ["$_id", "$$poster"] } } }
+                ],
+                as: "poster"
+              }
+            },
+            { $unwind: '$poster' },
+          ],
+          as: "post_info"
+        }
+      },
+      { $unwind: '$post_info' },
+    ])
+    return res.json({
+      success: true,
+      data: rs,
+    });
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
 async function performComplexTasks(req) {
   const post = new Post({ poster: req.userId });
   await post.save();
