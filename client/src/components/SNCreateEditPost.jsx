@@ -10,7 +10,7 @@ import { useParams } from "react-router";
 import SNUpload from "./SNUpload";
 const SNCreateEditPost = React.forwardRef(
   ({ title, visible, okText, onClose, onSubmit }, ref) => {
-    const [file, setFile] = useState("");
+    const [file, setFile] = useState([]);
     const { groupId } = useParams();
     const [form] = Form.useForm();
     useImperativeHandle(ref, () => ({
@@ -27,7 +27,7 @@ const SNCreateEditPost = React.forwardRef(
         content: "",
         audience: "Public",
       });
-      setFile("");
+      setFile([]);
     };
 
     const setFields = (audience, content, attach) => {
@@ -35,19 +35,19 @@ const SNCreateEditPost = React.forwardRef(
         audience: audience.charAt(0).toUpperCase() + audience.slice(1),
         content,
       });
-      setFile(attach ? attach : "");
+      setFile(attach ? attach : []);
       console.log("attach", attach);
     };
 
     const getFiles = (files) => {
-      return files.map(f => ({
+      return files.map((f) => ({
         file: f?.response?.data.filePath ?? f.file,
         type: f?.response?.data.fileType ?? f.type,
         name: f?.response?.data.fileName ?? f.name,
         size: f?.response?.data.fileSize ?? f.size,
-        tags: f?.response?.data.tags
-      }))
-    }
+        tags: f?.response?.data.tags,
+      }));
+    };
 
     const handleOk = () => {
       form.submit();
@@ -55,12 +55,14 @@ const SNCreateEditPost = React.forwardRef(
       const post = {
         text: values.content,
         audience: values.audience.toLowerCase(),
-        attachments: file
-          ? getFiles(file)
-          : [],
+        attachments: file ? getFiles(file) : [],
         postParent: "",
       };
       onSubmit(post);
+    };
+    const handleRemoveFile = (itemRemove) => {
+      console.log("file remove", itemRemove);
+      setFile(file.filter((f) => f._id !== itemRemove.uid));
     };
     const handleCancel = () => {
       onClose();
@@ -98,6 +100,7 @@ const SNCreateEditPost = React.forwardRef(
             <SNUpload
               onUploadSuccess={(value) => setFile([...file, value])}
               fileProp={file}
+              onRemove={handleRemoveFile}
             />
           </Form.Item>
         </Form>

@@ -87,7 +87,7 @@ const SNPost2 = ({ post }) => {
     await refAddEditPost.current.setFields(
       post.audience,
       post.text,
-      post.attachments[0]
+      post.attachments
     );
     setShowEditPost(true);
     setSelectedPostId(post._id);

@@ -1,21 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { Upload, message } from "antd";
+import { Upload, message, Button } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { getUrlImage } from "@/util/index";
 import "@tensorflow/tfjs-backend-cpu";
 //import "@tensorflow/tfjs-backend-webgl";
 import * as cocoSsd from "@tensorflow-models/coco-ssd";
 import axios from "axios";
+import { UploadOutlined } from "@ant-design/icons";
+import { getUrlVideo } from "util";
 export default function SNUpload({
   isImagePost = true,
   onUploadSuccess,
   fileProp,
+  onRemove,
 }) {
-
   const [loading, setLoading] = useState(false);
   // const [tags, setTags] = useState([])
   const [defaultFileList, setDefaultFileList] = useState([]);
-  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    setDefaultFileList(
+      fileProp.map((f, index) => ({
+        uid: f._id,
+        name: f.fileName,
+        status: "done",
+        url:
+          f.fileType === "video/mp4"
+            ? getUrlVideo(f.filePath)
+            : getUrlImage(f.filePath),
+        thumbUrl:
+          f.fileType === "video/mp4"
+            ? getUrlVideo(f.filePath)
+            : getUrlImage(f.filePath),
+      }))
+    );
+  }, [fileProp]);
   const readImage = (file) => {
     return new Promise((rs, rj) => {
       const fileReader = new FileReader();
@@ -28,7 +47,7 @@ export default function SNUpload({
   const detectObjectsOnImage = async (imageElement, imgSize) => {
     const model = await cocoSsd.load({});
     const predictions = await model.detect(imageElement, 6);
-    const tags = predictions.map(prediction => prediction.class)
+    const tags = predictions.map((prediction) => prediction.class);
     return [...new Set(tags)];
   };
 
@@ -41,8 +60,7 @@ export default function SNUpload({
     if (!isLt2M) {
       message.info("Image must smaller than 2MB!");
     }
-    if (!isJpgOrPng || !isLt2M)
-      return isJpgOrPng && isLt2M;
+    if (!isJpgOrPng || !isLt2M) return isJpgOrPng && isLt2M;
 
     // const imgData = await readImage(file);
     // const imageElement = document.createElement("img");
@@ -57,12 +75,10 @@ export default function SNUpload({
     //   setTags(tags)
     //   console.log('tags', tags)
     // };
-    return true
-
+    return true;
   };
   function imageInfo(src) {
     return new Promise((resolve, reject) => {
-
       const img = document.createElement("img");
       img.onload = (imageEvent) => {
         resolve(img);
@@ -70,40 +86,32 @@ export default function SNUpload({
       img.onerror = reject;
       // tslint:disable-next-line:no-non-null-assertion
       img.src = src;
-
     });
   }
-
-
   const getTags = async (file) => {
     const imgData = await readImage(file);
-    let tags = []
-    const imageElement = await imageInfo(imgData)
+    let tags = [];
+    const imageElement = await imageInfo(imgData);
     tags = await detectObjectsOnImage(imageElement, {
       width: imageElement.width,
       height: imageElement.height,
     });
-    return tags
-  }
+    return tags;
+  };
 
-  const uploadImage = async options => {
+  const uploadImage = async (options) => {
     const { onSuccess, onError, file, onProgress } = options;
-    let tags = await getTags(file)
-    console.log('tag dau', tags)
+    console.log("file upload", file);
+    let tags = await getTags(file);
     const fmData = new FormData();
     const config = {
       headers: { "content-type": "multipart/form-data" },
-      onUploadProgress: event => {
-        const percent = Math.floor((event.loaded / event.total) * 100);
-        setProgress(percent);
-        if (percent === 100) {
-          setTimeout(() => setProgress(0), 1000);
-        }
+      onUploadProgress: (event) => {
         onProgress({ percent: (event.loaded / event.total) * 100 });
-      }
+      },
     };
     fmData.append("file", file);
-    fmData.append("tags", tags)
+    fmData.append("tags", tags);
     try {
       const res = await axios.post(
         "http://localhost:4000/api/upload/singleFile",
@@ -113,55 +121,53 @@ export default function SNUpload({
       onSuccess(res.data);
       console.log("server res: ", res);
     } catch (err) {
-      console.log("Eroor: ", err, 'file', file);
+      console.log("Eroor: ", err, "file", file);
       const error = new Error("Some error");
       onError({ err });
     }
   };
 
-  const handleChangeAvatar = ({ file }) => {
-    setLoading(true);
-    if (file.status === "done") {
-      // setAvatar(file?.response?.data?.filePath);
-      console.log('alo', file)
-      onUploadSuccess(file);
-      setLoading(false);
-    } else if (file.status === "error") {
-      setLoading(false);
-      message.error("Upload fail");
-    }
+  const handleChangeAvatar = ({ fileList }) => {
+    console.log(fileList);
+    // setLoading(true);
+    // if (file.status === "done") {
+    //   // setAvatar(file?.response?.data?.filePath);
+    //   console.log("alo", file);
+    //   onUploadSuccess(file);
+    //   setLoading(false);
+    // } else if (file.status === "error") {
+    //   setLoading(false);
+    //   message.error("Upload fail");
+    // }
   };
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
-
 
   return (
     <Upload
-      listType="picture-card"
       className="avatar-uploader"
-      showUploadList={false}
+      listType="picture"
+      fileList={defaultFileList}
       // action="https://uploadfile0510.herokuapp.com/api/upload/singleFile"
       customRequest={uploadImage}
       beforeUpload={beforeUpload}
       onChange={handleChangeAvatar}
+      onRemove={onRemove}
     >
-      {!loading && fileProp ? (
-        <img
-          src={
-            isImagePost
-              ? getUrlImage(fileProp.filePath ?? fileProp[0].response.data.filePath)
-              : getUrlImage(fileProp)
-          }
-          alt="avatar"
-          className="w-full h-full"
-        />
-      ) : (
-        uploadButton
-      )}
+      <Button icon={<UploadOutlined />}>Upload</Button>
     </Upload>
   );
 }
+// {!loading && fileProp ? (
+//   <img
+//     src={
+//       isImagePost
+//         ? getUrlImage(
+//             fileProp.filePath ?? fileProp[0].response.data.filePath
+//           )
+//         : getUrlImage(fileProp)
+//     }
+//     alt="avatar"
+//     className="w-full h-full"
+//   />
+// ) : (
+//   uploadButton
+// )}
