@@ -153,7 +153,7 @@ export default function SNUpload({
         <img
           src={
             isImagePost
-              ? getUrlImage(fileProp.filePath ?? fileProp.response.data.filePath)
+              ? getUrlImage(fileProp.filePath ?? fileProp[0].response.data.filePath)
               : getUrlImage(fileProp)
           }
           alt="avatar"
