@@ -100,12 +100,15 @@ export default function SNUpload({
   };
 
   const uploadImage = async (options) => {
-    const { onSuccess, onError, file } = options;
+    const { onSuccess, onProgress, onError, file } = options;
     // let tags = await getTags(file);
     let tags = [];
     const fmData = new FormData();
     const config = {
       headers: { "content-type": "multipart/form-data" },
+      onUploadProgress: (event) => {
+        onProgress({ percent: (event.loaded / event.total) * 100 });
+      },
     };
     fmData.append("file", file);
     fmData.append("tags", tags);

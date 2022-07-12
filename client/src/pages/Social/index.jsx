@@ -79,6 +79,7 @@ const Social = () => {
                 <Route path="/message" element={<Message />} />
               </Routes>
             </div>
+            <PostDetail />
           </div>
         </Content>
       </Layout>

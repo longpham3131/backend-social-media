@@ -6,6 +6,7 @@ const SNImage = ({
   onClick,
   isHiddenOverlay = false,
   hasRounded = true,
+  quantityImageMore,
 }) => {
   return (
     <div
@@ -29,6 +30,13 @@ const SNImage = ({
           })}
         >
           <p>See detail</p>
+        </div>
+        <div
+          className={classNames("sn-image-seemore", {
+            "hidden-seemore": !quantityImageMore,
+          })}
+        >
+          <p>+{quantityImageMore}</p>
         </div>
       </div>
     </div>

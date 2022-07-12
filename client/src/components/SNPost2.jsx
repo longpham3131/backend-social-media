@@ -33,8 +33,9 @@ import SNComment from "./SNComment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEarthAmericas, faLock } from "@fortawesome/free-solid-svg-icons";
 import SNCreateEditPost from "./SNCreateEditPost";
+import SNPostAttachments from "./SNPostAttachments";
 const { confirm } = Modal;
-const SNPost2 = ({ post }) => {
+const SNPost2 = ({ post, isPostDetail = false, onSuccessAct }) => {
   const {
     attachments,
     comments,
@@ -49,6 +50,7 @@ const SNPost2 = ({ post }) => {
     _id,
     createAt,
     username,
+
     audience,
     groupId,
   } = post;
@@ -61,7 +63,6 @@ const SNPost2 = ({ post }) => {
   const dispatch = useDispatch();
   const [showEditPost, setShowEditPost] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState("");
-  const { postId } = useParams();
   const refAddEditPost = useRef(null);
   const handleDeletePost = async (postId) => {
     confirm({
@@ -72,7 +73,7 @@ const SNPost2 = ({ post }) => {
       onOk() {
         try {
           postAPI.deletePost(postId);
-          dispatch(deletePost(postId));
+          isPostDetail ? onSuccessAct() : dispatch(deletePost(postId));
           message.success("Success!");
         } catch {
           message.error("Failed!");
@@ -96,7 +97,7 @@ const SNPost2 = ({ post }) => {
   const handleLikePost = async (postId) => {
     try {
       const res = await postAPI.likePost(postId);
-      dispatch(likePost(res.data));
+      isPostDetail ? onSuccessAct() : dispatch(likePost(res.data));
     } catch {
       message.error("Failed");
     }
@@ -106,7 +107,7 @@ const SNPost2 = ({ post }) => {
     console.log("success", values);
     try {
       const res = await postAPI.editPost(values);
-      dispatch(editPost(res.data));
+      isPostDetail ? onSuccessAct() : dispatch(editPost(res.data));
       message.success("Success!");
       refAddEditPost.current.resetFields();
       setShowEditPost(false);
@@ -209,15 +210,20 @@ const SNPost2 = ({ post }) => {
             <p className="sn-post-content-text">{text}</p>
           </div>
           {/* Image or Video */}
-          {hasMedia && !postId ? (
-            <SNImage urlImage={attachments[0]?.filePath} hasRounded={false} />
+          {hasMedia && !isPostDetail ? (
+            // <SNImage urlImage={attachments[0]?.filePath} hasRounded={false} />
+            <SNPostAttachments attachments={attachments} />
           ) : (
             <></>
           )}
         </div>
         {/* Reaction */}
         <div className="pl-[28px] ">
-          <div className="sn-post-react">
+          <div
+            className={classNames("sn-post-react", {
+              "border-color-divider border-t-[1px]": attachments.length < 1,
+            })}
+          >
             <div className="flex gap-[12px]">
               <p className="sn-post-react-count">{like.length} Likes </p>
               <p className="sn-post-react-count">{comments.length} Comments</p>
@@ -236,7 +242,8 @@ const SNPost2 = ({ post }) => {
         <SNComment
           postId={_id}
           comments={comments}
-          isShowAllComment={postId ? true : false}
+          isPostDetail={isPostDetail}
+          onSuccessAct={onSuccessAct}
         />
       </div>
 

@@ -92,6 +92,7 @@ module.exports = {
         "color-divider": "var(--color-divider)",
         "color-box-background-alt": "var(--color-box-background-alt)",
         "color-overlay": "rgba(21, 21, 31, 0.96)",
+        "color-seemore": "rgba(35, 210, 226, 0.9)",
         "rgba-1": "var(--color-rgba-1)",
         "gray-0": "var(--color-gray-0)",
         "gray-1": "var(--color-gray-1)",

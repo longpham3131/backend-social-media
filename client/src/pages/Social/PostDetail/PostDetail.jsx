@@ -1,43 +1,34 @@
-import { Button, Card, Carousel, Image, message, Modal } from "antd";
-import userAPI from "@/apis/userAPI";
-import React, { useState, useRef, useEffect, useContext } from "react";
+import { message, Modal } from "antd";
+import React, { useState, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import postAPI from "@/apis/postAPI";
-import emptyIcon from "@/assets/images/emp.png";
-import {
-  setPostList,
-  editPost,
-  deletePost,
-  createComment,
-  likePost,
-} from "@/store/postSlice";
-import { setProfile } from "@/store/profileSlice";
+import { setPostList } from "@/store/postSlice";
 import { getUrlImage } from "@/util/index";
 import "./PostDetail.scss";
-import SNPost from "@/components/SNPost";
-import { ExclamationCircleOutlined, WarningOutlined } from "@ant-design/icons";
-import CreateEditPost from "@/components/SNCreateEditPost";
-import { editProfile } from "@/store/profileSlice";
+import { WarningOutlined } from "@ant-design/icons";
 import { SocketContext } from "@/service/socket/SocketContext";
-import SNWidgetBoxItem from "@/components/SNWidgetBoxItem";
 import SNPost2 from "@/components/SNPost2";
 import classNames from "classnames";
 import { getUrlVideo } from "util";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from "react-responsive-carousel";
+import { editModalPost } from "@/store/modalPostSlice";
 const { confirm } = Modal;
 
 const PostDetail = () => {
   const navigate = useNavigate();
   const myProfile = useSelector((state) => state.profile);
+  const modalPost = useSelector((state) => state.modalPost);
   const dispatch = useDispatch();
   const { postId } = useParams();
-  const post = useSelector((state) => state.posts[0]);
+  const [post, setPost] = useState();
   const [hasAtt, setHasAtt] = useState(false);
   const socket = useContext(SocketContext);
 
   useEffect(() => {
     fetchPostListByProfile();
-  }, [postId]);
+  }, [modalPost.postId]);
 
   useEffect(() => {
     socket.on("notification", (msg) => {
@@ -48,16 +39,16 @@ const PostDetail = () => {
   }, []);
 
   const fetchPostListByProfile = async () => {
-    console.log(postId);
+    console.log("fetch post detail");
     try {
       const res = await postAPI.getPostList({
         limitPost: 10,
         index: 0,
         profile: 0,
-        postId: postId,
+        postId: modalPost.postId,
       });
       setHasAtt(res.data[0].attachments.length > 0 ? true : false);
-      await dispatch(setPostList(res.data));
+      setPost(res.data[0]);
     } catch (error) {
       console.log(error);
       message.error("Get posts failed!");
@@ -66,53 +57,69 @@ const PostDetail = () => {
 
   return (
     <>
-      {post ? (
-        <div className="flex items-center justify-center h-full">
-          <div
-            className={classNames("bg-white rounded-xl h-[80%]", {
-              " grid grid-cols-3": hasAtt,
-            })}
-          >
-            {hasAtt && (
-              <div className="bg-black col-span-2 rounded-tl-xl rounded-bl-xl">
-                <Carousel arrows={true}>
-                  {post.attachments.map((att, index) => (
-                    <div key={index}>
-                      <div className="flex items-center justify-center h-full w-full">
-                        {att.type === "video/mp4" ? (
-                          <video controls key={index}>
-                            <source src={getUrlVideo(att.file)} />
-                          </video>
-                        ) : (
-                          <img
-                            src={getUrlImage(att.filePath)}
-                            className=" object-cover"
-                            alt=""
-                          />
-                        )}
+      <Modal
+        wrapClassName="sn-post-detail"
+        centered
+        width="80vw"
+        title="Post detail"
+        visible={modalPost.show}
+        footer={null}
+        onCancel={() => {
+          dispatch(editModalPost({ show: false }));
+        }}
+      >
+        {post ? (
+          <div className="flex items-center justify-center h-full">
+            <div
+              className={classNames("bg-white rounded-xl", {
+                " grid grid-cols-3": hasAtt,
+              })}
+            >
+              {hasAtt && (
+                <div className="bg-black col-span-2 ">
+                  <Carousel showThumbs={false}>
+                    {post.attachments.map((att, index) => (
+                      <div className="h-full" key={index}>
+                        <div className="flex items-center justify-center h-full w-full">
+                          {att.type === "video/mp4" ? (
+                            <video controls key={index}>
+                              <source src={getUrlVideo(att.file)} />
+                            </video>
+                          ) : (
+                            <img
+                              src={getUrlImage(att.filePath)}
+                              className=" object-cover"
+                              alt=""
+                            />
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </Carousel>
+                    ))}
+                  </Carousel>
+                </div>
+              )}
+              <div>
+                <SNPost2
+                  post={post}
+                  isPostDetail={true}
+                  onSuccessAct={fetchPostListByProfile}
+                />
+                {/* <SNWidgetBoxItem srcAvatar={post.poster.avatar} name={post.poster.fullName} description={getAudience(post.audience) + {" "} + } /> */}
               </div>
-            )}
-            <div>
-              <SNPost2 post={post} />
-              {/* <SNWidgetBoxItem srcAvatar={post.poster.avatar} name={post.poster.fullName} description={getAudience(post.audience) + {" "} + } /> */}
             </div>
           </div>
-        </div>
-      ) : (
-        <div className="flex justify-center items-center flex-col mt-6">
-          <WarningOutlined className="WarningOutlined" />
-          <div className="flex flex-row items-end">
-            <p className="mr-2 text-3xl">No posts found </p>
-            <a className="mr-2 text-3xl" href="/">
-              Go back to HomePage
-            </a>
+        ) : (
+          <div className="flex justify-center items-center flex-col mt-6">
+            <WarningOutlined className="WarningOutlined" />
+            <div className="flex flex-row items-end">
+              <p className="mr-2 text-3xl">No posts found </p>
+              <a className="mr-2 text-3xl" href="/">
+                Go back to HomePage
+              </a>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
     </>
   );
 };

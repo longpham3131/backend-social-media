@@ -19,6 +19,15 @@
       @apply hidden;
     }
   }
+  &-seemore {
+    @apply h-full flex justify-center items-center translate-y-[0%] bg-color-seemore transition-all duration-500 cursor-pointer;
+    p {
+      @apply text-white font-bold text-[1rem];
+    }
+    &.hidden-seemore {
+      @apply hidden;
+    }
+  }
 
   &:hover {
     .sn-image-overlay {
