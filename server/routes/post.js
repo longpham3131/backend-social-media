@@ -470,12 +470,30 @@ router.get("/deleteall", verifyToken, async (req, res) => {
 router.get("/ultimateSearch", verifyToken, async (req, res) => {
   try {
     let rs = await SingleFile.aggregate([
+      { $match: { $text: { $search: "Wallpapers_dxgh6t" } } }
+      ,
       {
         $lookup: {
-          from: "post",
-          localField: ""
+          from: "posts",
+          let: { "id": "$_id" },
+          pipeline: [
+            { $match: { "$expr": { "$in": ["$$id", "$attachments"] } } },
+            {
+              $lookup: {
+                from: "users",
+                let: { poster: "$poster" },
+                pipeline: [
+                  { $match: { $expr: { $eq: ["$_id", "$$poster"] } } }
+                ],
+                as: "poster"
+              }
+            },
+            { $unwind: '$poster' },
+          ],
+          as: "post_info"
         }
-      }
+      },
+      { $unwind: '$post_info' },
     ])
     return res.json({
       success: true,
@@ -486,6 +504,8 @@ router.get("/ultimateSearch", verifyToken, async (req, res) => {
     return error500(res);
   }
 });
+
+
 async function performComplexTasks(req) {
   const post = new Post({ poster: req.userId });
   await post.save();

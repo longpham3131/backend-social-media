@@ -46,5 +46,5 @@ const singleFileSchema = new Schema(
   },
   { timestamps: true }
 );
-
+singleFileSchema.index({ filePath: "text"  })
 module.exports = mongoose.model("SingleFile", singleFileSchema);
