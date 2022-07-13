@@ -13,7 +13,7 @@ const SingleFile = require("../models/SingleFile");
 const { fileSizeFormatter } = require("../controllers/upload");
 const mongoose = require("mongoose");
 const { ObjectId } = require("mongodb");
-
+const shortid = require('shortid');
 //GET ID POST BY ID IMAGE
 router.get("/getPostByIdImage/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
@@ -62,13 +62,14 @@ router.post("/", verifyToken, async (req, res) => {
   req.io.sockets.emit("post", "post noti");
   if (!text && attachments.length === 0)
     return error400(res, "Nội dung bài đăng không được trống");
+  console.log('attachments', attachments)
   try {
     let attachFile = [];
     if (attachments.length > 0) {
       attachFile = await Promise.all(
         attachments.map(async (e) => {
           const file = new SingleFile({
-            fileName: e.name,
+            fileName: e?.name ?? shortid.generate(),
             filePath: e.file,
             fileType: e.type,
             fileSize: e.size, // 0.00
@@ -208,8 +209,9 @@ router.put("/", verifyToken, async (req, res) => {
     ],
   });
   let attachFile = post.attachments;
+  console.log('post.attachments', post.attachments)
   for (const a of post.attachments) {
-    await SingleFile.findByIdAndDelete(a);
+    await SingleFile.findByIdAndDelete(a.toString());
   }
   if (attachments.length > 0) {
     attachFile = await Promise.all(

@@ -32,6 +32,7 @@
     "mongoose-erd": "^1.0.1",
     "multer": "^1.4.3",
     "multer-gridfs-storage": "^5.0.1",
+    "shortid": "^2.2.16",
     "socket.io": "^4.2.0",
     "socket.io-client": "^4.2.0",
     "xmlhttprequest": "^1.8.0"
