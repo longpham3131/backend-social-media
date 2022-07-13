@@ -49,41 +49,35 @@ const Notification = () => {
     const myProfile = await userAPI.getMyProfile();
     dispatch(setProfile(myProfile.data.data));
   };
-  // useEffect(() => {
-  //   socket.on("notification", (msg) => {
-  //     console.log("messs-notify", msg.data);
-  //     fetchNoti();
-  //     // Không hiện thông báo khi dislike (-2)
-  //     if (msg.data.type !== -1 && msg.data.type !== -4) {
-  //       notification.info({
-  //         message: `Notification`,
-  //         description: (
-  //           <div
-  //             onClick={() => {
-  //               msg.data.type != 10
-  //                 ? navigate(`/post/${msg.data.postId}`)
-  //                 : navigate(`/profile/${msg.data.fromUser._id}`);
-  //             }}
-  //           >
-  //             <SNAvatar
-  //               src={msg.data.fromUser.avatar}
-  //               className="mr-2"
-  //               size={50}
-  //               // fullName={msg.data.fromUser.fullName}
-  //             />
-  //             <span>{getFirstWord(msg.data.fromUser.fullName)} </span>
-  //             {descriptionNoti(msg.data.type)}
-  //           </div>
-  //         ),
-  //         placement: "bottomLeft",
-  //       });
-  //       // fetch lại data thông tin người dùng khi được kết bạn
-  //       if (msg.data.type === 10) {
-  //         fetchInfoUser();
-  //       }
-  //     }
-  //   });
-  // }, []);
+  useEffect(() => {
+    socket.on("notification", (msg) => {
+      fetchNoti();
+      // noti socket io : type = 0: user, type = 1: post , type = 2: group
+      notification.info({
+        message: `Notification`,
+        className: "cursor-pointer",
+        description: (
+          <div
+            className="flex gap-[10px] items-center cursor-pointer mt-[15px]"
+            onClick={() => {
+              msg.type === 0
+                ? navigate(`/profile/${msg.fromUser._id}`)
+                : msg.type === 1
+                ? dispatch(setModalPost({ postId: msg.postId, show: true }))
+                : navigate(`/groups/${msg.groupId}`);
+            }}
+          >
+            <SNAvatar src={msg.fromUser.avatar} className="mr-2" size={50} />
+            <p className="font-bold">
+              {msg.fromUser.fullName}{" "}
+              <span className="font-medium"> {msg.mess}</span>{" "}
+            </p>
+          </div>
+        ),
+        placement: "bottomLeft",
+      });
+    });
+  }, []);
 
   const descriptionNoti = (type) => {
     switch (type) {
@@ -98,9 +92,9 @@ const Notification = () => {
       case 5:
         return "replied to your comment.";
       case 6:
-        return "has invited you to the group";
+        return "has invited you to the group.";
       case 7:
-        return "approved you to be a member of the group";
+        return "approved you to be a member of the group.";
       default:
         return "accepted your friend request.";
     }

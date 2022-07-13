@@ -9,3 +9,9 @@ div {
     }
   }
 }
+
+.ant-notification-notice-content
+  .ant-notification-notice-with-icon
+  .ant-notification-notice-description {
+  @apply ml-0;
+}

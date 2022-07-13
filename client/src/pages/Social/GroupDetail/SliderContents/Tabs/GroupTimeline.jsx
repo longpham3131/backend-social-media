@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 
-import { Badge } from "antd";
+import { Badge, Button } from "antd";
 
 import SNWidgetBoxItem from "@/components/SNWidgetBoxItem";
 import { useParams } from "react-router";
@@ -14,7 +14,8 @@ import { Link } from "react-router-dom";
 import { isEmpty } from "lodash";
 import groupAPI from "@/apis/groupAPI";
 import SNImage from "@/components/SNImage";
-const GroupTimeline = () => {
+import classNames from "classnames";
+const GroupTimeline = ({ changeTab }) => {
   const group = useSelector((state) => state.group);
   const [images, setImages] = useState([]);
   console.log("emty", isEmpty(group));
@@ -92,8 +93,23 @@ const GroupTimeline = () => {
             images.length ? (
               <div className="grid grid-cols-4 gap-[2px]">
                 {images.map((item, index) => (
-                  <SNImage media={item} key={index} isHiddenOverlay={true} />
+                  <div
+                    key={index}
+                    className={classNames({ hidden: index > 11 })}
+                  >
+                    <SNImage media={item} key={index} isHiddenOverlay={true} />
+                  </div>
                 ))}
+                <Button
+                  className={classNames("col-span-4 mt-[15px]", {
+                    hidden: images.length <= 12,
+                  })}
+                  type="primary"
+                  shape="round"
+                  onClick={() => changeTab("2")}
+                >
+                  See more
+                </Button>
               </div>
             ) : (
               <p className="sn-no-result">No photos found</p>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Tabs } from "antd";
 import {
   UserOutlined,
@@ -21,6 +21,7 @@ const { TabPane } = Tabs;
 const SliderContents = ({ user }) => {
   const { userId } = useParams();
   const myProfile = useSelector((state) => state.profile);
+  const [activeKey, setActiveKey] = useState("2");
   const categories = [
     {
       icon: <UserOutlined />,
@@ -32,7 +33,7 @@ const SliderContents = ({ user }) => {
       icon: <OneToOneOutlined />,
       name: "Timeline",
       isDisable: true,
-      ele: <Timeline user={user} />,
+      ele: <Timeline user={user} changeTab={(value) => setActiveKey(value)} />,
     },
     {
       icon: <SmileOutlined />,
@@ -62,7 +63,7 @@ const SliderContents = ({ user }) => {
   ];
   return (
     <div className="mt-[16px] sn-slider-contents">
-      <Tabs defaultActiveKey="2">
+      <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
         {categories.map((item, index) => {
           return (
             item.isDisable && (

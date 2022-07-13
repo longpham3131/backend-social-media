@@ -28,17 +28,19 @@ const SearchPage = () => {
   );
 
   useEffect(() => {
-    console.log('searchKey', searchKey)
-    fetchDataSearch(searchKey)
-  }, [searchKey])
+    console.log("searchKey", searchKey);
+    fetchDataSearch(searchKey);
+  }, [searchKey]);
 
   const fetchDataSearch = async (searchKey) => {
     try {
       setLoading(true);
       const res = await userAPI.getSearch2({ searchKey });
-      console.log('res', res.data.data)
-      const filterRes = res.data.data.users.filter((item) => item._id !== myProfile._id);
-      setSearchResultGroup(res.data.data.groups)
+      console.log("res", res.data.data);
+      const filterRes = res.data.data.users.filter(
+        (item) => item._id !== myProfile._id
+      );
+      setSearchResultGroup(res.data.data.groups);
       setSearchResult(filterRes);
     } catch {
       message.error("Lỗi tìm kiếm người dùng");
@@ -48,13 +50,16 @@ const SearchPage = () => {
   };
 
   return (
-    <div className="flex flex-col p-[5rem]">
+    <div className="flex flex-col ">
       <p className="text-color-text-alt text-[0.75rem] font-semibold uppercase">
         Browse {searchKey}
       </p>
       <div className="col-span-4">
         <p className="mt-[8px] text-color-text text-[1.625rem] font-bold">
-          MEMBERS+{ }
+          MEMBERS{" "}
+          <span className=" text-color-primary-dark text-[1.625rem] font-bold">
+            {searchResult.length}
+          </span>
         </p>
         <div className="grid grid-cols-4 gap-[16px] mt-[32px]">
           {searchResult.length > 0 ? (

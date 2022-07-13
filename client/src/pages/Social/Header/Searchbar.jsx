@@ -1,7 +1,7 @@
 import { Input, Popover } from "antd";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { SearchOutlined } from "@ant-design/icons";
 import { debounce } from "lodash";
 import userAPI from "@/apis/userAPI";
@@ -11,7 +11,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEarthAmericas, faLock } from "@fortawesome/free-solid-svg-icons";
 const Searchbar = () => {
   let navigate = useNavigate();
-  const [listResult, setListResult] = useState([])
+  const pathName = useLocation();
+  const [listResult, setListResult] = useState([]);
   const [isShowBoxResult, setIsShowBoxResult] = useState(false);
   const debounceSearch = useCallback(
     debounce(async (searchKey) => {
@@ -20,28 +21,38 @@ const Searchbar = () => {
         return;
       }
       setIsShowBoxResult(true);
-      let rs = await userAPI.getSearch2({ page: 1, pageSize: 3, searchKey })
-      setListResult(rs.data.data)
+      let rs = await userAPI.getSearch2({ page: 1, pageSize: 3, searchKey });
+      setListResult(rs.data.data);
     }, 500),
     []
   );
 
+  useEffect(() => {
+    setIsShowBoxResult(false);
+  }, [pathName]);
+
   const redirect = (e) => {
-    if (e.keyCode === 13)
-      navigate("/search/" + e.target.value)
-  }
+    if (e.keyCode === 13) navigate("/search/" + e.target.value);
+  };
   return (
     <div className="header-searchbar">
       <Popover
         placement="bottom"
+        trigger="click"
         overlayClassName="header-searchbar-box"
+        onVisibleChange={(visble) => {
+          if (!visble) {
+            setIsShowBoxResult(visble);
+            console.log("hidden");
+          }
+        }}
         content={
           <div className="header-searchbar-box-result">
             <div className="header-searchbar-box-result-category">
-              <p className="header-searchbar-box-result-category-name">
+              <div className="header-searchbar-box-result-category-name">
                 Members
-                {
-                  listResult?.users?.length > 0 && listResult.users.map((u, index) => (
+                {listResult?.users?.length > 0 &&
+                  listResult.users.map((u, index) => (
                     <Link key={index} to={`/profile/${u._id}`}>
                       <SNWidgetBoxItem
                         srcAvatar={u.avatar}
@@ -54,17 +65,20 @@ const Searchbar = () => {
                         description={"@" + u.username}
                       />
                     </Link>
-                  ))
-                }
-              </p>
+                  ))}
+              </div>
               {/* kết quả không tìm thấy */}
-              {(!listResult || !listResult.user?.length === 0) && <p className="header-searchbar-box-no-result">NO RESULTS FOUND</p>}
+              {(!listResult || !listResult.user?.length === 0) && (
+                <p className="header-searchbar-box-no-result">
+                  NO RESULTS FOUND
+                </p>
+              )}
             </div>
             <div className="header-searchbar-box-result-category">
-              <p className="header-searchbar-box-result-category-name">
+              <div className="header-searchbar-box-result-category-name">
                 Groups
-                {
-                  listResult?.groups?.length > 0 && listResult.groups.map((g, index) => (
+                {listResult?.groups?.length > 0 &&
+                  listResult.groups.map((g, index) => (
                     <Link key={index} to={`/groups/${g._id}`}>
                       <SNWidgetBoxItem
                         srcAvatar={g.avatar}
@@ -85,12 +99,14 @@ const Searchbar = () => {
                         }
                       />
                     </Link>
-                  ))
-                }
-
-              </p>
+                  ))}
+              </div>
               {/* kết quả không tìm thấy */}
-              {(!listResult || !listResult.group?.length === 0) && <p className="header-searchbar-box-no-result">NO RESULTS FOUND</p>}
+              {(!listResult || !listResult.group?.length === 0) && (
+                <p className="header-searchbar-box-no-result">
+                  NO RESULTS FOUND
+                </p>
+              )}
             </div>
           </div>
         }

@@ -41,14 +41,6 @@ const PostDetail = () => {
     }
   }, [modalPost.postId && modalPost.mediaSelectedId]);
 
-  useEffect(() => {
-    socket.on("notification", (msg) => {
-      if (msg.data.type === 1 || msg.data.type === 2) {
-        fetchPostListByProfile();
-      }
-    });
-  }, []);
-
   const fetchPostListByProfile = async () => {
     console.log("fetch post detail");
     try {

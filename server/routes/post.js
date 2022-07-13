@@ -13,7 +13,7 @@ const SingleFile = require("../models/SingleFile");
 const { fileSizeFormatter } = require("../controllers/upload");
 const mongoose = require("mongoose");
 const { ObjectId } = require("mongodb");
-const shortid = require('shortid');
+const shortid = require("shortid");
 //GET ID POST BY ID IMAGE
 router.get("/getPostByIdImage/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
@@ -62,7 +62,7 @@ router.post("/", verifyToken, async (req, res) => {
   req.io.sockets.emit("post", "post noti");
   if (!text && attachments.length === 0)
     return error400(res, "Nội dung bài đăng không được trống");
-  console.log('attachments', attachments)
+  console.log("attachments", attachments);
   try {
     let attachFile = [];
     if (attachments.length > 0) {
@@ -176,7 +176,7 @@ router.delete("/delete/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
     let post = await Post.findById(id);
     for (const a of post.attachments) {
-      await SingleFile.findByIdAndDelete(a.toString())
+      await SingleFile.findByIdAndDelete(a.toString());
     }
     let rs = await Post.findByIdAndDelete(id);
     return res.json(rs);
@@ -209,7 +209,7 @@ router.put("/", verifyToken, async (req, res) => {
     ],
   });
   let attachFile = post.attachments;
-  console.log('post.attachments', post.attachments)
+  console.log("post.attachments", post.attachments);
   for (const a of post.attachments) {
     await SingleFile.findByIdAndDelete(a.toString());
   }
@@ -439,13 +439,7 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
         fromUser: ObjectId(req.userId),
         type: 1,
       });
-      io.sockets.to(`user_${post.poster.toString()}`).emit("notification", {
-        data: {
-          postId: post._id,
-          fromUser: userForNoti,
-          type: -1,
-        },
-      });
+
       return res.json({
         like: false,
         postId: post._id,
@@ -468,12 +462,10 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
         });
         await noti.save();
         io.sockets.to(`user_${post.poster.toString()}`).emit("notification", {
-          data: {
-            user: post.poster,
-            type: 1,
-            postId: post._id,
-            fromUser: userForNoti,
-          },
+          postId: post._id,
+          fromUser: userForNoti,
+          type: 1,
+          mess: "liked your post",
         });
       }
 
@@ -504,8 +496,8 @@ router.get("/deleteall", verifyToken, async (req, res) => {
 router.get("/ultimateSearch/:keySearch", verifyToken, async (req, res) => {
   try {
     const { keySearch } = req.params;
-    let rg = new RegExp(keySearch, 'i')
-    let public = new RegExp('public', 'i')
+    let rg = new RegExp(keySearch, "i");
+    let public = new RegExp("public", "i");
     let rs = await SingleFile.aggregate([
       { $match: { tags: { $in: [rg] } } },
       {
@@ -517,23 +509,25 @@ router.get("/ultimateSearch/:keySearch", verifyToken, async (req, res) => {
               $match: {
                 $expr: {
                   $and: [
-                    { $in: ["$$id", "$attachments"] }, {
+                    { $in: ["$$id", "$attachments"] },
+                    {
                       $or: [
-                        { $eq: [{ $getField: "audience" }, 'public'] },
-                        { $eq: [{ $getField: "audience" }, 'group public'] },
-                      ]
-                    }]
-                }
-              }
+                        { $eq: [{ $getField: "audience" }, "public"] },
+                        { $eq: [{ $getField: "audience" }, "group public"] },
+                      ],
+                    },
+                  ],
+                },
+              },
             },
-            { $project: { "_id": 1 } },
+            { $project: { _id: 1 } },
           ],
           as: "post_info",
         },
       },
-      { $unwind: '$post_info' },
+      { $unwind: "$post_info" },
       // { $limit: 1 }
-    ])
+    ]);
     return res.json({
       success: true,
       data: rs,
@@ -546,8 +540,8 @@ router.get("/ultimateSearch/:keySearch", verifyToken, async (req, res) => {
 router.get("/testSearch/:keySearch", verifyToken, async (req, res) => {
   try {
     const { keySearch } = req.params;
-    let rg = new RegExp(keySearch, 'i')
-    let public = new RegExp('public', 'i')
+    let rg = new RegExp(keySearch, "i");
+    let public = new RegExp("public", "i");
     let rs = await SingleFile.aggregate([
       { $match: { tags: { $in: [rg] } } },
       {
@@ -559,14 +553,16 @@ router.get("/testSearch/:keySearch", verifyToken, async (req, res) => {
               $match: {
                 $expr: {
                   $and: [
-                    { $in: ["$$id", "$attachments"] }, {
+                    { $in: ["$$id", "$attachments"] },
+                    {
                       $or: [
-                        { $eq: [{ $getField: "audience" }, 'public'] },
-                        { $eq: [{ $getField: "audience" }, 'group public'] },
-                      ]
-                    }]
-                }
-              }
+                        { $eq: [{ $getField: "audience" }, "public"] },
+                        { $eq: [{ $getField: "audience" }, "group public"] },
+                      ],
+                    },
+                  ],
+                },
+              },
             },
             {
               $lookup: {
@@ -584,10 +580,10 @@ router.get("/testSearch/:keySearch", verifyToken, async (req, res) => {
           as: "post_info",
         },
       },
-      { $unwind: '$post_info' },
+      { $unwind: "$post_info" },
       { $unset: ["post_info"] },
       // { $limit: 1 }
-    ])
+    ]);
     return res.json({
       success: true,
       data: rs,

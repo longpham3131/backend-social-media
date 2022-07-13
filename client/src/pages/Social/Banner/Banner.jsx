@@ -1,17 +1,17 @@
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useParams } from "react-router";
 
 const Banner = () => {
   const { pathname } = useLocation();
-  const visiblePath = ["/", "/groups", "/search", "/members"];
-  const [isVisible, setIsVisible] = useState(false)
+  const params = useParams();
+  const [isVisible, setIsVisible] = useState(false);
   const [title, setTitle] = useState("");
   const [des, setDes] = useState("");
   const [img, setImg] = useState("");
 
   useEffect(() => {
-    setIsVisible(true)
+    setIsVisible(true);
     if (pathname === "/members") {
       setTitle("Members");
       setDes("Browse all the members of the community!");
@@ -21,7 +21,7 @@ const Banner = () => {
       setDes("Browse all the groups of the community!");
       setImg("images/groups-icon.png");
     } else if (pathname.includes("search")) {
-      setTitle("Search Results:");
+      setTitle(`Search Results:"${Object.values(params)[0].slice(7)}"`);
       setDes("Browse your search results");
       setImg("images/search-icon.png");
     } else if (pathname === "/") {
@@ -29,9 +29,8 @@ const Banner = () => {
       setDes("Check what your friends have been up to!");
       setImg("images/newsfeed-icon.png");
     } else {
-      setIsVisible(false)
+      setIsVisible(false);
     }
-   
   }, [pathname]);
   return (
     <div

@@ -11,7 +11,7 @@ import {
   likePost,
 } from "@/store/postSlice";
 import postAPI from "@/apis/postAPI";
-import { message, Modal } from "antd";
+import { Button, message, Modal } from "antd";
 import CreateEditPost from "@/components/SNCreateEditPost";
 import SNWidgetBoxItem from "@/components/SNWidgetBoxItem";
 import { useParams } from "react-router";
@@ -23,7 +23,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import groupAPI from "@/apis/groupAPI";
 import SNListPost from "@/components/SNListPost";
-const Timeline = ({ user }) => {
+import classNames from "classnames";
+const Timeline = ({ user, changeTab }) => {
   const postList = useSelector((state) => state.posts);
   const myProfile = useSelector((state) => state.profile);
   const { userId } = useParams();
@@ -78,16 +79,33 @@ const Timeline = ({ user }) => {
         <SNWidgetBox
           title={"Friends"}
           content={
-            user?.friends.length > 0 ? (
-              user?.friends.map((item, index) => (
-                <Link key={index} to={`/profile/${item.user._id}`}>
-                  <SNWidgetBoxItem
-                    srcAvatar={item.user.avatar}
-                    name={item.user.fullName}
-                    description={`@${item.user.username}`}
-                  />
-                </Link>
-              ))
+            user?.friends?.length > 0 ? (
+              <div className="flex flex-col gap-[15px]">
+                {user?.friends?.map((item, index) => (
+                  <div
+                    key={index}
+                    className={classNames({ hidden: index > 5 })}
+                  >
+                    <Link to={`/profile/${item.user._id}`}>
+                      <SNWidgetBoxItem
+                        srcAvatar={item.user.avatar}
+                        name={item.user.fullName}
+                        description={`@${item.user.username}`}
+                      />
+                    </Link>
+                  </div>
+                ))}
+                <Button
+                  className={classNames("col-span-4 mt-[10px]", {
+                    hidden: user?.friends?.length <= 6,
+                  })}
+                  type="primary"
+                  shape="round"
+                  onClick={() => changeTab("3")}
+                >
+                  See more
+                </Button>
+              </div>
             ) : (
               <p className="sn-no-result">No friends found</p>
             )
@@ -95,13 +113,6 @@ const Timeline = ({ user }) => {
         />
       </div>
 
-      {/* <div className=" col-span-2">
-        {postList.length ? (
-          postList.map((post) => <SNPost2 post={post} key={post._id} />)
-        ) : (
-          <p className="sn-no-result">No post found</p>
-        )}
-      </div> */}
       <SNListPost showButtonCreatePost={userId === myProfile._id} />
       <div className="flex flex-col gap-[16px]">
         <SNWidgetBox
@@ -110,8 +121,23 @@ const Timeline = ({ user }) => {
             photos.length ? (
               <div className="grid grid-cols-4 gap-[2px]">
                 {photos.map((item, index) => (
-                  <SNImage media={item} key={index} isHiddenOverlay={true} />
+                  <div
+                    key={index}
+                    className={classNames({ hidden: index > 11 })}
+                  >
+                    <SNImage media={item} isHiddenOverlay={true} />
+                  </div>
                 ))}
+                <Button
+                  className={classNames("col-span-4 mt-[15px]", {
+                    hidden: photos.length <= 12,
+                  })}
+                  type="primary"
+                  shape="round"
+                  onClick={() => changeTab("5")}
+                >
+                  See more
+                </Button>
               </div>
             ) : (
               <p className="sn-no-result">No photos found</p>
@@ -122,28 +148,45 @@ const Timeline = ({ user }) => {
           title={"Groups"}
           content={
             groups.length > 0 ? (
-              groups.map((item, index) => (
-                <Link key={index} to={`/groups/${item._id}`}>
-                  <SNWidgetBoxItem
-                    srcAvatar={item.avatar}
-                    name={item.groupName}
-                    description={item.membersCount + " members"}
-                    leftIcon={
-                      item.isPrivate ? (
-                        <FontAwesomeIcon
-                          icon={faLock}
-                          className=" text-lg text-color-icon"
-                        />
-                      ) : (
-                        <FontAwesomeIcon
-                          icon={faEarthAmericas}
-                          className=" text-lg text-color-icon"
-                        />
-                      )
-                    }
-                  />
-                </Link>
-              ))
+              <div className="flex flex-col gap-[15px]">
+                {groups.map((item, index) => (
+                  <div
+                    key={index}
+                    className={classNames({ hidden: index > 5 })}
+                  >
+                    <Link to={`/groups/${item._id}`}>
+                      <SNWidgetBoxItem
+                        srcAvatar={item.avatar}
+                        name={item.groupName}
+                        description={item.membersCount + " members"}
+                        leftIcon={
+                          item.isPrivate ? (
+                            <FontAwesomeIcon
+                              icon={faLock}
+                              className=" text-lg text-color-icon"
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              icon={faEarthAmericas}
+                              className=" text-lg text-color-icon"
+                            />
+                          )
+                        }
+                      />
+                    </Link>
+                  </div>
+                ))}
+                <Button
+                  className={classNames("col-span-4 mt-[10px]", {
+                    hidden: groups.length <= 6,
+                  })}
+                  type="primary"
+                  shape="round"
+                  onClick={() => changeTab("4")}
+                >
+                  See more
+                </Button>
+              </div>
             ) : (
               <p className="sn-no-result">No groups found</p>
             )

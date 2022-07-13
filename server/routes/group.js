@@ -256,8 +256,13 @@ router.post("/inviteToGroup", verifyToken, async (req, res) => {
       fromUser: req.userId,
     });
     await noti.save();
+    let fromUser = await User.findById(req.userId);
     io.sockets.to(`user_${userId}`).emit("notification", {
-      data: noti,
+      // data: noti,
+      fromUser,
+      type: 2,
+      mess: "has invited you to the group",
+      groupId,
     });
     return res.json({
       success: true,
@@ -349,8 +354,13 @@ router.post("/joinGroup", verifyToken, async (req, res) => {
         user: ObjectId(userId),
       });
       await noti.save();
+      let fromUser = await User.findById(req.userId);
       io.sockets.to(`user_${userId}`).emit("notification", {
-        data: noti,
+        // data: noti,
+        mess: "approved you to be a member of the group",
+        type: 2,
+        groupId,
+        fromUser,
       });
     }
     const rs = await group.save();

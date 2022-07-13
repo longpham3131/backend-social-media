@@ -6,6 +6,7 @@ const FriendRequest = async (req, res) => {
   try {
     const io = req.io;
     const { userId, type } = req.body;
+    let fromUser = await User.findById(req.userId);
     let user = await User.findById(userId)
       .populate({ path: "friends.user", select: "fullName avatar" })
       .populate({ path: "friendsRequest.user", select: "fullName avatar" });
@@ -29,6 +30,14 @@ const FriendRequest = async (req, res) => {
     io.sockets
       .to(`user_${userId}`)
       .emit("friendRequest", { type: 1, userRequest: user });
+
+    if (type === 1) {
+      io.sockets.to(`user_${userId}`).emit("notification", {
+        fromUser,
+        mess: `send you a friend request`,
+        type: 0,
+      });
+    }
     return res.json({ success: true, message: "save success" });
   } catch (error) {
     console.log(error);
@@ -37,13 +46,12 @@ const FriendRequest = async (req, res) => {
 };
 const UnFriend = async (req, res) => {
   try {
-    console.log("UnFriend");
     const { userId } = req.body;
     let user = await User.findById(userId);
     user.friends = user.friends.filter((e) => e.user.toString() != req.userId);
     let user2 = await User.findById(req.userId);
     user2.friends = user2.friends.filter((e) => e.user.toString() != userId);
-    await user.save(); 
+    await user.save();
     await user2.save();
     return res.json({ success: true, message: "save success" });
   } catch (err) {
@@ -66,7 +74,7 @@ const FriendRequestRespone = async (req, res) => {
       if (!findUser2)
         user2.friends.push({
           user: ObjectId(req.userId),
-          createAt: Date.now(),  
+          createAt: Date.now(),
         });
     }
     user.friendsRequest = user.friendsRequest.filter(
@@ -77,11 +85,13 @@ const FriendRequestRespone = async (req, res) => {
     );
     await user.save();
     await user2.save();
-    io.sockets
-      .to(`user_${userId}`)
-      .emit("notification", {
-        data: { fromUser:user,type:10},
-      });
+    io.sockets.to(`user_${userId}`).emit("notification", {
+      fromUser: user2,
+      mess: `has become your friend`,
+      type: 0,
+    });
+    io.sockets.to(`user_${userId}`).emit("friendResponse");
+    io.sockets.to(`user_${req.userId}`).emit("friendResponse");
     return res.json({ success: true, message: "save success", data: user });
   } catch (error) {
     return error500(res);
@@ -100,11 +110,9 @@ const GetFriendsRequest = async (req, res) => {
 };
 ///Follow
 
-
-
 module.exports = {
   FriendRequest,
   FriendRequestRespone,
   GetFriendsRequest,
-  UnFriend
+  UnFriend,
 };

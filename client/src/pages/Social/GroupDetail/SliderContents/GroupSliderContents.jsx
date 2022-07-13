@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Tabs } from "antd";
 import {
   OneToOneOutlined,
@@ -17,12 +17,13 @@ import GroupInviteAndRequest from "./Tabs/GroupInviteAndRequest";
 
 const { TabPane } = Tabs;
 const GroupSliderContents = ({ isAdmin }) => {
+  const [activeKey, setActiveKey] = useState("1");
   const categories = [
     {
       icon: <OneToOneOutlined />,
       name: "Timeline",
       isDisable: true,
-      ele: <GroupTimeline />,
+      ele: <GroupTimeline changeTab={(value) => setActiveKey(value)} />,
     },
     {
       icon: <SmileOutlined />,
@@ -52,7 +53,7 @@ const GroupSliderContents = ({ isAdmin }) => {
   ];
   return (
     <div className="mt-[16px] sn-slider-contents">
-      <Tabs defaultActiveKey="1">
+      <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
         {categories.map((item, index) => {
           return (
             item.isDisable && (

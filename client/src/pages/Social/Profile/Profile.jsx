@@ -1,6 +1,6 @@
 import { Button, Image, message } from "antd";
 import userAPI from "@/apis/userAPI";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import postAPI from "@/apis/postAPI";
@@ -16,15 +16,17 @@ import {
 } from "@ant-design/icons";
 import SNButton from "@/components/SNButton";
 import SliderContents from "./SliderContents/SliderContents";
+import { SocketContext } from "@/service/socket/SocketContext";
 const Profile = () => {
   const myProfile = useSelector((state) => state.profile);
-
+  const socket = useContext(SocketContext);
   const dispatch = useDispatch();
   const { userId } = useParams();
   const isMyProfile = myProfile._id === userId;
   const [isFriend, setFriend] = useState(false);
   const [profile, setProfileUser] = useState(null);
   const [isFriendRequest, setFriendRequest] = useState(false);
+
   useEffect(() => {
     if (profile === null || !myProfile._id) return;
     if (!profile?.friendsRequest) return;
@@ -97,9 +99,19 @@ const Profile = () => {
       userAPI.getMyProfile(),
       userAPI.getProfile(profile._id),
     ]);
+    console.log("res unfi", res);
     dispatch(setProfile(res[0].data.data));
-    setProfileUser(res[1].data);
+    setProfileUser(res[1].data.data);
   };
+  useEffect(() => {
+    socket.on("friendResponse", (msg) => {
+      if (isMyProfile) {
+        userAPI.getMyProfile().then((rs) => dispatch(setProfile(rs.data.data)));
+      } else {
+        fetchOtherUserProfile();
+      }
+    });
+  }, []);
   return (
     <div className="flex flex-col p-0 lg:px-[4rem] ">
       {profile && (
@@ -148,7 +160,7 @@ const Profile = () => {
                 </div>
               </div>
               <div className=" absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
-                <p className="text-[1.5rem] font-bold text-color-text leading-[1em]">
+                <p className="text-[1.5rem] font-bold text-color-text leading-[1em] text-center">
                   {profile.fullName}
                 </p>
                 <p className="text-[0.875] font-medium text-color-text leading-[1em] mt-[6px] text-center">
