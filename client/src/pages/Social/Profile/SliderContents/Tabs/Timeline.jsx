@@ -110,11 +110,7 @@ const Timeline = ({ user }) => {
             photos.length ? (
               <div className="grid grid-cols-4 gap-[2px]">
                 {photos.map((item, index) => (
-                  <SNImage
-                    urlImage={item.filePath}
-                    key={index}
-                    isHiddenOverlay={true}
-                  />
+                  <SNImage media={item} key={index} isHiddenOverlay={true} />
                 ))}
               </div>
             ) : (

@@ -1,17 +1,30 @@
 import React from "react";
 import { getUrlImage } from "@/util/index";
 import classNames from "classnames";
+import postAPI from "@/apis/postAPI";
+import { useDispatch } from "react-redux";
+import { setModalPost } from "@/store/modalPostSlice";
 const SNImage = ({
-  urlImage,
-  onClick,
   isHiddenOverlay = false,
   hasRounded = true,
   quantityImageMore,
+  media,
 }) => {
+  const dispatch = useDispatch();
+  const handleClick = async () => {
+    const res = await postAPI.getPostByImgId(media._id);
+    dispatch(
+      setModalPost({
+        postId: res.data.data[0]._id,
+        show: true,
+        mediaSelectedId: media._id,
+      })
+    );
+  };
   return (
     <div
       className={classNames("sn-image", { "rounded-xl": hasRounded })}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <div
         className={classNames(" sn-image-background ", {
@@ -19,7 +32,7 @@ const SNImage = ({
         })}
         style={{
           background: `url(${getUrlImage(
-            urlImage
+            media.filePath
           )}) center center / cover no-repeat`,
         }}
       >

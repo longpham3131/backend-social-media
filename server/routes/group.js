@@ -554,12 +554,18 @@ router.get("/getImages/:id", verifyToken, async (req, res) => {
     if (!isMember) {
       return res.json({
         success: false,
-        data: "You are not the member of this group",
+        data: [],
+        message: "You are not the member of this group",
       });
     }
     let posts = await Post.find({
       $and: [{ groupId: ObjectId(groupId) }, { attachments: { $ne: [] } }],
-    }).sort({ createAt: -1 });
+    })
+      .sort({ createAt: -1 })
+      .populate({
+        path: "attachments",
+        select: "_id fileName filePath fileType fileSize",
+      });
     let listImages = [];
     for (const p of posts) {
       listImages = listImages.concat(p.attachments);

@@ -5,7 +5,7 @@ const modalPost = createSlice({
   initialState: {
     show: false,
     postId: "",
-    imgActive: "",
+    mediaSelectedId: "",
   },
   reducers: {
     setModalPost: (state, action) => {

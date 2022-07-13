@@ -54,7 +54,7 @@ const SNCreateEditPost = React.forwardRef(
       const values = form.getFieldsValue();
       const post = {
         text: values.content,
-        audience: values.audience.toLowerCase(),
+        audience: values?.audience?.toLowerCase(),
         attachments: file ? getFiles(file) : [],
         postParent: "",
       };

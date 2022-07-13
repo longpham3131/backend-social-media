@@ -31,18 +31,18 @@ const GroupSliderContents = ({ isAdmin }) => {
       ele: <GroupMembers />,
     },
     {
+      icon: <FileImageOutlined />,
+      name: "Photos",
+      isDisable: true,
+      ele: <GroupPhotos />,
+    },
+    {
       icon: <ScheduleOutlined />,
       name: "Manage Member",
       isDisable: isAdmin,
       ele: <GroupInviteAndRequest />,
     },
 
-    // {
-    //   icon: <FileImageOutlined />,
-    //   name: "Photos",
-    //   isDisable: false,
-    //   ele: <GroupPhotos group={group} />,
-    // },
     {
       icon: <SettingOutlined />,
       name: "Settings",

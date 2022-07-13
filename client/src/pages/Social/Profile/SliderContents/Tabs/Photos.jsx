@@ -34,9 +34,7 @@ const Photos = ({ user }) => {
       </p>
       <div className="grid grid-cols-6 gap-[16px] mt-[32px]">
         {images.length ? (
-          images.map((item, index) => (
-            <SNImage urlImage={item.filePath} key={index} />
-          ))
+          images.map((item, index) => <SNImage media={item} key={index} />)
         ) : (
           <div className=" col-span-6 text-center">
             <SNNoResult />

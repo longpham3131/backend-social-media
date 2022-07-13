@@ -25,7 +25,7 @@ const Follower = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: "users",
-  }
+  },
 });
 
 module.exports = mongoose.model("post", PostSchema);
