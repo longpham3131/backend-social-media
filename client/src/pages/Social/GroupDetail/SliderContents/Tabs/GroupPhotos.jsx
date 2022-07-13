@@ -12,7 +12,6 @@ const GroupPhotos = ({ user }) => {
   const fetchAllImage = async () => {
     try {
       const res = await userAPI.getImageUser(userId);
-      console.log(res.data.data);
       setImages(res.data.data);
     } catch (erorr) {
       console.log("error get image");

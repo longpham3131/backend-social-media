@@ -26,12 +26,10 @@ const Profile = () => {
   const [profile, setProfileUser] = useState(null);
   const [isFriendRequest, setFriendRequest] = useState(false);
   useEffect(() => {
-    console.log("change");
     if (profile === null || !myProfile._id) return;
     if (!profile?.friendsRequest) return;
     const isAFriend =
       !!profile.friends?.find((e) => e.user._id === myProfile._id) ?? false;
-    console.log(isAFriend);
     setFriend(isAFriend);
     if (!isAFriend) {
       if (profile?.friendsRequest?.length <= 0) setFriendRequest(false);
@@ -99,7 +97,6 @@ const Profile = () => {
       userAPI.getMyProfile(),
       userAPI.getProfile(profile._id),
     ]);
-    console.log(res);
     dispatch(setProfile(res[0].data.data));
     setProfileUser(res[1].data);
   };

@@ -117,7 +117,6 @@ export default function SNUpload({
         fmData,
         config
       );
-      console.log("data out", res.data);
       onUploadSuccess(res.data.data);
     } catch (err) {
       console.log("Eroor: ", err, "file", file);

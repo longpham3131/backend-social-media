@@ -10,7 +10,6 @@ const Friends = ({ user }) => {
   const navigate = useNavigate();
   const [friends, setFriends] = useState([]);
   const { userId } = useParams();
-  console.log("log", location);
 
   const fetchFriends = async () => {
     const res = await userAPI.getFriends(userId);
