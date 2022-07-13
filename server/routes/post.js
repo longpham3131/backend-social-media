@@ -69,7 +69,7 @@ router.post("/", verifyToken, async (req, res) => {
       attachFile = await Promise.all(
         attachments.map(async (e) => {
           const file = new SingleFile({
-            fileName: e?.name??shortid.generate(),
+            fileName: e?.name ?? shortid.generate(),
             filePath: e.file,
             fileType: e.type,
             fileSize: e.size, // 0.00
@@ -209,8 +209,9 @@ router.put("/", verifyToken, async (req, res) => {
     ],
   });
   let attachFile = post.attachments;
+  console.log('post.attachments', post.attachments)
   for (const a of post.attachments) {
-    await SingleFile.findByIdAndDelete(a);
+    await SingleFile.findByIdAndDelete(a.toString());
   }
   if (attachments.length > 0) {
     attachFile = await Promise.all(
