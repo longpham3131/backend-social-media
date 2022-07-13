@@ -32,7 +32,6 @@ const SNListPost = ({ showButtonCreatePost = true, isGroupPrivate }) => {
         userId,
         groupId,
       });
-      console.log("res", res.data);
       if (res.data === 0) {
         setLoadMore(false);
         return;

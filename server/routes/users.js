@@ -83,9 +83,10 @@ router.get("/search", verifyToken, (req, res) => {
     });
 });
 router.get("/v2/search", verifyToken, async (req, res) => {
-  const searchKey = req.query.key;
-  const page = Number.parseInt(req.query.page);
-  const pageSize = Number.parseInt(req.query.pageSize);
+  console.log('alloo')
+  const { searchKey } = req.query;
+  const page = Number.parseInt(req.query.page ?? 1);
+  const pageSize = Number.parseInt(req.query.pageSize ?? 10);
 
   let users = await User.find({
     $or: [
@@ -94,7 +95,7 @@ router.get("/v2/search", verifyToken, async (req, res) => {
     ]
   })
     .sort({ fullName: "asc" })
-    .limit(pageSize)
+    .limit(pageSize).lean()
   let groups = await Group.find({
     $or: [{
       groupName: new RegExp(searchKey, 'i'),
@@ -103,16 +104,29 @@ router.get("/v2/search", verifyToken, async (req, res) => {
     ]
   })
     .sort({ fullName: "asc" })
-    .limit(pageSize)
-  let uCount=await User.countDocuments({ $or: [
-    { fullName: new RegExp(searchKey, 'i') },
-    { username: new RegExp(searchKey, 'i') }
-  ]});
-  let gCount=await Group.countDocuments({$or: [{
-    groupName: new RegExp(searchKey, 'i'),
-  },
-  { groupDescription: new RegExp(searchKey, 'i') }
-  ]});
+    .limit(pageSize).lean()
+  let uCount = await User.countDocuments({
+    $or: [
+      { fullName: new RegExp(searchKey, 'i') },
+      { username: new RegExp(searchKey, 'i') }
+    ]
+  });
+  let gCount = await Group.countDocuments({
+    $or: [{
+      groupName: new RegExp(searchKey, 'i'),
+    },
+    { groupDescription: new RegExp(searchKey, 'i') }
+    ]
+  });
+
+  for (const u of users) {
+    let count = await Post.countDocuments({ poster: ObjectId(u._id.toString()) });
+    u.postCount = count ? count : 0
+  }
+  for (const u of groups) {
+    let count = await Post.countDocuments({ groupId: ObjectId(u._id.toString()) });
+    u.postCount = count ? count : 0
+  }
   res.json({
     data: {
       users,

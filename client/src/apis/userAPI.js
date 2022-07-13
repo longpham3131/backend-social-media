@@ -64,6 +64,12 @@ const userAPI = {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
   },
+  getSearch2({page,pageSize,searchKey}) {
+    const url = `${BASE_URL}/v2/search?pageSize=${pageSize}&page=${page}&searchKey=${searchKey}`;
+    return axios.get(url, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+  },
   checkInAtivity() {
     const url = `${HTTP_CONNECT}/admin/checkInActivity`;
     return axios.get(url, {

@@ -176,7 +176,7 @@ router.delete("/delete/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
     let post = await Post.findById(id);
     for (const a of post.attachments) {
-      await SingleFile.findByIdAndDelete(a)
+      await SingleFile.findByIdAndDelete(a.toString())
     }
     let rs = await Post.findByIdAndDelete(id);
     return res.json(rs);

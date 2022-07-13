@@ -5,36 +5,33 @@ import { useLocation } from "react-router";
 const Banner = () => {
   const { pathname } = useLocation();
   const visiblePath = ["/", "/groups", "/search", "/members"];
-  const isVisible = visiblePath.includes(pathname);
+  const [isVisible, setIsVisible] = useState(false)
   const [title, setTitle] = useState("");
   const [des, setDes] = useState("");
   const [img, setImg] = useState("");
+
   useEffect(() => {
-    switch (pathname) {
-      case "/members": {
-        setTitle("Members");
-        setDes("Browse all the members of the community!");
-        setImg("images/members-icon.png");
-        break;
-      }
-      case "/groups": {
-        setTitle("Groups");
-        setDes("Browse all the groups of the community!");
-        setImg("images/groups-icon.png");
-        break;
-      }
-      case "/search": {
-        setTitle("Search Results:");
-        setDes("Browse your search results");
-        setImg("images/search-icon.png");
-        break;
-      }
-      default: {
-        setTitle("Newsfeed");
-        setDes("Check what your friends have been up to!");
-        setImg("images/newsfeed-icon.png");
-      }
+    setIsVisible(true)
+    if (pathname === "/members") {
+      setTitle("Members");
+      setDes("Browse all the members of the community!");
+      setImg("images/members-icon.png");
+    } else if (pathname === "/groups") {
+      setTitle("Groups");
+      setDes("Browse all the groups of the community!");
+      setImg("images/groups-icon.png");
+    } else if (pathname.includes("search")) {
+      setTitle("Search Results:");
+      setDes("Browse your search results");
+      setImg("images/search-icon.png");
+    } else if (pathname === "/") {
+      setTitle("Newsfeed");
+      setDes("Check what your friends have been up to!");
+      setImg("images/newsfeed-icon.png");
+    } else {
+      setIsVisible(false)
     }
+   
   }, [pathname]);
   return (
     <div
