@@ -20,7 +20,7 @@ router.get("/getPostByIdImage/:id", verifyToken, async (req, res) => {
   Post.find({
     attachments: {
       $elemMatch: {
-        id: ObjectId(id),
+        $in: [ObjectId(id)],
       },
     },
   })
@@ -202,6 +202,9 @@ router.put("/", verifyToken, async (req, res) => {
     ],
   });
   let attachFile = post.attachments;
+  for (const a of post.attachments) {
+    await SingleFile.findByIdAndDelete(a)
+  }
   if (attachments.length > 0) {
     attachFile = await Promise.all(
       attachments.map(async (e) => {
@@ -221,7 +224,7 @@ router.put("/", verifyToken, async (req, res) => {
   const update = await {
     text,
     audience,
-    attachments:attachFile,
+    attachments: attachFile,
     updatedAt: date.getDate(),
   };
   Post.findByIdAndUpdate(postId, update)
@@ -484,17 +487,19 @@ router.get("/deleteall", verifyToken, async (req, res) => {
   }
 });
 
-router.get("/ultimateSearch", verifyToken, async (req, res) => {
+router.get("/ultimateSearch/:keySearch", verifyToken, async (req, res) => {
   try {
+    const { keySearch } = req.params;
+    let rg = new RegExp(keySearch, 'i')
+    let public = new RegExp('public', 'i')
     let rs = await SingleFile.aggregate([
-      { $match: { $text: { $search: "Wallpapers_dxgh6t" } } }
-      ,
+      { $match: { tags: { $in: [rg] } } },
       {
         $lookup: {
           from: "posts",
           let: { "id": "$_id" },
           pipeline: [
-            { $match: { "$expr": { "$in": ["$$id", "$attachments"] } } },
+            { $match: { $expr: { $and: [{ $in: ["$$id", "$attachments"] }] } } },
             {
               $lookup: {
                 from: "users",
@@ -511,6 +516,8 @@ router.get("/ultimateSearch", verifyToken, async (req, res) => {
         }
       },
       { $unwind: '$post_info' },
+      { $match: { $and: [{ 'post_info.audience': public}] } },
+      // { $limit: 1 }
     ])
     return res.json({
       success: true,
@@ -522,43 +529,6 @@ router.get("/ultimateSearch", verifyToken, async (req, res) => {
   }
 });
 
-router.get("/ultimateSearch", verifyToken, async (req, res) => {
-  try {
-    let rs = await SingleFile.aggregate([
-      { $match: { $text: { $search: "Wallpapers_dxgh6t" } } }
-      ,
-      {
-        $lookup: {
-          from: "posts",
-          let: { "id": "$_id" },
-          pipeline: [
-            { $match: { "$expr": { "$in": ["$$id", "$attachments"] } } },
-            {
-              $lookup: {
-                from: "users",
-                let: { poster: "$poster" },
-                pipeline: [
-                  { $match: { $expr: { $eq: ["$_id", "$$poster"] } } }
-                ],
-                as: "poster"
-              }
-            },
-            { $unwind: '$poster' },
-          ],
-          as: "post_info"
-        }
-      },
-      { $unwind: '$post_info' },
-    ])
-    return res.json({
-      success: true,
-      data: rs,
-    });
-  } catch (err) {
-    console.log(err);
-    return error500(res);
-  }
-});
 async function performComplexTasks(req) {
   const post = new Post({ poster: req.userId });
   await post.save();
