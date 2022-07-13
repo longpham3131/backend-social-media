@@ -101,8 +101,7 @@ export default function SNUpload({
 
   const uploadImage = async (options) => {
     const { onSuccess, onProgress, onError, file } = options;
-    // let tags = await getTags(file);
-    let tags = [];
+    let tags = await getTags(file);
     const fmData = new FormData();
     const config = {
       headers: { "content-type": "multipart/form-data" },

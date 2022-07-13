@@ -174,10 +174,11 @@ router.delete("/delete/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
     let post = await Post.findById(id);
-    post.attachments.forEach(
-      async (file) => await SingleFile.findByIdAndDelete(file._id)
-    );
-    await Post.findByIdAndDelete(id);
+    for (const a of post.attachments) {
+      await SingleFile.findByIdAndDelete(a)
+    }
+    let rs = await Post.findByIdAndDelete(id);
+    return res.json(rs);
   } catch (err) {
     console.log(err);
     return error500({ success: false, message: "Xóa thất bại" });
@@ -510,24 +511,25 @@ router.get("/ultimateSearch/:keySearch", verifyToken, async (req, res) => {
           from: "posts",
           let: { id: "$_id" },
           pipeline: [
-            { $match: { $expr: { $and: [{ $in: ["$$id", "$attachments"] }] } } },
             {
-              $lookup: {
-                from: "users",
-                let: { poster: "$poster" },
-                pipeline: [
-                  { $match: { $expr: { $eq: ["$_id", "$$poster"] } } },
-                ],
-                as: "poster",
-              },
+              $match: {
+                $expr: {
+                  $and: [
+                    { $in: ["$$id", "$attachments"] }, {
+                      $or: [
+                        { $eq: [{ $getField: "audience" }, 'public'] },
+                        { $eq: [{ $getField: "audience" }, 'group public'] },
+                      ]
+                    }]
+                }
+              }
             },
-            { $unwind: "$poster" },
+            { $project: { "_id": 1 } },
           ],
           as: "post_info",
         },
       },
       { $unwind: '$post_info' },
-      { $match: { $and: [{ 'post_info.audience': public}] } },
       // { $limit: 1 }
     ])
     return res.json({
@@ -539,7 +541,60 @@ router.get("/ultimateSearch/:keySearch", verifyToken, async (req, res) => {
     return error500(res);
   }
 });
+router.get("/testSearch/:keySearch", verifyToken, async (req, res) => {
+  try {
+    const { keySearch } = req.params;
+    let rg = new RegExp(keySearch, 'i')
+    let public = new RegExp('public', 'i')
+    let rs = await SingleFile.aggregate([
+      { $match: { tags: { $in: [rg] } } },
+      {
+        $lookup: {
+          from: "posts",
+          let: { id: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $in: ["$$id", "$attachments"] }, {
+                      $or: [
+                        { $eq: [{ $getField: "audience" }, 'public'] },
+                        { $eq: [{ $getField: "audience" }, 'group public'] },
+                      ]
+                    }]
+                }
+              }
+            },
+            {
+              $lookup: {
+                from: "users",
+                let: { poster: "$poster" },
+                pipeline: [
+                  { $match: { $expr: { $eq: ["$_id", "$$poster"] } } },
+                ],
+                as: "poster",
+              },
+            },
 
+            { $unwind: "$poster" },
+          ],
+          as: "post_info",
+        },
+      },
+      { $unwind: '$post_info' },
+      { $unset: ["post_info"] },
+      // { $limit: 1 }
+    ])
+    return res.json({
+      success: true,
+      data: rs,
+    });
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
 async function performComplexTasks(req) {
   const post = new Post({ poster: req.userId });
   await post.save();
