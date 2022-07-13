@@ -8,7 +8,7 @@ import { setPostList } from "@/store/postSlice";
 import SNWidgetBox from "@/components/SNWidgetBox";
 import SNWidgetBoxItem from "@/components/SNWidgetBoxItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEarthAmericas, faLock } from "@fortawesome/free-solid-svg-icons";
+import { faEarthAmericas, faL, faLock } from "@fortawesome/free-solid-svg-icons";
 
 import groupAPI from "@/apis/groupAPI";
 import { Link } from "react-router-dom";
@@ -84,7 +84,7 @@ const Newsfeed = () => {
                     name={
                       <>
                         {item.user.fullName}{" "}
-                        <Badge color="#87d068" dot={item.user.isOnline} />
+                        <Badge color={item.user.isOnline ? "#87d068" : "#bfbdbd"} />
                       </>
                     }
                     description={"@" + item.user.username}

@@ -1,5 +1,7 @@
 const SingleFile = require("../models/SingleFile");
 const MultipleFile = require("../models/MultipleFile");
+const User = require("../models/User");
+const Post = require("../models/Post");
 const { ObjectId } = require("mongodb");
 const { error500, error400 } = require("../util/res");
 const { cloudinary } = require("../util/cloudinary");
@@ -119,13 +121,33 @@ const getAllFiles = async (req, res, next) => {
 const getAllMediaByUserId = async (req, res, next) => {
   try {
     const { userId } = req.query;
-    const files = await SingleFile.find({ user: ObjectId(userId) });
+    let query = [];
+    if (userId == req.userId) {
+      //profile
+      query = [{ poster: ObjectId(req.userId), status: 1 }];
+    } else if (userId !== req.userId && userId) {
+      let user = await User.findById(userId);
+      let isFriend = user.friends.find((f) => f.user.toString() === req.userId);
+      query = [{ poster: ObjectId(userId), audience: "public" }];
+      if (!!isFriend) {
+        query.push({ poster: ObjectId(userId), audience: "friends" });
+      }
+    }
+
+    const result = await Post.find({ $or: query }).sort({ createAt: -1 }).populate("attachments")
+    let listFile = []
+    console.log(result)
+    for (const p of result) {
+      listFile=listFile.concat(p.attachments)
+    }
+
     res.json({
       message: "success",
-      data: files,
+      data: listFile,
     });
   } catch (er) {
-    error400("get file error");
+    console.log(er)
+    error400(res,"get file error");
   }
 };
 

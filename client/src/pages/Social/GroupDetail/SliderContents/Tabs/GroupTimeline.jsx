@@ -78,7 +78,7 @@ const GroupTimeline = ({ changeTab }) => {
                   name={
                     <>
                       {group.adminGroup.fullName}{" "}
-                      <Badge color="#87d068" dot={group.adminGroup.isOnline} />
+                      <Badge color={group.adminGroup.isOnline ? "#87d068" : "#bfbdbd"}  dot={group.adminGroup.isOnline} />
                     </>
                   }
                   description={"@" + group.adminGroup.username}

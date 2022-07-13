@@ -354,6 +354,40 @@ router.get("/search/:keySearch", verifyToken, (req, res) => {
   }
 });
 
+
+
+router.get("/recommendFriends", verifyToken, async (req, res) => {
+  try {
+    let curUser = await User.findById(req.userId)
+    let fs = curUser.friends.map(f => f.user)
+    console.log(fs)
+    let users = await User.find({
+      $and: [
+        {
+          _id: {
+            $nin: fs
+          }
+        },
+        {
+          _id: {
+            $ne: curUser._id
+          }
+        },
+        {
+          "address.province": curUser.address.province
+        }
+      ]
+    })
+    return res.json({
+      success: true,
+      data: users,
+    });
+  } catch (err) {
+    console.log(err)
+    return error500(res);
+  }
+});
+
 router.get("/:id", verifyToken, async (req, res) => {
   try {
     const userId = req.params.id;

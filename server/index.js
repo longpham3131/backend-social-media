@@ -77,13 +77,14 @@ io.on("connection", (socket) => {
     socket.join(room);
   });
   socket.on("leave-all-and-join-room", async (room) => {
+    console.log('joinnn')
     if(room=="user_undefined") return
     var rooms = io.sockets.adapter.sids[socket.id];
     for (var room in rooms) {
       socket.leave(room);
     }
     users[socket.id] = room;
-  
+    console.log(socket.id,"-",room)
     await User.findByIdAndUpdate(room.slice(5), { isOnline: true });
     socket.join(room);
   });
