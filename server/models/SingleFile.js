@@ -37,7 +37,6 @@ const singleFileSchema = new Schema(
     createAt: {
       type: Date,
       default: Date.now,
-      unique: true,
     },
     updateAt: {
       type: Date,
