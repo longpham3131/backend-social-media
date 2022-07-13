@@ -20,7 +20,7 @@ const SNAvatar = ({
   return (
     <Badge
       status={isOnline === true ? "success" : "error"}
-      dot={isOnline !== "undefined"}
+      color={isOnline ? "#87d068" : "#bfbdbd"}
       className="sn-avatar"
     >
       {/* <Avatar
