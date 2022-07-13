@@ -41,11 +41,11 @@ const SNCreateEditPost = React.forwardRef(
 
     const getFiles = (files) => {
       return files.map((f) => ({
-        file: f?.response?.data.filePath ?? f.file,
-        type: f?.response?.data.fileType ?? f.type,
-        name: f?.response?.data.fileName ?? f.name,
-        size: f?.response?.data.fileSize ?? f.size,
-        tags: f?.response?.data.tags,
+        file: f.filePath,
+        type: f.fileType,
+        name: f.fileName,
+        size: f.fileSize,
+        tags: f.tags,
       }));
     };
 

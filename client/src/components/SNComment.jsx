@@ -8,7 +8,13 @@ import { createComment } from "@/store/postSlice";
 import classNames from "classnames";
 import { useParams } from "react-router";
 
-const SNComment = ({ postId, comments, isShowAllComment }) => {
+const SNComment = ({
+  postId,
+  comments,
+  isShowAllComment,
+  isPostDetail,
+  onSuccessAct,
+}) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const myProfile = useSelector((state) => state.profile);
@@ -27,9 +33,11 @@ const SNComment = ({ postId, comments, isShowAllComment }) => {
           avatar: myProfile.avatar,
         },
       };
-      dispatch(
-        createComment({ postId: values.postId, comment: dataDispatchStore })
-      );
+      isPostDetail
+        ? onSuccessAct()
+        : dispatch(
+            createComment({ postId: values.postId, comment: dataDispatchStore })
+          );
       console.log("success", res.data);
     } catch {
       message.error("Failed!");
@@ -52,7 +60,7 @@ const SNComment = ({ postId, comments, isShowAllComment }) => {
           <>
             <div
               className={classNames(" sn-comment-list-wrapper", {
-                show: isShowComment || isShowAllComment,
+                show: isShowComment || isPostDetail,
               })}
             >
               {comments.map((item, index) => (
@@ -72,7 +80,7 @@ const SNComment = ({ postId, comments, isShowAllComment }) => {
               ))}
             </div>
 
-            {!isShowAllComment && (
+            {!isPostDetail && (
               <p
                 className={"sn-comment-list-show-btn"}
                 onClick={() => setIsShowComment(!isShowComment)}

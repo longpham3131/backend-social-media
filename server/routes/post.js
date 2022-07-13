@@ -90,9 +90,14 @@ router.post("/", verifyToken, async (req, res) => {
       isGroup,
       groupId,
     });
-    await newPost.save();
+    const resAfterSave = await newPost.save();
     const newPoster = await User.findById(req.userId);
+    const newPostCreate = await Post.findById(resAfterSave._id).populate({
+      path: "attachments",
+      populate: "fileName filePath fileSize fileType tags _id",
+    });
     newPost.poster = newPoster;
+    newPost.attachments = newPostCreate.attachments;
     res.json(newPost);
   } catch (error) {
     console.log(error);
@@ -170,7 +175,7 @@ router.delete("/delete/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
     let post = await Post.findById(id);
     post.attachments.forEach(
-      async (file) => await SingleFile.findByIdAndDelete(file.id)
+      async (file) => await SingleFile.findByIdAndDelete(file._id)
     );
     await Post.findByIdAndDelete(id);
   } catch (err) {
@@ -203,7 +208,7 @@ router.put("/", verifyToken, async (req, res) => {
   });
   let attachFile = post.attachments;
   for (const a of post.attachments) {
-    await SingleFile.findByIdAndDelete(a)
+    await SingleFile.findByIdAndDelete(a);
   }
   if (attachments.length > 0) {
     attachFile = await Promise.all(
@@ -229,12 +234,18 @@ router.put("/", verifyToken, async (req, res) => {
   };
   Post.findByIdAndUpdate(postId, update)
     .setOptions({ new: true })
-    .then((result) => {
+    .then(async (result) => {
+      const newPost = await Post.findById(postId).populate({
+        path: "attachments",
+        populate: "fileName filePath fileSize fileType tags _id",
+      });
       result.poster = poster;
       result.comments = post.comments;
+      result.attachments = newPost.attachments;
       res.json(result);
     })
     .catch((err) => {
+      console.log("hash", err);
       return error500(err);
     });
 });
@@ -497,7 +508,7 @@ router.get("/ultimateSearch/:keySearch", verifyToken, async (req, res) => {
       {
         $lookup: {
           from: "posts",
-          let: { "id": "$_id" },
+          let: { id: "$_id" },
           pipeline: [
             { $match: { $expr: { $and: [{ $in: ["$$id", "$attachments"] }] } } },
             {
@@ -505,15 +516,15 @@ router.get("/ultimateSearch/:keySearch", verifyToken, async (req, res) => {
                 from: "users",
                 let: { poster: "$poster" },
                 pipeline: [
-                  { $match: { $expr: { $eq: ["$_id", "$$poster"] } } }
+                  { $match: { $expr: { $eq: ["$_id", "$$poster"] } } },
                 ],
-                as: "poster"
-              }
+                as: "poster",
+              },
             },
-            { $unwind: '$poster' },
+            { $unwind: "$poster" },
           ],
-          as: "post_info"
-        }
+          as: "post_info",
+        },
       },
       { $unwind: '$post_info' },
       { $match: { $and: [{ 'post_info.audience': public}] } },
@@ -534,8 +545,6 @@ async function performComplexTasks(req) {
   await post.save();
   await new Promise((resolve) => setTimeout(resolve, 2000));
 }
-
-
 
 module.exports = router;
 // router.post("/likepost/:id", verifyToken, async (req, res) => {

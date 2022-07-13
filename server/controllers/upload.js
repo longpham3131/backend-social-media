@@ -7,21 +7,21 @@ var fs = require("fs");
 const { default: axios } = require("axios");
 const singleFileUpload = async (req, res, next) => {
   try {
-    console.log('req.file',req.file);
-    let body = req.body
-    console.log(body.tags);
-    await console.log("----------------------------");
+    let body = req.body;
     let uploadRes = null;
     if (req.file.mimetype.split("/")[0] === "image") {
       uploadRes = await cloudinary.uploader.upload(
         "uploads\\" + req.file.path.split("\\")[1],
         { upload_preset: "ml_default" }
       );
-      axios.get(`http://localhost:3001/detection/2022-01-13T15-26-37.372Z-ttt-3388_qcdmae`)
-        .then(response => {
-          console.log('ok');
+      axios
+        .get(
+          `http://localhost:3001/detection/2022-01-13T15-26-37.372Z-ttt-3388_qcdmae`
+        )
+        .then((response) => {
+          console.log("ok");
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     } else if (req.file.mimetype.split("/")[0] === "video") {
@@ -62,7 +62,7 @@ const singleFileUpload = async (req, res, next) => {
       filePath: uploadRes.public_id,
       fileType: req.file.mimetype,
       fileSize: fileSizeFormatter(req.file.size, 2), // 0.00
-      tags:req.body.tags
+      tags: req.body.tags,
     };
     var filePathDelete = "uploads\\" + req.file.path.split("\\")[1];
     // console.log(file);
@@ -132,7 +132,11 @@ const getAllMediaByUserId = async (req, res, next) => {
 const updateTags = async (req, res) => {
   try {
     const { tags, filePath } = req.body;
-    const rs = await SingleFile.findOneAndUpdate({ filePath: filePath }, { tags: tags }, { new: true });
+    const rs = await SingleFile.findOneAndUpdate(
+      { filePath: filePath },
+      { tags: tags },
+      { new: true }
+    );
     console.log(rs);
     res.json({
       message: rs,
@@ -141,7 +145,6 @@ const updateTags = async (req, res) => {
     error400("get file error");
   }
 };
-
 
 const getAllMultiFiles = async (req, res, next) => {
   try {
@@ -168,8 +171,6 @@ const fileSizeFormatter = (byte, decimal) => {
   );
 };
 
-
-
 module.exports = {
   singleFileUpload,
   multipleFileUpload,
@@ -177,5 +178,5 @@ module.exports = {
   fileSizeFormatter,
   getAllMediaByUserId,
   updateTags,
-  getAllMultiFiles
+  getAllMultiFiles,
 };

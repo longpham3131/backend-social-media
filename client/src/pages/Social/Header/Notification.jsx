@@ -24,6 +24,7 @@ import { useDispatch } from "react-redux";
 import SNWidgetBoxItem from "@/components/SNWidgetBoxItem";
 import { EyeOutlined } from "@ant-design/icons";
 import classNames from "classnames";
+import { setModalPost } from "@/store/modalPostSlice";
 const Notification = () => {
   const navigate = useNavigate();
   const [notificationState, setNotificationState] = useState({});
@@ -48,41 +49,41 @@ const Notification = () => {
     const myProfile = await userAPI.getMyProfile();
     dispatch(setProfile(myProfile.data.data));
   };
-  useEffect(() => {
-    socket.on("notification", (msg) => {
-      console.log("messs-notify", msg.data);
-      fetchNoti();
-      // Không hiện thông báo khi dislike (-2)
-      if (msg.data.type !== -1 && msg.data.type !== -4) {
-        notification.info({
-          message: `Notification`,
-          description: (
-            <div
-              onClick={() => {
-                msg.data.type != 10
-                  ? navigate(`/post/${msg.data.postId}`)
-                  : navigate(`/profile/${msg.data.fromUser._id}`);
-              }}
-            >
-              <SNAvatar
-                src={msg.data.fromUser.avatar}
-                className="mr-2"
-                size={50}
-                // fullName={msg.data.fromUser.fullName}
-              />
-              <span>{getFirstWord(msg.data.fromUser.fullName)} </span>
-              {descriptionNoti(msg.data.type)}
-            </div>
-          ),
-          placement: "bottomLeft",
-        });
-        // fetch lại data thông tin người dùng khi được kết bạn
-        if (msg.data.type === 10) {
-          fetchInfoUser();
-        }
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   socket.on("notification", (msg) => {
+  //     console.log("messs-notify", msg.data);
+  //     fetchNoti();
+  //     // Không hiện thông báo khi dislike (-2)
+  //     if (msg.data.type !== -1 && msg.data.type !== -4) {
+  //       notification.info({
+  //         message: `Notification`,
+  //         description: (
+  //           <div
+  //             onClick={() => {
+  //               msg.data.type != 10
+  //                 ? navigate(`/post/${msg.data.postId}`)
+  //                 : navigate(`/profile/${msg.data.fromUser._id}`);
+  //             }}
+  //           >
+  //             <SNAvatar
+  //               src={msg.data.fromUser.avatar}
+  //               className="mr-2"
+  //               size={50}
+  //               // fullName={msg.data.fromUser.fullName}
+  //             />
+  //             <span>{getFirstWord(msg.data.fromUser.fullName)} </span>
+  //             {descriptionNoti(msg.data.type)}
+  //           </div>
+  //         ),
+  //         placement: "bottomLeft",
+  //       });
+  //       // fetch lại data thông tin người dùng khi được kết bạn
+  //       if (msg.data.type === 10) {
+  //         fetchInfoUser();
+  //       }
+  //     }
+  //   });
+  // }, []);
 
   const descriptionNoti = (type) => {
     switch (type) {
@@ -133,8 +134,11 @@ const Notification = () => {
     setNotificationState(res.data);
   };
   const handleRedirect = (noti) => {
-    if (noti.type === 6 || noti.type === 7) return `/groups/${noti.data._id}`;
-    return `/post/${noti.postId}`;
+    if (noti.type === 6 || noti.type === 7) {
+      navigate(`/groups/${noti.data._id}`);
+    } else {
+      dispatch(setModalPost({ show: true, postId: noti.postId }));
+    }
   };
   return (
     <Popover
@@ -172,7 +176,10 @@ const Notification = () => {
               itemLayout="horizontal"
               dataSource={notificationState.data}
               renderItem={(item) => (
-                <Link to={handleRedirect(item)}>
+                <div
+                  className=" cursor-pointer"
+                  onClick={() => handleRedirect(item)}
+                >
                   <div
                     className={classNames("p-[12px]", {
                       "bg-[#eae6ee]": !isSeenNoti(item.status),
@@ -202,7 +209,7 @@ const Notification = () => {
                       leftIcon={isSeenNoti(item.status) ? "" : <EyeOutlined />}
                     />
                   </div>
-                </Link>
+                </div>
               )}
             />
           </InfiniteScroll>
