@@ -27,6 +27,13 @@ const groupAPI = {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
   },
+  getImagesGroup(groupId) {
+    const url = `${BASE_URL}/getImages/${groupId} `;
+    return axios.get(url, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+  },
+
   createGroup(data) {
     const url = `${BASE_URL}`;
     return axios.post(url, data, {

@@ -12,9 +12,19 @@ import { useParams } from "react-router";
 import SNListPost from "@/components/SNListPost";
 import { Link } from "react-router-dom";
 import { isEmpty } from "lodash";
+import groupAPI from "@/apis/groupAPI";
+import SNImage from "@/components/SNImage";
 const GroupTimeline = () => {
   const group = useSelector((state) => state.group);
+  const [images, setImages] = useState([]);
   console.log("emty", isEmpty(group));
+  const fetchImageGroup = async () => {
+    const res = await groupAPI.getImagesGroup(group._id);
+    setImages(res.data.data);
+  };
+  useEffect(() => {
+    fetchImageGroup();
+  }, []);
   return (
     <>
       <div className="flex flex-col gap-[16px]">
@@ -77,8 +87,18 @@ const GroupTimeline = () => {
           }
         />
         <SNWidgetBox
-          title={"Groups"}
-          content={<p className="sn-no-result">No groups found</p>}
+          title={"Photos"}
+          content={
+            images.length ? (
+              <div className="grid grid-cols-4 gap-[2px]">
+                {images.map((item, index) => (
+                  <SNImage media={item} key={index} isHiddenOverlay={true} />
+                ))}
+              </div>
+            ) : (
+              <p className="sn-no-result">No photos found</p>
+            )
+          }
         />
       </div>
     </>

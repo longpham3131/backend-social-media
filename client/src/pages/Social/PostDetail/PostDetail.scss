@@ -40,4 +40,7 @@
   .carousel .slide img {
     @apply max-w-[100%] h-auto w-auto;
   }
+  .carousel.carousel-slider {
+    @apply h-[80vh] max-h-[80vh];
+  }
 }

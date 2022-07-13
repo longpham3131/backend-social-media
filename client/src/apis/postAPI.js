@@ -69,6 +69,12 @@ const postAPI = {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
   },
+  getPostByImgId(imgId) {
+    const url = `${BASE_URL}/getPostByIdImage/${imgId}`;
+    return axios.get(url, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+  },
 };
 
 export default postAPI;

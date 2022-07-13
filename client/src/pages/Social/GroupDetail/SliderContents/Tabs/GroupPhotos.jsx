@@ -5,13 +5,16 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router";
 import SNNoResult from "@/components/SNNoResult";
+import groupAPI from "@/apis/groupAPI";
+import { useSelector } from "react-redux";
 
 const GroupPhotos = ({ user }) => {
-  const { userId } = useParams();
+  const group = useSelector((state) => state.group);
   const [images, setImages] = useState([]);
   const fetchAllImage = async () => {
     try {
-      const res = await userAPI.getImageUser(userId);
+      const res = await groupAPI.getImagesGroup(group._id);
+      console.log(res.data.data);
       setImages(res.data.data);
     } catch (erorr) {
       console.log("error get image");
@@ -19,11 +22,11 @@ const GroupPhotos = ({ user }) => {
   };
   useEffect(() => {
     fetchAllImage();
-  }, [userId]);
+  }, []);
   return (
     <div className=" col-span-4 ">
       <p className="text-color-text-alt text-[0.75rem] font-semibold uppercase">
-        Browse {user.fullName}
+        Browse {group.groupName}
       </p>
       <p className="mt-[8px] text-color-text text-[1.625rem] font-bold">
         Photo{" "}
@@ -33,9 +36,7 @@ const GroupPhotos = ({ user }) => {
       </p>
       <div className="grid grid-cols-6 gap-[16px] mt-[32px]">
         {images.length ? (
-          images.map((item, index) => (
-            <SNImage urlImage={item.filePath} key={index} />
-          ))
+          images.map((item, index) => <SNImage media={item} key={index} />)
         ) : (
           <div className=" col-span-6 text-center">
             <SNNoResult />

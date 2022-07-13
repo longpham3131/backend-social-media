@@ -21,14 +21,25 @@ const PostDetail = () => {
   const myProfile = useSelector((state) => state.profile);
   const modalPost = useSelector((state) => state.modalPost);
   const dispatch = useDispatch();
-  const { postId } = useParams();
   const [post, setPost] = useState();
   const [hasAtt, setHasAtt] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(0);
   const socket = useContext(SocketContext);
 
   useEffect(() => {
     fetchPostListByProfile();
   }, [modalPost.postId]);
+
+  useEffect(() => {
+    if (post) {
+      console.log("change select", post.text, modalPost.mediaSelectedId);
+      setSelectedItem(
+        post.attachments.findIndex(
+          (att) => att._id === modalPost.mediaSelectedId
+        )
+      );
+    }
+  }, [modalPost.postId && modalPost.mediaSelectedId]);
 
   useEffect(() => {
     socket.on("notification", (msg) => {
@@ -47,6 +58,7 @@ const PostDetail = () => {
         profile: 0,
         postId: modalPost.postId,
       });
+
       setHasAtt(res.data[0].attachments.length > 0 ? true : false);
       setPost(res.data[0]);
     } catch (error) {
@@ -60,7 +72,7 @@ const PostDetail = () => {
       <Modal
         wrapClassName="sn-post-detail"
         centered
-        width="80vw"
+        width="auto"
         title="Post detail"
         visible={modalPost.show}
         footer={null}
@@ -77,7 +89,11 @@ const PostDetail = () => {
             >
               {hasAtt && (
                 <div className="bg-black col-span-2 ">
-                  <Carousel showThumbs={false}>
+                  <Carousel
+                    showThumbs={false}
+                    selectedItem={selectedItem}
+                    swipeable={false}
+                  >
                     {post.attachments.map((att, index) => (
                       <div className="h-full" key={index}>
                         <div className="flex items-center justify-center h-full w-full">

@@ -13,16 +13,14 @@ const SNPostAttachments = ({ attachments }) => {
   const handleRenderImage = () => {
     switch (attachments.length) {
       case 1: {
-        return (
-          <SNImage urlImage={attachments[0]?.filePath} hasRounded={false} />
-        );
+        return <SNImage media={attachments[0]} hasRounded={false} />;
       }
       case 2:
       case 4: {
         return (
           <div className="grid grid-cols-2 gap-[6px]">
             {attachments.map((att, index) => (
-              <SNImage key={index} urlImage={att.filePath} />
+              <SNImage media={att} key={index} />
             ))}
           </div>
         );
@@ -31,7 +29,7 @@ const SNPostAttachments = ({ attachments }) => {
         return (
           <div className="grid grid-cols-3 gap-[6px]">
             {attachments.map((att, index) => (
-              <SNImage key={index} urlImage={att.filePath} />
+              <SNImage media={att} key={index} />
             ))}
           </div>
         );
@@ -51,7 +49,7 @@ const SNPostAttachments = ({ attachments }) => {
               >
                 {" "}
                 <SNImage
-                  urlImage={att.filePath}
+                  media={att}
                   isHiddenOverlay={inLastItem(index)}
                   quantityImageMore={
                     inLastItem(index)
