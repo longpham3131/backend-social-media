@@ -1,7 +1,8 @@
+import { Button } from "antd";
 import React from "react";
 import SNAvatar from "./SNAvatar";
 
-const SNWidgetBoxItem = ({ srcAvatar, name, description, leftIcon }) => {
+const SNWidgetBoxItem = ({ srcAvatar, name, description, leftIcon,buttonName ,onClick}) => {
   return (
     <div className="flex gap-[10px] items-center">
       <SNAvatar src={srcAvatar} size={50} />
@@ -14,6 +15,7 @@ const SNWidgetBoxItem = ({ srcAvatar, name, description, leftIcon }) => {
         </p>
       </div>
       {leftIcon}
+    {buttonName&&<Button onClick={onClick}>Send Invite</Button>}  
     </div>
   );
 };

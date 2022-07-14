@@ -88,6 +88,12 @@ const userAPI = {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
   },
+  getSuggestedFriends(){
+    const url = `${BASE_URL}/recommendFriends`;
+    return axios.get(url, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+  }
 };
 
 export default userAPI;

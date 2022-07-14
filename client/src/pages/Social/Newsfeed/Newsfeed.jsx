@@ -21,12 +21,13 @@ const Newsfeed = () => {
 
   const profile = useSelector((state) => state.profile);
   const [groups, setGroups] = useState([]);
-
+  const [suggestedFriends, setSuggestedFriends] = useState([])
   // const profile = useSelector((state) => state.profile);
 
   useEffect(() => {
     fetchGroups();
     userAPI.getMyProfile().then((rs) => dispatch(setProfile(rs.data.data)));
+    fetchSuggestedFriends()
   }, []);
 
   const fetchGroups = async () => {
@@ -38,6 +39,12 @@ const Newsfeed = () => {
     }
   };
 
+  useEffect(() => {
+    fetchSuggestedFriends()
+  }, [profile.friends])
+  const fetchSuggestedFriends = async () => {
+    await userAPI.getSuggestedFriends().then((rs) => setSuggestedFriends(rs.data.data))
+  }
   return (
     <div className="h-full">
       <div className="grid grid-cols-4 gap-4 mt-[32px] h-full">
@@ -73,29 +80,58 @@ const Newsfeed = () => {
           }
         />
         <SNListPost />
-        <SNWidgetBox
-          title={"Friends"}
-          content={
-            profile?.friends?.length ? (
-              profile?.friends?.map((item, index) => (
-                <Link key={index} to={`/profile/${item.user._id}`}>
-                  <SNWidgetBoxItem
-                    srcAvatar={item.user.avatar}
-                    name={
-                      <>
-                        {item.user.fullName}{" "}
-                        <Badge color={item.user.isOnline ? "#87d068" : "#bfbdbd"} />
-                      </>
-                    }
-                    description={"@" + item.user.username}
-                  />
-                </Link>
-              ))
-            ) : (
-              <p className="sn-no-result">No result found</p>
-            )
-          }
-        />
+        <div>
+          <SNWidgetBox
+            title={"Friends"}
+            content={
+              profile?.friends?.length ? (
+                profile?.friends?.map((item, index) => (
+                  <Link key={index} to={`/profile/${item.user._id}`}>
+                    <SNWidgetBoxItem
+                      srcAvatar={item.user.avatar}
+                      name={
+                        <>
+                          {item.user.fullName}{" "}
+                          <Badge color={item.user.isOnline ? "#87d068" : "#bfbdbd"} />
+                        </>
+                      }
+                      description={"@" + item.user.username}
+                    />
+                  </Link>
+                ))
+              ) : (
+                <p className="sn-no-result">No result found</p>
+              )
+            }
+          />
+          <div className="h-4"></div>
+          <SNWidgetBox
+
+            title={"Suggested Friends "}
+            content={
+              suggestedFriends?.length ? (
+                suggestedFriends?.map((item, index) => (
+                  <Link key={index} to={`/profile/${item._id}`}>
+                    <SNWidgetBoxItem
+                      srcAvatar={item.avatar}
+                      name={
+                        <>
+                          {item.fullName}{" "}
+                          {/* <Badge color={item.user.isOnline ? "#87d068" : "#bfbdbd"} /> */}
+                        </>
+                      }
+                      description={"@" + item.username}
+                      // buttonName="Send Invite"
+                    />
+                  </Link>
+                ))
+              ) : (
+                <p className="sn-no-result">No result found</p>
+              )
+            }
+          />
+        </div>
+
       </div>
     </div>
   );
