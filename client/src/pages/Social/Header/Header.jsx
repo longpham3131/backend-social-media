@@ -16,7 +16,7 @@ import {
 } from "antd";
 import React, { useRef, useState, useEffect } from "react";
 import { AppstoreOutlined, SettingOutlined } from "@ant-design/icons";
-
+import logo from "@/assets/images/cropped-logovikinger.png"
 import SNCreateEditPost from "@/components/SNCreateEditPost";
 
 import postAPI from "@/apis/postAPI";
@@ -65,7 +65,7 @@ const Headerbar = ({ collapsed, onToggle }) => {
         {/* Logo */}
         <div className="flex justify-center items-center gap-[1rem]">
           <img
-            src="images/cropped-logovikinger.png"
+            src={logo}
             alt="logo"
             className="mx-auto"
           />

@@ -377,7 +377,25 @@ router.get("/recommendFriends", verifyToken, async (req, res) => {
           "address.province": curUser.address.province
         }
       ]
-    })
+    }).limit(6)
+    if (users.length < 5) {
+      let listUserId= users.map(u=>u._id)
+      let users2 = await User.find({
+        $and: [
+          {
+            _id: {
+              $nin: fs.concat(listUserId)
+            }
+          },
+          {
+            _id: {
+              $ne: curUser._id
+            }
+          }
+        ]
+      }).limit(6-users.length)
+      users=users.concat(users2)
+    }
     return res.json({
       success: true,
       data: users,

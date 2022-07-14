@@ -25,6 +25,7 @@ import SNWidgetBoxItem from "@/components/SNWidgetBoxItem";
 import { EyeOutlined } from "@ant-design/icons";
 import classNames from "classnames";
 import { setModalPost } from "@/store/modalPostSlice";
+
 const Notification = () => {
   const navigate = useNavigate();
   const [notificationState, setNotificationState] = useState({});
