@@ -33,7 +33,7 @@ const GroupSliderContents = ({ isAdmin }) => {
     },
     {
       icon: <FileImageOutlined />,
-      name: "Photos",
+      name: "Media",
       isDisable: true,
       ele: <GroupPhotos />,
     },

@@ -7,7 +7,7 @@ import "@tensorflow/tfjs-backend-cpu";
 import * as cocoSsd from "@tensorflow-models/coco-ssd";
 import axios from "axios";
 import { UploadOutlined } from "@ant-design/icons";
-import { getUrlVideo } from "util";
+import { getUrlVideo } from "@/util/index";
 export default function SNUpload({
   isImagePost = true,
   onUploadSuccess,
@@ -52,15 +52,15 @@ export default function SNUpload({
   };
 
   const beforeUpload = async (file) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      message.info("You can only upload JPG/PNG file!");
-    }
+    // const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    // if (!isJpgOrPng) {
+    //   message.info("You can only upload JPG/PNG file!");
+    // }
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
       message.info("Image must smaller than 2MB!");
     }
-    if (!isJpgOrPng || !isLt2M) return isJpgOrPng && isLt2M;
+    if (!isLt2M) return isLt2M;
 
     // const imgData = await readImage(file);
     // const imageElement = document.createElement("img");
@@ -101,7 +101,12 @@ export default function SNUpload({
 
   const uploadImage = async (options) => {
     const { onSuccess, onProgress, onError, file } = options;
-    let tags = await getTags(file);
+    console.log("file", file);
+    let tags = [];
+    if (file.type !== "video/mp4") {
+      tags = await getTags(file);
+    }
+
     const fmData = new FormData();
     const config = {
       headers: { "content-type": "multipart/form-data" },

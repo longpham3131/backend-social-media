@@ -13,7 +13,14 @@ const SNPostAttachments = ({ attachments }) => {
   const handleRenderImage = () => {
     switch (attachments.length) {
       case 1: {
-        return <SNImage media={attachments[0]} hasRounded={false} />;
+        return (
+          <SNImage
+            iconPlaySize={32}
+            isControlsVideo={true}
+            media={attachments[0]}
+            hasRounded={false}
+          />
+        );
       }
       case 2:
       case 4: {

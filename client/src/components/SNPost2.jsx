@@ -178,7 +178,7 @@ const SNPost2 = ({ post, isPostDetail = false, onSuccessAct }) => {
                 <Link to={`/profile/${poster._id}`}>{fullName}</Link>
                 <span className="sn-post-header-user-des">
                   {" "}
-                  posted an {hasMedia ? "photo" : ""} update{" "}
+                  posted an update{" "}
                   {isGroup && groupId && (
                     <span>
                       in the group{" "}

@@ -29,7 +29,7 @@ const GroupPhotos = ({ user }) => {
         Browse {group.groupName}
       </p>
       <p className="mt-[8px] text-color-text text-[1.625rem] font-bold">
-        Photo{" "}
+        Media{" "}
         <span className=" text-color-primary-dark text-[1.625rem] font-bold">
           {images.length}
         </span>

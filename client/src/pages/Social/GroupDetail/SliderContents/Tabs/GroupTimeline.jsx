@@ -78,7 +78,12 @@ const GroupTimeline = ({ changeTab }) => {
                   name={
                     <>
                       {group.adminGroup.fullName}{" "}
-                      <Badge color={group.adminGroup.isOnline ? "#87d068" : "#bfbdbd"}  dot={group.adminGroup.isOnline} />
+                      <Badge
+                        color={
+                          group.adminGroup.isOnline ? "#87d068" : "#bfbdbd"
+                        }
+                        dot={group.adminGroup.isOnline}
+                      />
                     </>
                   }
                   description={"@" + group.adminGroup.username}
@@ -88,7 +93,7 @@ const GroupTimeline = ({ changeTab }) => {
           }
         />
         <SNWidgetBox
-          title={"Photos"}
+          title={"Media"}
           content={
             images.length ? (
               <div className="grid grid-cols-4 gap-[2px]">

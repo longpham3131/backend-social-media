@@ -50,7 +50,7 @@ const SliderContents = ({ user }) => {
 
     {
       icon: <FileImageOutlined />,
-      name: "Photos",
+      name: "Media",
       isDisable: true,
       ele: <Photos user={user} />,
     },

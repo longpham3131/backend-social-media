@@ -10,7 +10,7 @@ import { WarningOutlined } from "@ant-design/icons";
 import { SocketContext } from "@/service/socket/SocketContext";
 import SNPost2 from "@/components/SNPost2";
 import classNames from "classnames";
-import { getUrlVideo } from "util";
+import { getUrlVideo } from "@/util/index";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
 import { editModalPost } from "@/store/modalPostSlice";
@@ -89,9 +89,9 @@ const PostDetail = () => {
                     {post.attachments.map((att, index) => (
                       <div className="h-full" key={index}>
                         <div className="flex items-center justify-center h-full w-full">
-                          {att.type === "video/mp4" ? (
+                          {att.fileType === "video/mp4" ? (
                             <video controls key={index}>
-                              <source src={getUrlVideo(att.file)} />
+                              <source src={getUrlVideo(att.filePath)} />
                             </video>
                           ) : (
                             <img

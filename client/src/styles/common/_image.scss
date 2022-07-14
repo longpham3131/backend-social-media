@@ -6,7 +6,7 @@
 }
 
 .sn-image {
-  @apply aspect-square w-full relative   overflow-hidden cursor-pointer;
+  @apply w-full relative h-full  overflow-hidden cursor-pointer;
   &-background {
     @apply h-full;
   }

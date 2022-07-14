@@ -116,7 +116,7 @@ const Timeline = ({ user, changeTab }) => {
       <SNListPost showButtonCreatePost={userId === myProfile._id} />
       <div className="flex flex-col gap-[16px]">
         <SNWidgetBox
-          title={"Photos"}
+          title={"Media"}
           content={
             photos.length ? (
               <div className="grid grid-cols-4 gap-[2px]">
@@ -125,7 +125,11 @@ const Timeline = ({ user, changeTab }) => {
                     key={index}
                     className={classNames({ hidden: index > 11 })}
                   >
-                    <SNImage media={item} isHiddenOverlay={true} />
+                    <SNImage
+                      media={item}
+                      isHiddenOverlay={true}
+                      iconPlaySize={18}
+                    />
                   </div>
                 ))}
                 <Button
