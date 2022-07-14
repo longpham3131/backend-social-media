@@ -143,11 +143,10 @@ router.post("/", verifyToken, async (req, res) => {
       const io = req.io;
       console.log(`user_${rs[1].poster.toString()}`);
       io.sockets.to(`user_${rs[1].poster.toString()}`).emit("notification", {
-        // data: { ...queryData, fromUser: userForNoti },
         fromUser: userForNoti,
         type: 1,
         postId,
-        msg: "commented your post",
+        mess: "commented your post",
       });
     }
     res.json({ success: true, data: rs[0], message: "true" });
