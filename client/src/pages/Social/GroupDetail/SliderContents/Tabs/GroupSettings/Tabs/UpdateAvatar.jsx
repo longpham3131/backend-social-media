@@ -49,6 +49,7 @@ const UpdateAvatar = () => {
   };
   const handleUpdate = async () => {
     const covertData = {
+      _id: group._id,
       cover: previewCover,
       avatar: previewAvatar,
     };
