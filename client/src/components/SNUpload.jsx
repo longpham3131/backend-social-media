@@ -142,7 +142,6 @@ export default function SNUpload({
         fileList={defaultFileList}
         // action="https://uploadfile0510.herokuapp.com/api/upload/singleFile"
         customRequest={uploadImage}
-        beforeUpload={beforeUpload}
         onChange={handleChange}
         onRemove={onRemove}
       >
