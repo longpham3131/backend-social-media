@@ -79,6 +79,7 @@ export const formatMinutes = (dateString) => {
   var deltaTime = parseInt((nowDate.getTime() - date.getTime()) / 1000);
   var minutes = parseInt(deltaTime / 60);
   if (minutes < 60) {
+    if (minutes === 0) return "Now"
     return minutes + " minute ago";
   } else {
     var hours = parseInt(minutes / 60);

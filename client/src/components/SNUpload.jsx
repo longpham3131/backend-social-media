@@ -56,11 +56,11 @@ export default function SNUpload({
     // if (!isJpgOrPng) {
     //   message.info("You can only upload JPG/PNG file!");
     // }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.info("Image must smaller than 2MB!");
-    }
-    if (!isLt2M) return isLt2M;
+    // const isLt2M = file.size / 1024 / 1024 < 2;
+    // if (!isLt2M) {
+    //   message.info("Image must smaller than 2MB!");
+    // }
+    // if (!isLt2M) return isLt2M;
 
     // const imgData = await readImage(file);
     // const imageElement = document.createElement("img");
