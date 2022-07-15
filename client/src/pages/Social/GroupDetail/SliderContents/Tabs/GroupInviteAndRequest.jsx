@@ -107,7 +107,7 @@ const GroupInviteAndRequest = () => {
                           <div className="flex gap-[10px]">
                             {mem.role.isManager ? (
                               <StarFilled
-                                className=" cursor-pointer "
+                                className=" cursor-pointer text-yellow-300"
                                 onClick={() =>
                                   handleUpdateRole(
                                     mem.user._id,
@@ -117,7 +117,7 @@ const GroupInviteAndRequest = () => {
                               />
                             ) : (
                               <StarOutlined
-                                className=" cursor-pointer text-yellow-300"
+                                className=" cursor-pointer "
                                 onClick={() =>
                                   handleUpdateRole(
                                     mem.user._id,
@@ -126,11 +126,14 @@ const GroupInviteAndRequest = () => {
                                 }
                               />
                             )}
-                            <DeleteOutlined className=" cursor-pointer " />
-                            <CheckCircleOutlined
+                            <DeleteOutlined
                               className=" cursor-pointer "
                               onClick={() => handleKickUser(mem.user._id)}
                             />
+                            {/* <CheckCircleOutlined
+                              className=" cursor-pointer "
+                              onClick={() => handleKickUser(mem.user._id)}
+                            /> */}
                           </div>
                         </div>
                       )

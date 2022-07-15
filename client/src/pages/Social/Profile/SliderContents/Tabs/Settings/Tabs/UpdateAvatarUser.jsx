@@ -54,7 +54,7 @@ const UpdateAvatarUser = () => {
     setLoadingSubmit(true);
     try {
       const res = await userAPI.updateProfile(covertData);
-      dispatch(setProfile(res.data.data));
+      dispatch(setProfile(res.data));
       message.success("Update success");
     } catch {
       message.error("Update error!");
