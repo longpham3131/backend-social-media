@@ -12,7 +12,7 @@
       @apply rounded-xl  max-h-[420px];
     }
     .ant-popover-inner-content {
-      @apply w-full h-full overflow-y-scroll pt-[28px];
+      @apply w-full h-full pt-[28px];
     }
     &-result {
       @apply flex flex-col gap-[20px];

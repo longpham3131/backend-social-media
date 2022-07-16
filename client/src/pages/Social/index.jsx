@@ -7,8 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Route, Routes, useLocation } from "react-router";
 import Newsfeed from "./Newsfeed/Newsfeed";
-import PhotosRelate from "./PhotosRelate";
-import SearchPage from "./PhotosRelate";
+
 import Profile from "./Profile/Profile";
 import PostDetail from "./PostDetail/PostDetail";
 import Siderbar from "./Siderbar/Siderbar";
@@ -23,6 +22,7 @@ import Banner from "./Banner/Banner";
 import Members from "./Members";
 import Groups from "./Groups";
 import GroupDetail from "./GroupDetail/GroupDetail";
+import SearchPage from "./SearchPage";
 const { Content } = Layout;
 
 const Social = () => {
@@ -65,7 +65,7 @@ const Social = () => {
           onClose={() => setCollapsed(!collapsed)}
         />
         <Content
-          className="site-layout-background min-h-[28rem] w-full m-0 lg:mt-[2.4rem] lg:mx-[1.6rem] overflow-auto"
+          className="site-layout-background min-h-[28rem] w-full m-0 lg:mt-[2.4rem] lg:ml-[1.6rem] overflow-auto"
           id="scrollablePost"
         >
           <div className="w-full h-full">
@@ -75,8 +75,8 @@ const Social = () => {
                 <Route path="/" element={<Newsfeed />} />
                 <Route path="/profile/:userId" element={<Profile />} />
                 <Route path="/post/:postId" element={<PostDetail />} />
-                <Route path="/search/:searchKey" element={<SearchPage />} />
-                <Route path="/photosRelate/:searchKey" element={<PhotosRelate />} />
+                <Route path="/search" element={<SearchPage />} />
+
                 <Route path="/members" element={<Members />} />
                 <Route path="/groups" element={<Groups />} />
                 <Route path="/groups/:groupId" element={<GroupDetail />} />

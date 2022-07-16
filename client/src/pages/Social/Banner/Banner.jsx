@@ -1,12 +1,14 @@
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router";
+import { useSearchParams } from "react-router-dom";
 
 const Banner = () => {
   const { pathname } = useLocation();
-  const params = useParams();
+  const [searchParams] = useSearchParams();
   const [isVisible, setIsVisible] = useState(false);
   const [title, setTitle] = useState("");
+
   const [des, setDes] = useState("");
   const [img, setImg] = useState("");
 
@@ -21,7 +23,7 @@ const Banner = () => {
       setDes("Browse all the groups of the community!");
       setImg("images/groups-icon.png");
     } else if (pathname.includes("search")) {
-      setTitle(`Search Results:"${Object.values(params)[0].slice(7)}"`);
+      setTitle(`Search Results:"${searchParams.get("q")}"`);
       setDes("Browse your search results");
       setImg("images/search-icon.png");
     } else if (pathname === "/") {
@@ -31,7 +33,7 @@ const Banner = () => {
     } else {
       setIsVisible(false);
     }
-  }, [pathname]);
+  }, [pathname, searchParams.get("q")]);
   return (
     <div
       className={classNames(
