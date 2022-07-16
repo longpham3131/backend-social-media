@@ -13,8 +13,7 @@ import { createPost } from "@/store/postSlice";
 const SNListPost = ({ showButtonCreatePost = true, isGroupPrivate }) => {
   const postList = useSelector((state) => state.posts);
   const dispatch = useDispatch();
-  const [loadMore, setLoadMore] = useState(true);
-  const [index, setIndex] = useState(0);
+  const [limit, setLimit] = useState(3);
   const [loading, setLoading] = useState(false);
   const [showCreatePost, setShowCreatePost] = useState(false);
   const { userId, groupId } = useParams();
@@ -27,16 +26,12 @@ const SNListPost = ({ showButtonCreatePost = true, isGroupPrivate }) => {
     console.log("fetch post");
     try {
       const res = await postAPI.getPostList({
-        limitPost: 10,
+        limitPost: limit,
         index: 0,
         userId,
         groupId,
       });
-      if (res.data === 0) {
-        setLoadMore(false);
-        return;
-      }
-      setIndex(index + 1);
+      setLimit(limit + 3);
       dispatch(setPostList(res.data));
     } catch (error) {
       message.error("Get post list fail");
@@ -92,28 +87,29 @@ const SNListPost = ({ showButtonCreatePost = true, isGroupPrivate }) => {
           />
         </>
       )}
-      <div id="scrollablePost">
-        {/* <InfiniteScroll
-        dataLength={postList?.length ?? 0}
-        next={fetchPost}
-        hasMore={loadMore}
-        loader={
-          <Skeleton
-            className="w-[30rem]"
-            avatar
-            paragraph={{ rows: 1 }}
-            active
-          />
-        }
-        endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
-        scrollableTarget="scrollablePost"
-      >
-        <div className="col-span-2">
-          {postList.length > 0 &&
-            postList.map((post) => <SNPost2 post={post} key={post._id} />)}
-        </div>
-      </InfiniteScroll> */}
-        {loading ? (
+      <div>
+        <InfiniteScroll
+          dataLength={postList?.length ?? 0}
+          next={fetchPost}
+          hasMore={true}
+          loader={
+            <Skeleton
+              className="w-[30rem]"
+              avatar
+              paragraph={{ rows: 1 }}
+              active
+            />
+          }
+          endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+          scrollableTarget="scrollablePost"
+        >
+          <div className="col-span-2">
+            {postList.map((post) => (
+              <SNPost2 post={post} key={post._id} />
+            ))}
+          </div>
+        </InfiniteScroll>
+        {/* {loading ? (
           <Skeleton
             className="w-[30rem]"
             avatar
@@ -128,7 +124,7 @@ const SNListPost = ({ showButtonCreatePost = true, isGroupPrivate }) => {
               <Divider plain> NO POST FOUNDED 🤐</Divider>
             )}
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

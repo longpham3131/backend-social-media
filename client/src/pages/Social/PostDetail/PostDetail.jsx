@@ -27,7 +27,9 @@ const PostDetail = () => {
   const socket = useContext(SocketContext);
 
   useEffect(() => {
-    fetchPostListByProfile();
+    if (modalPost.postId) {
+      fetchPostListByProfile();
+    }
   }, [modalPost.postId]);
 
   useEffect(() => {

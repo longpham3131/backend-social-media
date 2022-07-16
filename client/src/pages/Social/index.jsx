@@ -64,7 +64,10 @@ const Social = () => {
           collapsed={collapsed}
           onClose={() => setCollapsed(!collapsed)}
         />
-        <Content className="site-layout-background min-h-[28rem] w-full m-0 lg:mt-[2.4rem] lg:mx-[1.6rem] overflow-auto">
+        <Content
+          className="site-layout-background min-h-[28rem] w-full m-0 lg:mt-[2.4rem] lg:mx-[1.6rem] overflow-auto"
+          id="scrollablePost"
+        >
           <div className="w-full h-full">
             <div className={`h-full w-[1184px] mx-auto `}>
               <Banner />

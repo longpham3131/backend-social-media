@@ -300,11 +300,10 @@ router.get("/", verifyToken, async (req, res) => {
         { groupId: { $in: user.groups }, status: 1 },
       ];
     }
-
     const result = await Post.find({ $or: query })
       .sort({ createAt: -1 })
       .skip(index * limitPost)
-      .limit(10)
+      .limit(limitPost * 1)
       .populate("poster")
       .populate({ path: "groupId", select: "_id groupName cover" })
       .populate({
