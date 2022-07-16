@@ -75,6 +75,12 @@ const postAPI = {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
   },
+  getPhotosRelate(keySearch){
+    const url = `${BASE_URL}/ultimateSearch/${keySearch}`;
+    return axios.get(url, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+  }
 };
 
 export default postAPI;

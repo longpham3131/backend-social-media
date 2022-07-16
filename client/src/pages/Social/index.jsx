@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Route, Routes, useLocation } from "react-router";
 import Newsfeed from "./Newsfeed/Newsfeed";
-import SearchPage from "./SearchPage";
-
+import PhotosRelate from "./PhotosRelate";
+import SearchPage from "./PhotosRelate";
 import Profile from "./Profile/Profile";
 import PostDetail from "./PostDetail/PostDetail";
 import Siderbar from "./Siderbar/Siderbar";
@@ -73,6 +73,7 @@ const Social = () => {
                 <Route path="/profile/:userId" element={<Profile />} />
                 <Route path="/post/:postId" element={<PostDetail />} />
                 <Route path="/search/:searchKey" element={<SearchPage />} />
+                <Route path="/photosRelate/:searchKey" element={<PhotosRelate />} />
                 <Route path="/members" element={<Members />} />
                 <Route path="/groups" element={<Groups />} />
                 <Route path="/groups/:groupId" element={<GroupDetail />} />

@@ -14,14 +14,17 @@ const Searchbar = () => {
   const pathName = useLocation();
   const [listResult, setListResult] = useState([]);
   const [isShowBoxResult, setIsShowBoxResult] = useState(false);
+  const [searchKey, setSearchKey] = useState('')
   const debounceSearch = useCallback(
     debounce(async (searchKey) => {
+      setSearchKey(searchKey)
       if (!searchKey) {
         setIsShowBoxResult(false);
         return;
       }
+      let key = searchKey[0] === "#" ? searchKey.slice(1) : searchKey
       setIsShowBoxResult(true);
-      let rs = await userAPI.getSearch2({ page: 1, pageSize: 3, searchKey });
+      let rs = await userAPI.getSearch2({ page: 1, pageSize: 3, searchKey: key });
       setListResult(rs.data.data);
     }, 500),
     []
@@ -50,8 +53,18 @@ const Searchbar = () => {
           <div className="header-searchbar-box-result">
             <div className="header-searchbar-box-result-category">
               <div className="header-searchbar-box-result-category-name">
+                {searchKey[0] === "#" && <div>
+                  Photos related
+                  <Link to={`/photosRelate/${searchKey.slice(1)}`}>
+                    <p className=" text-color-text text-[0.875rem] break-words font-bold leading-[1.4285714286em]">
+                      {searchKey}
+                    </p>
+                  </Link>
+                </div>
+                }
+
                 Members
-                {listResult?.users?.length > 0 &&
+                {listResult?.users?.length >= 0 &&
                   listResult.users.map((u, index) => (
                     <Link key={index} to={`/profile/${u._id}`}>
                       <SNWidgetBoxItem

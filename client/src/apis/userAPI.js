@@ -66,6 +66,7 @@ const userAPI = {
   },
   getSearch2({page,pageSize,searchKey}) {
     const url = `${BASE_URL}/v2/search?pageSize=${pageSize}&page=${page}&searchKey=${searchKey}`;
+    console.log('url',url)
     return axios.get(url, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });

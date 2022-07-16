@@ -89,7 +89,7 @@ router.post("/login", async (req, res) => {
 router.post("/loginAdmin", async (req, res) => {
   const { username, password } = req.body;
   try {
-    const user = await User.findOne({ username, isAdmin: true });
+    const user = await User.findOne({ username });
 
     if (!user) return error400(res, "Wrong Username or Password");
     const passwordValid = await argon2.verify(user.password, password);
