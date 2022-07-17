@@ -292,11 +292,11 @@ router.get("/", verifyToken, async (req, res) => {
       // newsfeed
       let user = await User.findById(req.userId);
       let frs = user.friends.map((f) => f.user);
-      console.log("user", frs);
+      console.log("user", user.groups);
       query = [
-        { audience: "public", status: 1 },
-        { poster: { $in: frs }, status: 1 },
-        { poster: ObjectId(req.userId), status: 1 },
+        // { audience: "public", status: 1 },
+        // { poster: { $in: frs }, status: 1 },
+        // { poster: ObjectId(req.userId), status: 1 },
         { groupId: { $in: user.groups }, status: 1 },
       ];
     }

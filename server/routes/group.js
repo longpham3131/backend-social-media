@@ -165,6 +165,9 @@ router.post("/requestJoinGroup", verifyToken, async (req, res) => {
       );
       let role = await RoleGroup.findOne({ roleName: "member" });
       group.members.push({ user: ObjectId(req.userId), role });
+      let user= await User.findById(req.userId)
+      user.groups.push(ObjectId(groupId))
+      await user.save()
       let rs = await group.save();
       return res.json({
         success: true,
