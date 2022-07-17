@@ -1,7 +1,7 @@
 import SNWidgetBox from "@/components/SNWidgetBox";
 import SNPost from "@/components/SNPost";
 import moment from "moment";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 
@@ -15,14 +15,22 @@ import { isEmpty } from "lodash";
 import groupAPI from "@/apis/groupAPI";
 import SNImage from "@/components/SNImage";
 import classNames from "classnames";
+import { SocketContext } from "@/service/socket/SocketContext";
 const GroupTimeline = ({ changeTab }) => {
   const group = useSelector((state) => state.group);
   const [images, setImages] = useState([]);
-  console.log("emty", isEmpty(group));
+  const socket = useContext(SocketContext);
   const fetchImageGroup = async () => {
     const res = await groupAPI.getImagesGroup(group._id);
     setImages(res.data.data);
   };
+  useEffect(() => {
+    socket.on("notification", (msg) => {
+      if (msg.type === 2) {
+        fetchImageGroup();
+      }
+    });
+  }, []);
   useEffect(() => {
     fetchImageGroup();
   }, []);
@@ -65,8 +73,14 @@ const GroupTimeline = ({ changeTab }) => {
           }
         /> */}
       </div>
+      {group.isMember ? (
+        <SNListPost showButtonCreatePost={group.isMember} />
+      ) : (
+        <p className="sn-no-result col-span-2">
+          Please become a member to view posts
+        </p>
+      )}
 
-      <SNListPost showButtonCreatePost={group.isMember} />
       <div className="flex flex-col gap-[16px]">
         <SNWidgetBox
           title={"Group Administrators"}

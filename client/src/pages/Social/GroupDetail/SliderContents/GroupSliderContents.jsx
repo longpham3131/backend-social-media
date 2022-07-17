@@ -16,7 +16,7 @@ import { useParams } from "react-router";
 import GroupInviteAndRequest from "./Tabs/GroupInviteAndRequest";
 
 const { TabPane } = Tabs;
-const GroupSliderContents = ({ isAdmin }) => {
+const GroupSliderContents = ({ isAdmin, isManager }) => {
   const [activeKey, setActiveKey] = useState("1");
   const categories = [
     {
@@ -40,7 +40,7 @@ const GroupSliderContents = ({ isAdmin }) => {
     {
       icon: <ScheduleOutlined />,
       name: "Manage Member",
-      isDisable: isAdmin,
+      isDisable: isAdmin || isManager,
       ele: <GroupInviteAndRequest />,
     },
 

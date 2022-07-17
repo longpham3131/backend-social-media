@@ -1,6 +1,6 @@
 import { Button, Image, message } from "antd";
 import groupAPI from "@/apis/groupAPI";
-import React from "react";
+import React, { useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router";
@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import classNames from "classnames";
 import { setGroup } from "@/store/groupSlice";
 import { isEmpty } from "lodash";
+import { SocketContext } from "@/service/socket/SocketContext";
 const GroupDetail = () => {
   const myProfile = useSelector((state) => state.profile);
   const { groupId } = useParams();
@@ -21,6 +22,7 @@ const GroupDetail = () => {
   const group = useSelector((state) => state.group);
   const [hiddenButtonJoin, setHiddenButtonJoin] = useState(false);
   const [isInvited, setIsInvited] = useState(false);
+  const socket = useContext(SocketContext);
   const fetchGroupDetail = async () => {
     try {
       const res = await groupAPI.getGroupDetail(groupId);
@@ -56,6 +58,13 @@ const GroupDetail = () => {
     isJoin && message.success(`Welcome to ${group.groupName} group`);
   };
 
+  useEffect(() => {
+    socket.on("notification", (msg) => {
+      if (msg.type === 2) {
+        fetchGroupDetail();
+      }
+    });
+  }, []);
   useEffect(() => {
     fetchGroupDetail();
   }, []);
@@ -160,7 +169,10 @@ const GroupDetail = () => {
               </div>
             </div>
           </div>
-          <GroupSliderContents isAdmin={group.isAdmin} />
+          <GroupSliderContents
+            isAdmin={group.isAdmin}
+            isManager={group.isManager}
+          />
         </>
       )}
     </div>

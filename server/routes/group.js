@@ -89,6 +89,10 @@ router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
     groups.isMember =
       groups.members.findIndex((item) => item.user._id == req.userId) !== -1;
     groups.isAdmin = req.userId == ObjectId(groups.adminGroup._id);
+    groups.isManager =
+      groups.members.findIndex(
+        (item) => item.user._id == req.userId && item.role.isManager
+      ) !== -1;
     return res.json({
       success: true,
       data: groups,
@@ -319,7 +323,6 @@ router.post("/joinGroup", verifyToken, async (req, res) => {
     ///check Privilege
 
     let roleMember = await RoleGroup.findOne({ roleName: "member" });
-    console.log("adminGroup", group.adminGroup.toString());
     if (group.adminGroup._id.toString() !== req.userId) {
       let privilegeAdmin = await RoleGroup.findOne({
         roleName: "manager",

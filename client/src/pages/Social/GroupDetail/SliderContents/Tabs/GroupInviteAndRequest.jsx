@@ -60,7 +60,7 @@ const GroupInviteAndRequest = () => {
     message.success(`Cancel invite user ${fullName} success!`);
   };
   const handleAcceptOrDeleteRequest = async (user, isJoin) => {
-    await groupAPI.responseRequestJoin({ groupId, user: user._id, isJoin });
+    await groupAPI.responseRequestJoin({ groupId, userId: user._id, isJoin });
     const res = await groupAPI.getGroupDetail(groupId);
     dispatch(setGroup(res.data.data));
     isJoin

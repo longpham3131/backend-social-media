@@ -52,10 +52,9 @@ const Notification = () => {
   };
   useEffect(() => {
     socket.on("notification", (msg) => {
-      console.log('msg io',msg)
       fetchNoti();
-      if(msg.type === 0){
-        fetchInfoUser()
+      if (msg.type === 0) {
+        fetchInfoUser();
       }
       // noti socket io : type = 0: user, type = 1: post , type = 2: group
       notification.info({
@@ -147,7 +146,7 @@ const Notification = () => {
       overlayInnerStyle={{
         maxWidth: "30rem",
         minWidth: "30rem",
-        maxHeight: "50rem",
+        maxHeight: "500px",
         overflow: "auto",
       }}
       overlayClassName="sn-notifications"
