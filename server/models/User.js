@@ -32,12 +32,16 @@ const UserSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "",
+      default: "viking_uewep5.png",
     },
     coverPicture: {
       type: String,
-      default: "",
+      default: "5f6d2f8173860-bp-cover-image_gw7shw.jpg",
     },
+    groups: [{
+      type: Schema.Types.ObjectId,
+      ref: "Group",
+    }],
     imageList: {
       type: Array,
       default: [],
@@ -53,7 +57,11 @@ const UserSchema = new mongoose.Schema(
         type: Schema.Types.ObjectId,
         ref: "User",
       },
+<<<<<<< HEAD
     ], 
+=======
+    ],
+>>>>>>> refactor-FE
     friends: [
       {
         user: {
@@ -78,7 +86,68 @@ const UserSchema = new mongoose.Schema(
         },
       },
     ],
+    interests: [
+      {
+        title: {
+          type: String
+        },
+        context: {
+          type: String
+        }
+      }
+    ],
+    address: {
+      district: {
+        type: String
+      },
+      province: {
+        type: String
+      },
+    },
+    birthplace: {
+      district: {
+        type: String,
+        default: "",
+      },
+      province: {
+        type: String,
+        default: "",
+      },
+    },
+    achievements: [
+      {
+        icon: {
+          type: String,
+          default: "",
+        },
+        description: {
+          type: String,
+          default: "",
+        }
+      }
+    ],
+    facebook: {
+      type: String,
+      default: "",
+    },
+    insta: {
+      type: String,
+      default: "",
+    },
+    twitter: {
+      type: String,
+      default: "",
+    },
+    occupation: {
+      type: String,
+      default: "",
+    },
     isAdmin: {
+      type: Boolean,
+      default: false,
+    }
+    ,
+    isOnline: {
       type: Boolean,
       default: false,
     },

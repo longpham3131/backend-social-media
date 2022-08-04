@@ -18,6 +18,7 @@ const Group = new Schema({
     type: String,
     required: true,
     default: ''
+<<<<<<< HEAD
   },
   groupDescription: {
     type: String,
@@ -27,10 +28,31 @@ const Group = new Schema({
     type: String,
     default: ''
   },
+=======
+  },
+  groupDescription: {
+    type: String,
+    default: ''
+  },
+  cover: {
+    type: String,
+    default: '5f6d2f8173860-bp-cover-image_gw7shw.jpg'
+  },
+  avatar: {
+    type: String,
+    default: '166258_miyrwl.png'
+  },
+>>>>>>> refactor-FE
   adminGroup: {
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+<<<<<<< HEAD
+=======
+  tags: [{
+    type: String
+  }],
+>>>>>>> refactor-FE
   members: [{
     user: {
       type: Schema.Types.ObjectId,
@@ -47,6 +69,21 @@ const Group = new Schema({
       ref: "User",
     }
   ],
+<<<<<<< HEAD
+=======
+  invited: [
+    {
+      member: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+      invitedUser: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      }
+    }
+  ],
+>>>>>>> refactor-FE
   createAt: {
     type: Date,
     default: Date.now,

@@ -22,11 +22,19 @@ const PostSchema = new Schema({
     type: Number,
     default: 1
   },
+<<<<<<< HEAD
   isGroup:{
     type:Boolean,
     default:false
   },
   groupId:{
+=======
+  isGroup: {
+    type: Boolean,
+    default: false
+  },
+  groupId: {
+>>>>>>> refactor-FE
     type: Schema.Types.ObjectId,
     ref: "Group",
   },
@@ -48,12 +56,15 @@ const PostSchema = new Schema({
       ref: "Comment",
     },
   ],
+<<<<<<< HEAD
 
+=======
+>>>>>>> refactor-FE
   share: { type: Number, default: 0 },
-  attachments: {
-    type: Array,
-    default: [],
-  },
+  attachments: [{
+    type: Schema.Types.ObjectId,
+    ref:"SingleFile"
+  }],
   postParent: { type: String, default: "" },
   createAt: {
     type: Date,

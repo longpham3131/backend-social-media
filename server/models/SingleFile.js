@@ -37,7 +37,6 @@ const singleFileSchema = new Schema(
     createAt: {
       type: Date,
       default: Date.now,
-      unique: true,
     },
     updateAt: {
       type: Date,
@@ -46,5 +45,5 @@ const singleFileSchema = new Schema(
   },
   { timestamps: true }
 );
-
+singleFileSchema.index({ filePath: "text"  })
 module.exports = mongoose.model("SingleFile", singleFileSchema);

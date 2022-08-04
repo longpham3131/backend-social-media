@@ -1,0 +1,33 @@
+.sn-avatar {
+  &-outside {
+    display: block;
+    filter: url(#round);
+    position: relative;
+    &::before {
+      content: "";
+      display: block;
+      padding-top: 86.6%;
+      height: 100%;
+      background: white;
+      clip-path: polygon(50% 0, 100% 20%, 100% 80%, 50% 100%, 0 80%, 0 20%);
+    }
+  }
+
+  &-inner {
+    display: inline-block;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    filter: url(#round);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    &::before {
+      content: "";
+      display: block;
+      height: 100%;
+      padding-top: 86.6%;
+      clip-path: polygon(50% 0, 100% 20%, 100% 80%, 50% 100%, 0 80%, 0 20%);
+    }
+  }
+}

@@ -1,0 +1,29 @@
+#root,
+#app {
+  .ant-tabs.ant-tabs-card {
+    @apply font-quicksand font-medium h-full pb-[3.5rem] lg:pb-0;
+    .ant-tabs-bar {
+      @apply mb-0;
+    }
+    .ant-tabs-card-bar {
+      .ant-tabs-tab {
+        @apply bg-gray-1 text-gray-3 text-base py-[1.2rem] pl-[1.2rem] pr-8 h-[4.4rem] mr-[0.4rem] leading-[1.8rem];
+        clip-path: polygon(
+          calc(100% - 21px) 0,
+          100% 50%,
+          100% 100%,
+          0 100%,
+          0 0
+        );
+
+        &.ant-tabs-tab-active {
+          @apply bg-white text-green-3;
+        }
+      }
+    }
+
+    .ant-tabs-content {
+      @apply bg-white py-[2.4rem] px-[1.6rem] lg:p-16 h-full lg:h-auto;
+    }
+  }
+}

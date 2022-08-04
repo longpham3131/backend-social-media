@@ -1,0 +1,33 @@
+@import "./_variables.scss";
+@import "./_font.scss";
+@import "icon";
+@import "button";
+@import "toasted";
+@import "tabs";
+@import "scrollbar";
+@import "tooltip";
+@import "image";
+@import "avatar";
+@import "searchbar";
+@import "noResult";
+@import "card";
+@import "post";
+@import "comment";
+@import "sliderContent";
+@import "input";
+@import "modal";
+@import "popover";
+*,
+html {
+  font-family: "Rajdhani", sans-serif;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span {
+  @apply m-0 leading-[1em];
+}

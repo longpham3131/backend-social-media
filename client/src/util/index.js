@@ -74,27 +74,48 @@ export function beforeUpload(file) {
 }
 export const formatMinutes = (dateString) => {
   var date = new Date(dateString);
+
   var nowDate = new Date();
   var deltaTime = parseInt((nowDate.getTime() - date.getTime()) / 1000);
   var minutes = parseInt(deltaTime / 60);
   if (minutes < 60) {
-    return minutes + " phút trước";
+    if (minutes === 0) return "Now"
+    return minutes + " minute ago";
   } else {
     var hours = parseInt(minutes / 60);
     if (hours < 24) {
-      return hours + " giờ trước";
+      return hours + " hour ago";
     } else {
       var days = parseInt(hours / 24);
       if (days < 30) {
-        return days + " ngày trước";
+        return days + " day ago";
       } else {
         var months = parseInt(days / 30);
         if (months < 12) {
-          return months + " tháng trước";
+          return months + " month ago";
         } else {
-          return parseInt(months / 12) + " năm trước";
+          return parseInt(months / 12) + " year ago";
         }
       }
     }
   }
+};
+export const getFirstWord = (string) => {
+  if (string) {
+    const words = string.trim().split(" ");
+    return (
+      words[words.length - 1].charAt(0).toUpperCase() +
+      words[words.length - 1].slice(1)
+    );
+  }
+};
+export const makeid = (length) => {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 };

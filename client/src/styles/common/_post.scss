@@ -1,0 +1,45 @@
+.sn-post {
+  @apply w-full rounded-xl bg-white py-[24px] mb-[16px];
+  &-header {
+    @apply flex justify-between items-center  px-[28px];
+
+    &-user {
+      @apply flex gap-[12px] items-center;
+      &-info {
+        @apply text-color-text font-bold text-[1rem];
+      }
+      &-create-post {
+        @apply leading-[0];
+      }
+      &-des {
+        @apply font-medium;
+      }
+    }
+  }
+  &-content {
+    @apply flex flex-col gap-[12px];
+    &-text {
+      @apply text-color-text break-words whitespace-pre-wrap font-medium leading-[1.7142857143em] text-[0.875rem];
+    }
+  }
+  &-react {
+    @apply flex justify-between items-center gap-[16px] py-[20px];
+    &-count {
+      @apply text-[0.75rem] font-bold text-color-text leading-[1em];
+    }
+    &-like {
+      @apply rounded-tl-xl rounded-bl-xl w-[80px] h-[30px] p-[5px] cursor-pointer border transition-all duration-500 border-r-0;
+
+      p {
+        @apply text-color-header-background font-bold text-center;
+      }
+      &.liked,
+      &:hover {
+        @apply bg-color-header-background;
+        p {
+          @apply text-white font-bold text-center;
+        }
+      }
+    }
+  }
+}

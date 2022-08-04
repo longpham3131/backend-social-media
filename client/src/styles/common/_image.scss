@@ -1,0 +1,37 @@
+.ant-image-preview-img {
+  @apply mx-auto;
+}
+.ant-image-preview-img-wrapper {
+  @apply flex items-center justify-center;
+}
+
+.sn-image {
+  @apply w-full relative h-full  overflow-hidden cursor-pointer;
+  &-background {
+    @apply h-full;
+  }
+  &-overlay {
+    @apply h-full flex justify-center items-center translate-y-[100%] bg-color-overlay transition-all duration-500 cursor-pointer;
+    p {
+      @apply text-white font-bold text-[1rem];
+    }
+    &.hidden-overlay {
+      @apply hidden;
+    }
+  }
+  &-seemore {
+    @apply h-full flex justify-center items-center translate-y-[0%] bg-color-seemore transition-all duration-500 cursor-pointer;
+    p {
+      @apply text-white font-bold text-[1rem];
+    }
+    &.hidden-seemore {
+      @apply hidden;
+    }
+  }
+
+  &:hover {
+    .sn-image-overlay {
+      @apply translate-y-0;
+    }
+  }
+}

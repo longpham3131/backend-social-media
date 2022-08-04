@@ -1,0 +1,13 @@
+.ant-popover {
+  &-inner {
+    @apply rounded-xl;
+  }
+  &.sn-notifications {
+    .ant-popover-arrow {
+      @apply hidden;
+    }
+    .ant-popover-inner-content {
+      @apply px-0;
+    }
+  }
+}

@@ -3,6 +3,7 @@ const router = express.Router();
 const argon2 = require("argon2");
 const Post = require("../models/Post");
 const Comment = require("../models/comment");
+const Group = require("../models/Group");
 const Like = require("../models/Like");
 const User = require("../models/User");
 const UserNotification = require("../models/UserNotification");
@@ -12,14 +13,14 @@ const SingleFile = require("../models/SingleFile");
 const { fileSizeFormatter } = require("../controllers/upload");
 const mongoose = require("mongoose");
 const { ObjectId } = require("mongodb");
-
+const shortid = require("shortid");
 //GET ID POST BY ID IMAGE
 router.get("/getPostByIdImage/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   Post.find({
     attachments: {
       $elemMatch: {
-        id: ObjectId(id),
+        $in: [ObjectId(id)],
       },
     },
   })
@@ -56,24 +57,31 @@ router.get("/getPostByIdImage/:id", verifyToken, async (req, res) => {
 
 // CREATE POST
 router.post("/", verifyToken, async (req, res) => {
+<<<<<<< HEAD
   const { title, text, audience, attachments, postParent, isGroup, groupId } = req.body;
+=======
+  const { title, text, audience, attachments, postParent, isGroup, groupId } =
+    req.body;
+>>>>>>> refactor-FE
   req.io.sockets.emit("post", "post noti");
   if (!text && attachments.length === 0)
     return error400(res, "Nội dung bài đăng không được trống");
+  console.log("attachments", attachments);
   try {
     let attachFile = [];
     if (attachments.length > 0) {
       attachFile = await Promise.all(
         attachments.map(async (e) => {
           const file = new SingleFile({
-            fileName: e.name,
+            fileName: e?.name ?? shortid.generate(),
             filePath: e.file,
             fileType: e.type,
             fileSize: e.size, // 0.00
             user: req.userId,
+            tags: e.tags,
           });
           await file.save();
-          return { ...e, id: file._id };
+          return ObjectId(file._id);
         })
       );
     }
@@ -85,26 +93,112 @@ router.post("/", verifyToken, async (req, res) => {
       attachments: attachFile,
       postParent,
       isGroup,
+<<<<<<< HEAD
       groupId
     });
     await newPost.save();
     const newPoster = await User.findById(req.userId);
     newPost.poster = newPoster;
+=======
+      groupId,
+    });
+    const resAfterSave = await newPost.save();
+    const newPoster = await User.findById(req.userId);
+    const newPostCreate = await Post.findById(resAfterSave._id).populate({
+      path: "attachments",
+      populate: "fileName filePath fileSize fileType tags _id",
+    });
+    newPost.poster = newPoster;
+    newPost.attachments = newPostCreate.attachments;
+>>>>>>> refactor-FE
     res.json(newPost);
   } catch (error) {
     console.log(error);
     return error500(res);
   }
 });
+router.get("/v2", verifyToken, async (req, res) => {
+  const {
+    limitPost,
+    index,
+    profile,
+    userId,
+    postId = "",
+    groupId = "",
+  } = req.query;
+  console.log(typeof limitPost === "string", index, profile, userId);
+  try {
+    let user = await User.findById(req.userId);
+    let frs = user.friends.map((f) => f.user);
+
+    data = {
+      $or: [
+        { audience: "public" },
+        { poster: { $in: [frs] } },
+        { poster: ObjectId(req.userId) },
+        { groupId: { $in: [user.groups] } },
+      ],
+    };
+    if (groupId !== "") {
+      data.groupId = groupId;
+    }
+    const result = await Post.find(data)
+      .sort({ createAt: -1 })
+      .skip(index * limitPost)
+      .limit(10)
+      .populate("poster")
+      .populate({ path: "groupId", select: "_id groupName cover" })
+      .populate({
+        path: "comments",
+        options: {
+          skip: 0,
+          perDocumentLimit: 10,
+          sort: { createAt: "descending" },
+        },
+        populate: [
+          {
+            path: "user",
+            select: "username fullName avatar like",
+          },
+          {
+            path: "like.user",
+            select: "username fullName avatar like",
+          },
+          {
+            path: "file",
+          },
+        ],
+      })
+      .populate({
+        path: "like",
+        populate: { path: "user", select: "username fullName avatar" },
+      })
+      .lean();
+    // result.comments=result.comments?.reverse()
+    return res.json(result);
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
+
 // DELETE POST
 router.delete("/delete/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
     let post = await Post.findById(id);
+<<<<<<< HEAD
     post.attachments.forEach(
       async (file) => await SingleFile.findByIdAndDelete(file.id)
     );
     await Post.findByIdAndDelete(id);
+=======
+    for (const a of post.attachments) {
+      await SingleFile.findByIdAndDelete(a.toString());
+    }
+    let rs = await Post.findByIdAndDelete(id);
+    return res.json(rs);
+>>>>>>> refactor-FE
   } catch (err) {
     console.log(err);
     return error500({ success: false, message: "Xóa thất bại" });
@@ -117,20 +211,63 @@ router.put("/", verifyToken, async (req, res) => {
   const { postId, text, audience, attachments } = req.body;
   const date = new Date();
   const poster = await User.findById(req.userId).then((user) => user);
-
+  const post = await Post.findById(postId).populate({
+    path: "comments",
+    populate: [
+      {
+        path: "user",
+        select: "username fullName avatar like",
+      },
+      {
+        path: "like.user",
+        select: "username fullName avatar like",
+      },
+      {
+        path: "file",
+      },
+    ],
+  });
+  let attachFile = post.attachments;
+  console.log("post.attachments", post.attachments);
+  for (const a of post.attachments) {
+    await SingleFile.findByIdAndDelete(a.toString());
+  }
+  if (attachments.length > 0) {
+    attachFile = await Promise.all(
+      attachments.map(async (e) => {
+        const file = new SingleFile({
+          fileName: e.name,
+          filePath: e.file,
+          fileType: e.type,
+          fileSize: e.size, // 0.00
+          user: req.userId,
+          tags: e.tags,
+        });
+        await file.save();
+        return ObjectId(file._id);
+      })
+    );
+  }
   const update = await {
     text,
     audience,
-    attachments,
+    attachments: attachFile,
     updatedAt: date.getDate(),
   };
   Post.findByIdAndUpdate(postId, update)
     .setOptions({ new: true })
-    .then((result) => {
+    .then(async (result) => {
+      const newPost = await Post.findById(postId).populate({
+        path: "attachments",
+        populate: "fileName filePath fileSize fileType tags _id",
+      });
       result.poster = poster;
+      result.comments = post.comments;
+      result.attachments = newPost.attachments;
       res.json(result);
     })
     .catch((err) => {
+      console.log("hash", err);
       return error500(err);
     });
 });
@@ -151,6 +288,7 @@ router.put("/", verifyToken, async (req, res) => {
 // });
 // GET POST PROFILE
 router.get("/", verifyToken, async (req, res) => {
+<<<<<<< HEAD
   const { limitPost, index, profile, userId, postId = "", groupId = "" } = req.query;
   console.log(typeof limitPost === "string", index, profile, userId);
   try {
@@ -203,6 +341,86 @@ router.get("/getPostById/:postId", verifyToken, async (req, res) => {
   const { postId } = req.params;
   try {
     const result = await Post.findById(postId)
+=======
+  const { limitPost, index, userId, postId = "", groupId = "" } = req.query;
+  try {
+    let query = [];
+    if (groupId !== "") {
+      // group
+      query = [{ groupId: ObjectId(groupId), status: 1 }];
+    } else if (userId == req.userId) {
+      //profile
+      query = [{ poster: ObjectId(req.userId), status: 1 }];
+    } else if (userId !== req.userId && userId) {
+      let user = await User.findById(userId);
+      let isFriend = user.friends.find((f) => f.user.toString() === req.userId);
+      query = [{ poster: ObjectId(userId), audience: "public" }];
+      if (!!isFriend) {
+        query.push({ poster: ObjectId(userId), audience: "friends" });
+      }
+    } else if (postId !== "") {
+      // post detail
+      query = [{ _id: ObjectId(postId), status: 1 }];
+    } else {
+      // newsfeed
+      let user = await User.findById(req.userId);
+      let frs = user.friends.map((f) => f.user);
+      console.log("user", user.groups);
+      query = [
+        // { audience: "public", status: 1 },
+        // { poster: { $in: frs }, status: 1 },
+        // { poster: ObjectId(req.userId), status: 1 },
+        { groupId: { $in: user.groups }, status: 1 },
+      ];
+    }
+    const result = await Post.find({ $or: query })
+      .sort({ createAt: -1 })
+      .skip(index * limitPost)
+      .limit(limitPost * 1)
+>>>>>>> refactor-FE
+      .populate("poster")
+      .populate({ path: "groupId", select: "_id groupName cover" })
+      .populate({
+        path: "comments",
+        options: {
+          skip: 0,
+          perDocumentLimit: 10,
+          sort: { createAt: "descending" },
+        },
+        populate: [
+          {
+            path: "user",
+            select: "username fullName avatar like",
+          },
+          {
+            path: "like.user",
+            select: "username fullName avatar like",
+          },
+          {
+            path: "file",
+          },
+        ],
+      })
+      .populate("attachments")
+      .populate({
+        path: "like",
+        populate: { path: "user", select: "username fullName avatar" },
+      })
+      .lean();
+    // result.comments=result.comments?.reverse()
+    return res.json(result);
+<<<<<<< HEAD
+=======
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
+
+router.get("/getPostById/:postId", verifyToken, async (req, res) => {
+  const { postId } = req.params;
+  try {
+    const result = await Post.findById(postId)
       .populate("poster")
       .populate({
         path: "comments",
@@ -232,6 +450,7 @@ router.get("/getPostById/:postId", verifyToken, async (req, res) => {
       .lean();
     // result.comments=result.comments?.reverse()
     return res.json(result);
+>>>>>>> refactor-FE
   } catch (err) {
     console.log(err);
     return error500(res);
@@ -296,6 +515,7 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
         fromUser: ObjectId(req.userId),
         type: 1,
       });
+<<<<<<< HEAD
       io.sockets.to(`user_${post.poster.toString()}`).emit("notification", {
         data: {
           postId: post._id,
@@ -303,6 +523,9 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
           type: -1,
         },
       });
+=======
+
+>>>>>>> refactor-FE
       return res.json({
         like: false,
         postId: post._id,
@@ -325,12 +548,19 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
         });
         await noti.save();
         io.sockets.to(`user_${post.poster.toString()}`).emit("notification", {
+<<<<<<< HEAD
           data: {
             user: post.poster,
             type: 1,
             postId: post._id,
             fromUser: userForNoti,
           },
+=======
+          postId: post._id,
+          fromUser: userForNoti,
+          type: 1,
+          mess: "liked your post",
+>>>>>>> refactor-FE
         });
       }
 
@@ -352,6 +582,107 @@ router.get("/deleteall", verifyToken, async (req, res) => {
     res.send("ok");
     await performComplexTasks(req);
     console.log("wait");
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
+
+router.get("/ultimateSearch/:keySearch", verifyToken, async (req, res) => {
+  try {
+    const { keySearch } = req.params;
+    let rg = new RegExp(keySearch, "i");
+    let public = new RegExp("public", "i");
+    let rs = await SingleFile.aggregate([
+      { $match: { tags: { $in: [rg] } } },
+      {
+        $lookup: {
+          from: "posts",
+          let: { id: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $in: ["$$id", "$attachments"] },
+                    {
+                      $or: [
+                        { $eq: [{ $getField: "audience" }, "public"] },
+                        { $eq: [{ $getField: "audience" }, "group public"] },
+                      ],
+                    },
+                  ],
+                },
+              },
+            },
+            { $project: { _id: 1 } },
+          ],
+          as: "post_info",
+        },
+      },
+      { $unwind: "$post_info" },
+      // { $limit: 1 }
+    ]);
+    return res.json({
+      success: true,
+      data: rs,
+    });
+  } catch (err) {
+    console.log(err);
+    return error500(res);
+  }
+});
+router.get("/testSearch/:keySearch", verifyToken, async (req, res) => {
+  try {
+    const { keySearch } = req.params;
+    let rg = new RegExp(keySearch, "i");
+    let public = new RegExp("public", "i");
+    let rs = await SingleFile.aggregate([
+      { $match: { tags: { $in: [rg] } } },
+      {
+        $lookup: {
+          from: "posts",
+          let: { id: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $in: ["$$id", "$attachments"] },
+                    {
+                      $or: [
+                        { $eq: [{ $getField: "audience" }, "public"] },
+                        { $eq: [{ $getField: "audience" }, "group public"] },
+                      ],
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: "users",
+                let: { poster: "$poster" },
+                pipeline: [
+                  { $match: { $expr: { $eq: ["$_id", "$$poster"] } } },
+                ],
+                as: "poster",
+              },
+            },
+
+            { $unwind: "$poster" },
+          ],
+          as: "post_info",
+        },
+      },
+      { $unwind: "$post_info" },
+      { $unset: ["post_info"] },
+      // { $limit: 1 }
+    ]);
+    return res.json({
+      success: true,
+      data: rs,
+    });
   } catch (err) {
     console.log(err);
     return error500(res);

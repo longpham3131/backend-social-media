@@ -1,5 +1,7 @@
 const SingleFile = require("../models/SingleFile");
 const MultipleFile = require("../models/MultipleFile");
+const User = require("../models/User");
+const Post = require("../models/Post");
 const { ObjectId } = require("mongodb");
 const { error500, error400 } = require("../util/res");
 const { cloudinary } = require("../util/cloudinary");
@@ -7,20 +9,35 @@ var fs = require("fs");
 const { default: axios } = require("axios");
 const singleFileUpload = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     console.log(req.file);
     let body = req.body
     await console.log("----------------------------");
+=======
+    let body = req.body;
+>>>>>>> refactor-FE
     let uploadRes = null;
     if (req.file.mimetype.split("/")[0] === "image") {
       uploadRes = await cloudinary.uploader.upload(
         "uploads\\" + req.file.path.split("\\")[1],
         { upload_preset: "ml_default" }
       );
+<<<<<<< HEAD
       axios.get(`http://localhost:3001/detection/2022-01-13T15-26-37.372Z-ttt-3388_qcdmae`)
         .then(response => {
           console.log('ok');
         })
         .catch(error => {
+=======
+      axios
+        .get(
+          `http://localhost:3001/detection/2022-01-13T15-26-37.372Z-ttt-3388_qcdmae`
+        )
+        .then((response) => {
+          console.log("ok");
+        })
+        .catch((error) => {
+>>>>>>> refactor-FE
           console.log(error);
         });
     } else if (req.file.mimetype.split("/")[0] === "video") {
@@ -55,15 +72,16 @@ const singleFileUpload = async (req, res, next) => {
         }
       );
     }
-    console.log(uploadRes);
+    // console.log(uploadRes);
     const file = {
       fileName: uploadRes.original_filename,
       filePath: uploadRes.public_id,
       fileType: req.file.mimetype,
       fileSize: fileSizeFormatter(req.file.size, 2), // 0.00
+      tags: req.body.tags,
     };
     var filePathDelete = "uploads\\" + req.file.path.split("\\")[1];
-    console.log(file);
+    // console.log(file);
     await fs.unlinkSync(filePathDelete);
     res.status(200).send({ message: "File upload successfully", data: file });
   } catch (er) {
@@ -117,16 +135,58 @@ const getAllFiles = async (req, res, next) => {
 const getAllMediaByUserId = async (req, res, next) => {
   try {
     const { userId } = req.query;
+<<<<<<< HEAD
     const files = await SingleFile.find({ user: ObjectId(userId) });
+=======
+    let query = [];
+    if (userId == req.userId) {
+      //profile
+      query = [{ poster: ObjectId(req.userId), status: 1 }];
+    } else if (userId !== req.userId && userId) {
+      let user = await User.findById(userId);
+      let isFriend = user.friends.find((f) => f.user.toString() === req.userId);
+      query = [{ poster: ObjectId(userId), audience: "public" }];
+      if (!!isFriend) {
+        query.push({ poster: ObjectId(userId), audience: "friends" });
+      }
+    }
+
+    const result = await Post.find({ $or: query }).sort({ createAt: -1 }).populate("attachments")
+    let listFile = []
+    console.log(result)
+    for (const p of result) {
+      listFile=listFile.concat(p.attachments)
+    }
+
+>>>>>>> refactor-FE
     res.json({
       message: "success",
-      data: files,
+      data: listFile,
+    });
+  } catch (er) {
+    console.log(er)
+    error400(res,"get file error");
+  }
+};
+
+const updateTags = async (req, res) => {
+  try {
+    const { tags, filePath } = req.body;
+    const rs = await SingleFile.findOneAndUpdate(
+      { filePath: filePath },
+      { tags: tags },
+      { new: true }
+    );
+    console.log(rs);
+    res.json({
+      message: rs,
     });
   } catch (er) {
     error400("get file error");
   }
 };
 
+<<<<<<< HEAD
 const updateTags = async (req, res) => {
   try {
     const { tags, filePath } = req.body;
@@ -141,6 +201,8 @@ const updateTags = async (req, res) => {
 };
 
 
+=======
+>>>>>>> refactor-FE
 const getAllMultiFiles = async (req, res, next) => {
   try {
     const files = await MultipleFile.find().populate("files");
@@ -175,5 +237,9 @@ module.exports = {
   fileSizeFormatter,
   getAllMediaByUserId,
   updateTags,
+<<<<<<< HEAD
   getAllMultiFiles
+=======
+  getAllMultiFiles,
+>>>>>>> refactor-FE
 };

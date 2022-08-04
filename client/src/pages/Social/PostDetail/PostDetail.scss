@@ -1,0 +1,46 @@
+.profile-user {
+  .ant-image {
+    @apply w-full;
+  }
+  .ant-avatar {
+    @apply left-0 right-0;
+  }
+}
+.WarningOutlined {
+  svg {
+    width: 100px;
+    height: 100px;
+    color: #57d9a7;
+  }
+}
+// .ant-carousel,
+// .ant-carousel > div *,
+// .ant-carousel > div {
+//   @apply h-full;
+// }
+// .ant-carousel > div * {
+//   @apply h-full;
+// }
+.slick-list {
+  @apply rounded-xl;
+}
+// .ant-carousel img {
+//   @apply h-auto;
+// }
+.sn-post-detail {
+  .ant-modal-body {
+    @apply p-0;
+  }
+  .carousel-root,
+  .carousel-root .carousel-slider,
+  .slider-wrapper,
+  .slider {
+    @apply h-full;
+  }
+  .carousel .slide img {
+    @apply max-w-[100%] h-auto w-auto;
+  }
+  .carousel.carousel-slider {
+    @apply h-[80vh] max-h-[80vh];
+  }
+}

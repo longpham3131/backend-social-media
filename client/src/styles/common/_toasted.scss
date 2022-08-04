@@ -1,0 +1,42 @@
+.ant-message {
+  &-notice {
+    &.success {
+      .ant-message-notice-content {
+        @apply bg-green-1 border-green-500 border-2;
+      }
+    }
+
+    &.error {
+      .ant-message-notice-content {
+        @apply bg-red-200 border-red-600 border-2;
+      }
+    }
+
+    .ant-message-notice-content {
+      @apply rounded-sm py-7px px-12px;
+    }
+  }
+
+  &-custom-content {
+    @apply flex items-center;
+
+    .web-icon {
+      @apply w-8 h-8 mr-8px;
+      &.icon-check {
+        path {
+          @apply fill-current text-green-500;
+        }
+      }
+
+      &.icon-danger {
+        path {
+          @apply stroke-current text-red-600;
+        }
+      }
+    }
+
+    span {
+      @apply font-medium;
+    }
+  }
+}

@@ -1,0 +1,17 @@
+div {
+  &.ant-tooltip {
+    @apply pb-0 z-tooltip;
+    .ant-tooltip-arrow {
+      @apply hidden;
+    }
+    .ant-tooltip-inner {
+      @apply bg-gray-6 py-[4px] px-[6px] rounded-[2px] text-xs font-medium font-quicksand min-h-[auto] min-w-[auto] flex items-center justify-center;
+    }
+  }
+}
+
+.ant-notification-notice-content
+  .ant-notification-notice-with-icon
+  .ant-notification-notice-description {
+  @apply ml-0;
+}
