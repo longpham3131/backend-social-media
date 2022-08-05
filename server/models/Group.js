@@ -12,65 +12,52 @@ const Group = new Schema({
   },
   isPrivate: {
     type: Schema.Types.Boolean,
-    default: true
+    default: true,
   },
   groupName: {
     type: String,
     required: true,
-    default: ''
-<<<<<<< HEAD
+    default: "",
   },
   groupDescription: {
     type: String,
-    default: ''
+    default: "",
   },
   cover: {
     type: String,
-    default: ''
-  },
-=======
-  },
-  groupDescription: {
-    type: String,
-    default: ''
-  },
-  cover: {
-    type: String,
-    default: '5f6d2f8173860-bp-cover-image_gw7shw.jpg'
+    default: "5f6d2f8173860-bp-cover-image_gw7shw.jpg",
   },
   avatar: {
     type: String,
-    default: '166258_miyrwl.png'
+    default: "166258_miyrwl.png",
   },
->>>>>>> refactor-FE
   adminGroup: {
     type: Schema.Types.ObjectId,
     ref: "User",
   },
-<<<<<<< HEAD
-=======
-  tags: [{
-    type: String
-  }],
->>>>>>> refactor-FE
-  members: [{
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+  tags: [
+    {
+      type: String,
     },
-    role: {
-      type: Schema.Types.ObjectId,
-      ref: "RoleGroup",
+  ],
+  members: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+      role: {
+        type: Schema.Types.ObjectId,
+        ref: "RoleGroup",
+      },
     },
-  }],
+  ],
   requestJoin: [
     {
       type: Schema.Types.ObjectId,
       ref: "User",
-    }
+    },
   ],
-<<<<<<< HEAD
-=======
   invited: [
     {
       member: {
@@ -80,10 +67,9 @@ const Group = new Schema({
       invitedUser: {
         type: Schema.Types.ObjectId,
         ref: "User",
-      }
-    }
+      },
+    },
   ],
->>>>>>> refactor-FE
   createAt: {
     type: Date,
     default: Date.now,

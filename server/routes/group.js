@@ -12,17 +12,6 @@ const { ObjectId } = require("mongodb");
 router.get("/", verifyToken, async (req, res) => {
   try {
     const { index = 0, pageSize = 10 } = req.query;
-<<<<<<< HEAD
-    const groups = await Group.find().skip(index * pageSize).limit(pageSize)
-      .populate({ path: "members", select: "fullName avatar id" })
-      .populate({ path: "requestJoin", select: "fullName avatar id" }).lean()
-    return res.json({
-      success: true,
-      data: groups
-    });
-  }
-  catch (err) {
-=======
     const groups = await Group.find()
       .skip(index * pageSize)
       .limit(pageSize)
@@ -41,7 +30,6 @@ router.get("/", verifyToken, async (req, res) => {
     });
   } catch (err) {}
 });
->>>>>>> refactor-FE
 
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
@@ -115,19 +103,6 @@ router.get("/getGroupDetail/:id", verifyToken, async (req, res) => {
 router.post("/", verifyToken, async (req, res) => {
   try {
     let data = req.body;
-<<<<<<< HEAD
-    data = { ...data, createBy: ObjectId(req.userId), updateBy: ObjectId(req.userId), adminGroup: ObjectId(req.userId) }
-    const group = new Group(data)
-    const rs = await group.save()
-    return res.json({
-      success: true,
-      data: rs
-    });
-  }
-  catch (err) {
-
-    error500(res)
-=======
     let roleAdmin = await RoleGroup.findOne({ roleName: "administrators" });
     data = {
       ...data,
@@ -153,61 +128,12 @@ router.post("/", verifyToken, async (req, res) => {
     });
   } catch (err) {
     error500(res);
->>>>>>> refactor-FE
   }
 });
 
 router.put("/", verifyToken, async (req, res) => {
   try {
     const data = req.body;
-<<<<<<< HEAD
-    let group = await Group.findById(data._id)
-    if (!group) {
-      return res.json({
-        success: false
-      })
-    }
-    const rs = await Group.findByIdAndUpdate(group._id, data, { new: true })
-    return res.json({
-      success: true,
-      data: rs
-    });
-  }
-  catch (err) {
-    error500(res)
-  }
-});
-router.get("/requestJoinGroup/:groupId", verifyToken, async (req, res) => {
-  try {
-    let groupId = req.params.groupId;
-    console.log('groupId', groupId)
-    let group = await Group.findById(groupId)
-    if (!group) {
-      return res.json({
-        success: false
-      })
-    }
-    let isMember = group.members.find(mems => mems.user.toString() === req.userId)
-    if (isMember) {
-      return res.json({
-        success: false,
-        data: "You are already in group"
-      })
-    }
-    let isInRequestJoine = group.requestJoin.find(user => user.toString() === req.userId)
-    if (!isInRequestJoine) {
-      group.requestJoin.push(ObjectId(req.userId))
-    }
-    const rs = await group.save()
-    return res.json({
-      success: true,
-      data: rs
-    });
-  }
-  catch (err) {
-
-    error500(res)
-=======
     let group = await Group.findById(data._id);
     if (!group) {
       return res.json({
@@ -239,9 +165,9 @@ router.post("/requestJoinGroup", verifyToken, async (req, res) => {
       );
       let role = await RoleGroup.findOne({ roleName: "member" });
       group.members.push({ user: ObjectId(req.userId), role });
-      let user= await User.findById(req.userId)
-      user.groups.push(ObjectId(groupId))
-      await user.save()
+      let user = await User.findById(req.userId);
+      user.groups.push(ObjectId(groupId));
+      await user.save();
       let rs = await group.save();
       return res.json({
         success: true,
@@ -382,51 +308,11 @@ router.post("/responeIntiveToGroup", verifyToken, async (req, res) => {
     });
   } catch (err) {
     error500(res);
->>>>>>> refactor-FE
   }
 });
 
 router.post("/joinGroup", verifyToken, async (req, res) => {
   try {
-<<<<<<< HEAD
-    let { groupId, userId } = req.body;
-
-
-    console.log('groupId', groupId)
-    let group = await Group.findById(groupId)
-    if (!group) {
-      return res.json({
-        success: false
-      })
-    }
-    ///check Privilege
-
-    let roleMember = await RoleGroup.findOne({ roleName: "member" })
-    console.log("roleMember", roleMember)
-    if (group.adminGroup.toString() !== req.userId) {
-      let privilegeAdmin = await RoleGroup.findOne({ roleName: "administrators" })
-      let isAdmin = group.members.find(mems =>
-        mem.user.toString() === req.userId && mem.role.toString() === privilegeAdmin._id)
-      if (!isAdmin) {
-        return res.json({
-          success: false,
-          data: "You don't have privilege to do this"
-        })
-      }
-    }
-    group.requestJoin = group.requestJoin.filter(user => user.toString() !== userId)
-    group.members = group.members.filter(mem => mem.user.toString() !== userId)
-    group.members.push({ user: ObjectId(userId), role: roleMember._id })
-
-    const rs = await group.save()
-    return res.json({
-      success: true,
-      data: rs
-    });
-  }
-  catch (err) {
-    error500(res)
-=======
     let { groupId, userId, isJoin } = req.body;
     const io = req.io;
 
@@ -491,43 +377,12 @@ router.post("/joinGroup", verifyToken, async (req, res) => {
   } catch (err) {
     console.log(err);
     error500(res);
->>>>>>> refactor-FE
   }
 });
 
 router.post("/kickOutOfGroup", verifyToken, async (req, res) => {
   try {
     let { groupId, userId } = req.body;
-<<<<<<< HEAD
-    console.log('groupId', groupId)
-    let group = await Group.findById(groupId)
-    if (!group) {
-      return res.json({
-        success: false
-      })
-    }
-    ///check Privilege
-    if (group.adminGroup.toString() !== req.userId) {
-      let privilegeAdmin = await RoleGroup.findOne({ roleName: "administrators" })
-      let isAdmin = group.members.find(mems =>
-        mem.user.toString() === req.userId && mem.role.toString() === privilegeAdmin._id)
-      if (!isAdmin) {
-        return res.json({
-          success: false,
-          data: "You don't have privilege to do this"
-        })
-      }
-    }
-    group.members = group.members.filter(mem => mem.user.toString() !== userId)
-    const rs = await group.save()
-    return res.json({
-      success: true,
-      data: rs
-    });
-  }
-  catch (err) {
-    error500(res)
-=======
     console.log("groupId", groupId);
     let group = await Group.findById(groupId);
     if (!group) {
@@ -565,30 +420,11 @@ router.post("/kickOutOfGroup", verifyToken, async (req, res) => {
     });
   } catch (err) {
     error500(res);
->>>>>>> refactor-FE
   }
 });
 router.get("/requestQuitGroup/:groupId", verifyToken, async (req, res) => {
   try {
     let groupId = req.params.groupId;
-<<<<<<< HEAD
-    console.log('groupId', groupId)
-    let group = await Group.findById(groupId)
-    if (!group) {
-      return res.json({
-        success: false
-      })
-    }
-    group.members = group.members.filter(mems => mems.user.toString() !== req.userId)
-    const rs = await group.save()
-    return res.json({
-      success: true,
-      data: rs
-    });
-  }
-  catch (err) {
-    error500(res)
-=======
     let group = await Group.findById(groupId);
     if (!group) {
       return res.json({
@@ -608,24 +444,12 @@ router.get("/requestQuitGroup/:groupId", verifyToken, async (req, res) => {
     });
   } catch (err) {
     error500(res);
->>>>>>> refactor-FE
   }
 });
 
 router.post("/role", verifyToken, async (req, res) => {
   try {
     let { name, privilege } = req.body;
-<<<<<<< HEAD
-    let role = new RoleGroup({ roleName: name, privilege })
-    await role.save()
-    return res.json({
-      success: true,
-      data: role
-    });
-  }
-  catch (err) {
-    error500(res)
-=======
     let role = new RoleGroup({ roleName: name, privilege });
     await role.save();
     return res.json({
@@ -634,27 +458,11 @@ router.post("/role", verifyToken, async (req, res) => {
     });
   } catch (err) {
     error500(res);
->>>>>>> refactor-FE
   }
 });
 
 router.post("/updateRoleMember", verifyToken, async (req, res) => {
   try {
-<<<<<<< HEAD
-    let { userId, roleId, groupId } = req.body;
-    let group = await Group.findById(groupId)
-    let privilege = await RoleGroup.findById(roleId)
-    group.members = group.members.map(mem => {
-      if (mem.user.toString() !== userId)
-        return mem
-      mem.role = privilege
-      return mem
-    })
-    let rs = await group.save()
-    return res.json({
-      success: true,
-      data: rs
-=======
     let { userId, isManager, groupId } = req.body;
     let group = await Group.findById(groupId);
     if (group.adminGroup.toString() !== req.userId) {
@@ -745,16 +553,11 @@ router.get("/getGroupUserJoined/:userId", verifyToken, async (req, res) => {
     return res.json({
       success: true,
       data: rs,
->>>>>>> refactor-FE
     });
   } catch (err) {
     console.log(err);
     error500(res);
   }
-<<<<<<< HEAD
-  catch (err) {
-    error500(res)
-=======
 });
 
 router.get("/getImages/:id", verifyToken, async (req, res) => {
@@ -818,24 +621,7 @@ router.get("/getUsersNotJoinedGroup/:id", verifyToken, async (req, res) => {
   } catch (err) {
     console.log(err);
     error500(res);
->>>>>>> refactor-FE
   }
 });
-
-router.post("/privilege", verifyToken, async (req, res) => {
-  try {
-    let { privilege } = req.body;
-    let rs = new PrivilegeGroup({ privilege })
-    await rs.save()
-    return res.json({
-      success: true,
-      data: rs
-    });
-  }
-  catch (err) {
-    error500(res)
-  }
-});
-
 
 module.exports = router;

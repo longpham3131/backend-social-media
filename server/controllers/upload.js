@@ -9,26 +9,13 @@ var fs = require("fs");
 const { default: axios } = require("axios");
 const singleFileUpload = async (req, res, next) => {
   try {
-<<<<<<< HEAD
-    console.log(req.file);
-    let body = req.body
-    await console.log("----------------------------");
-=======
     let body = req.body;
->>>>>>> refactor-FE
     let uploadRes = null;
     if (req.file.mimetype.split("/")[0] === "image") {
       uploadRes = await cloudinary.uploader.upload(
         "uploads\\" + req.file.path.split("\\")[1],
         { upload_preset: "ml_default" }
       );
-<<<<<<< HEAD
-      axios.get(`http://localhost:3001/detection/2022-01-13T15-26-37.372Z-ttt-3388_qcdmae`)
-        .then(response => {
-          console.log('ok');
-        })
-        .catch(error => {
-=======
       axios
         .get(
           `http://localhost:3001/detection/2022-01-13T15-26-37.372Z-ttt-3388_qcdmae`
@@ -37,7 +24,6 @@ const singleFileUpload = async (req, res, next) => {
           console.log("ok");
         })
         .catch((error) => {
->>>>>>> refactor-FE
           console.log(error);
         });
     } else if (req.file.mimetype.split("/")[0] === "video") {
@@ -135,9 +121,6 @@ const getAllFiles = async (req, res, next) => {
 const getAllMediaByUserId = async (req, res, next) => {
   try {
     const { userId } = req.query;
-<<<<<<< HEAD
-    const files = await SingleFile.find({ user: ObjectId(userId) });
-=======
     let query = [];
     if (userId == req.userId) {
       //profile
@@ -151,21 +134,22 @@ const getAllMediaByUserId = async (req, res, next) => {
       }
     }
 
-    const result = await Post.find({ $or: query }).sort({ createAt: -1 }).populate("attachments")
-    let listFile = []
-    console.log(result)
+    const result = await Post.find({ $or: query })
+      .sort({ createAt: -1 })
+      .populate("attachments");
+    let listFile = [];
+    console.log(result);
     for (const p of result) {
-      listFile=listFile.concat(p.attachments)
+      listFile = listFile.concat(p.attachments);
     }
 
->>>>>>> refactor-FE
     res.json({
       message: "success",
       data: listFile,
     });
   } catch (er) {
-    console.log(er)
-    error400(res,"get file error");
+    console.log(er);
+    error400(res, "get file error");
   }
 };
 
@@ -186,23 +170,6 @@ const updateTags = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-const updateTags = async (req, res) => {
-  try {
-    const { tags, filePath } = req.body;
-    const rs = await SingleFile.findOneAndUpdate({ filePath: filePath }, { tags: tags }, { new: true });
-    console.log(rs);
-    res.json({
-      message: rs,
-    });
-  } catch (er) {
-    error400("get file error");
-  }
-};
-
-
-=======
->>>>>>> refactor-FE
 const getAllMultiFiles = async (req, res, next) => {
   try {
     const files = await MultipleFile.find().populate("files");
@@ -228,8 +195,6 @@ const fileSizeFormatter = (byte, decimal) => {
   );
 };
 
-
-
 module.exports = {
   singleFileUpload,
   multipleFileUpload,
@@ -237,9 +202,5 @@ module.exports = {
   fileSizeFormatter,
   getAllMediaByUserId,
   updateTags,
-<<<<<<< HEAD
-  getAllMultiFiles
-=======
   getAllMultiFiles,
->>>>>>> refactor-FE
 };

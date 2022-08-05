@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const PostSchema = new Schema({
   title: {
     type: String,
-    default: ""
+    default: "",
   },
   text: {
     type: String,
@@ -12,7 +12,7 @@ const PostSchema = new Schema({
   },
   audience: {
     type: String,
-    default: "public"
+    default: "public",
   },
   poster: {
     type: Schema.Types.ObjectId,
@@ -20,21 +20,13 @@ const PostSchema = new Schema({
   },
   status: {
     type: Number,
-    default: 1
+    default: 1,
   },
-<<<<<<< HEAD
-  isGroup:{
-    type:Boolean,
-    default:false
-  },
-  groupId:{
-=======
   isGroup: {
     type: Boolean,
-    default: false
+    default: false,
   },
   groupId: {
->>>>>>> refactor-FE
     type: Schema.Types.ObjectId,
     ref: "Group",
   },
@@ -56,21 +48,19 @@ const PostSchema = new Schema({
       ref: "Comment",
     },
   ],
-<<<<<<< HEAD
-
-=======
->>>>>>> refactor-FE
   share: { type: Number, default: 0 },
-  attachments: [{
-    type: Schema.Types.ObjectId,
-    ref:"SingleFile"
-  }],
+  attachments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "SingleFile",
+    },
+  ],
   postParent: { type: String, default: "" },
   createAt: {
     type: Date,
     default: Date.now,
     unique: true,
-    index: true
+    index: true,
   },
   updateAt: {
     type: Date,
@@ -78,10 +68,10 @@ const PostSchema = new Schema({
   },
   tags: {
     type: Array,
-    default: []
-  }
+    default: [],
+  },
 });
-PostSchema.pre("remove", function () { });
+PostSchema.pre("remove", function () {});
 PostSchema.pre("updateOne", function () {
   this.set({ updateAt: new Date() });
 });

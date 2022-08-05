@@ -136,25 +136,17 @@ router.post("/", verifyToken, async (req, res) => {
       fromUser: req.userId,
     };
     // await UserNotification.findByIdAndDelete(queryData);
-<<<<<<< HEAD
-   
-=======
 
->>>>>>> refactor-FE
     if (req.userId !== rs[1].poster.toString()) {
       const noti = await UserNotification(queryData);
       await noti.save();
       const io = req.io;
       console.log(`user_${rs[1].poster.toString()}`);
       io.sockets.to(`user_${rs[1].poster.toString()}`).emit("notification", {
-<<<<<<< HEAD
-        data: { ...queryData, fromUser: userForNoti },
-=======
         fromUser: userForNoti,
         type: 1,
         postId,
         mess: "commented your post",
->>>>>>> refactor-FE
       });
     }
     res.json({ success: true, data: rs[0], message: "true" });
@@ -183,11 +175,7 @@ router.put("/", verifyToken, async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-router.post("/commentDelete", verifyToken, async (req, res) => { 
-=======
 router.post("/commentDelete", verifyToken, async (req, res) => {
->>>>>>> refactor-FE
   try {
     const { commentId, postId } = req.body;
     const result = await Promise.all([
@@ -207,11 +195,7 @@ router.post("/commentDelete", verifyToken, async (req, res) => {
     });
 
     const io = req.io;
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> refactor-FE
     io.sockets
       .to(`user_${result[0].poster.toString()}`)
       .emit("notification", "you have new notification");

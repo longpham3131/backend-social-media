@@ -28,10 +28,7 @@ router.post("/register", async (req, res) => {
         .status(400)
         .json({ success: false, message: "Account already exists" });
     const emailuser = await User.findOne({ email });
-    if (emailuser)
-      return res
-        .status(400)
-        .json({ success: false, message: "" });
+    if (emailuser) return res.status(400).json({ success: false, message: "" });
     const hashedPassword = await argon2.hash(password);
 
     const newUser = new User({
@@ -66,38 +63,8 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ username });
 
     if (!user) return error400(res, "Wrong Username or Password");
-<<<<<<< HEAD
     const passwordValid = await argon2.verify(user.password, password);
-    if (!passwordValid)
-      return error400(res, "Wrong Username or Password");
-
-    const date = new Date();
-    date.setDate(date.getDate() + 300000);
-    const accessToken = jwt.sign(
-      { userId: user._id, expired: date },
-      process.env.ACCESS_TOKEN_SECRET
-    );
-    res.json({
-      success: true,
-      message: "Login successfully",
-      accessToken,
-    });
-  } catch (error) {
-    console.log(error);
-    return error500(res);
-  }
-});
-router.post("/loginAdmin", async (req, res) => {
-  const { username, password } = req.body;
-  try {
-    const user = await User.findOne({ username, isAdmin: true });
-
-    if (!user) return error400(res, "Wrong Username or Password");
-=======
->>>>>>> refactor-FE
-    const passwordValid = await argon2.verify(user.password, password);
-    if (!passwordValid)
-      return error400(res, "Wrong Username or Password");
+    if (!passwordValid) return error400(res, "Wrong Username or Password");
 
     const date = new Date();
     date.setDate(date.getDate() + 300000);
@@ -122,11 +89,8 @@ router.post("/loginAdmin", async (req, res) => {
 
     if (!user) return error400(res, "Wrong Username or Password");
     const passwordValid = await argon2.verify(user.password, password);
-    if (!passwordValid)
-      return error400(res, "Wrong Username or Password");
+    if (!passwordValid) return error400(res, "Wrong Username or Password");
 
-<<<<<<< HEAD
-=======
     const date = new Date();
     date.setDate(date.getDate() + 300000);
     const accessToken = jwt.sign(
@@ -144,7 +108,6 @@ router.post("/loginAdmin", async (req, res) => {
   }
 });
 
->>>>>>> refactor-FE
 router.post("/verifyCode", async (req, res) => {
   try {
     const { code } = req.body;
@@ -197,7 +160,7 @@ router.post("/changePasswordByCode", async (req, res) => {
       success: "true",
       message: "Change password success",
       hashedPassword,
-      username:user.username
+      username: user.username,
     });
   } catch (err) {
     console.log(err);

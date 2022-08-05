@@ -2,11 +2,8 @@ const express = require("express");
 const router = express.Router();
 const moment = require("moment");
 const User = require("../models/User");
-<<<<<<< HEAD
-=======
 const Post = require("../models/Post");
 const Group = require("../models/Group");
->>>>>>> refactor-FE
 const { ObjectId } = require("mongodb");
 const {
   FriendRequest,
@@ -204,21 +201,6 @@ router.post("/changePassword", verifyToken, async (req, res) => {
 
 // DETELE USER
 // router.put
-<<<<<<< HEAD
-router.get("/profile", verifyToken, (req, res) => {
-  // console.log("profile");
-  User.findById(req.userId)
-    .populate({ path: "friends.user", select: "fullName avatar isOnline" })
-    .populate({ path: "friendsRequest.user", select: "fullName avatar" })
-    .lean()
-    .then((user) => {
-      try {
-        res.json({ success: true, data: user });
-      } catch (error) {
-        return error500(res);
-      }
-    });
-=======
 router.get("/profile", verifyToken, async (req, res) => {
   // console.log("profile");
   try {
@@ -250,7 +232,6 @@ router.get("/profile", verifyToken, async (req, res) => {
   } catch (error) {
     return error500(res);
   }
->>>>>>> refactor-FE
 });
 
 router.get("/notification", verifyToken, (req, res) => {
@@ -292,20 +273,6 @@ router.get("/notification", verifyToken, (req, res) => {
 router.get("/getFriends/:id", verifyToken, async (req, res) => {
   try {
     const userId = req.params.id;
-<<<<<<< HEAD
-    User.findById(userId)
-      .populate({ path: "friends.user", select: "fullName avatar isOnline" })
-      .populate({ path: "friendsRequest.user", select: "fullName avatar" })
-      .lean()
-      .then((user) => {
-        try {
-          res.json(user);
-        } catch (error) {
-          return error500(res);
-        }
-      });
-  } catch (err) {
-=======
     let user = await User.findById(userId)
       .select("friends")
       .populate({
@@ -326,7 +293,6 @@ router.get("/getFriends/:id", verifyToken, async (req, res) => {
     return res.json({ success: true, data: friends });
   } catch (error) {
     console.log(error);
->>>>>>> refactor-FE
     return error500(res);
   }
 });
@@ -388,54 +354,52 @@ router.get("/search/:keySearch", verifyToken, (req, res) => {
   }
 });
 
-
-
 router.get("/recommendFriends", verifyToken, async (req, res) => {
   try {
-    let curUser = await User.findById(req.userId)
-    let fs = curUser.friends.map(f => f.user)
-    console.log(fs)
+    let curUser = await User.findById(req.userId);
+    let fs = curUser.friends.map((f) => f.user);
+    console.log(fs);
     let users = await User.find({
       $and: [
         {
           _id: {
-            $nin: fs
-          }
+            $nin: fs,
+          },
         },
         {
           _id: {
-            $ne: curUser._id
-          }
+            $ne: curUser._id,
+          },
         },
         {
-          "address.province": curUser.address.province
-        }
-      ]
-    }).limit(6)
+          "address.province": curUser.address.province,
+        },
+      ],
+    }).limit(6);
     if (users.length < 5) {
-      let listUserId= users.map(u=>u._id)
+      let listUserId = users.map((u) => u._id);
       let users2 = await User.find({
         $and: [
           {
             _id: {
-              $nin: fs.concat(listUserId)
-            }
+              $nin: fs.concat(listUserId),
+            },
           },
           {
             _id: {
-              $ne: curUser._id
-            }
-          }
-        ]
-      }).limit(6-users.length)
-      users=users.concat(users2)
+              $ne: curUser._id,
+            },
+          },
+        ],
+      }).limit(6 - users.length);
+      users = users.concat(users2);
     }
     return res.json({
       success: true,
       data: users,
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return error500(res);
   }
 });

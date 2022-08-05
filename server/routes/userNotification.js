@@ -7,13 +7,10 @@ const verifyToken = require("../middleware/auth");
 
 router.get("/", verifyToken, async (req, res) => {
   const { index = 0, pageSize = 10 } = req.query;
-<<<<<<< HEAD
-  console.log(typeof pageSize === 'string','alo')
-=======
->>>>>>> refactor-FE
   const result = await Promise.all([
     UserNotification.find({ user: req.userId }).populate("fromUser").lean(),
-    UserNotification.find({ user: req.userId }).sort({createAt:-1})
+    UserNotification.find({ user: req.userId })
+      .sort({ createAt: -1 })
       .skip(index * pageSize)
       .limit(pageSize)
       .populate("fromUser")
@@ -33,18 +30,15 @@ router.get("/", verifyToken, async (req, res) => {
 });
 
 router.get("/notificationSeen/:id", verifyToken, async (req, res) => {
-  try{
+  try {
     const { id } = req.params;
-    await UserNotification.findOneAndUpdate({_id:id},{status:1})
+    await UserNotification.findOneAndUpdate({ _id: id }, { status: 1 });
     return res.json({
       success: true,
     });
-  }
-  catch(err){
-    
-    error500(res)
+  } catch (err) {
+    error500(res);
   }
 });
-
 
 module.exports = router;

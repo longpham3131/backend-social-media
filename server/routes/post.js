@@ -57,12 +57,8 @@ router.get("/getPostByIdImage/:id", verifyToken, async (req, res) => {
 
 // CREATE POST
 router.post("/", verifyToken, async (req, res) => {
-<<<<<<< HEAD
-  const { title, text, audience, attachments, postParent, isGroup, groupId } = req.body;
-=======
   const { title, text, audience, attachments, postParent, isGroup, groupId } =
     req.body;
->>>>>>> refactor-FE
   req.io.sockets.emit("post", "post noti");
   if (!text && attachments.length === 0)
     return error400(res, "Nội dung bài đăng không được trống");
@@ -93,13 +89,6 @@ router.post("/", verifyToken, async (req, res) => {
       attachments: attachFile,
       postParent,
       isGroup,
-<<<<<<< HEAD
-      groupId
-    });
-    await newPost.save();
-    const newPoster = await User.findById(req.userId);
-    newPost.poster = newPoster;
-=======
       groupId,
     });
     const resAfterSave = await newPost.save();
@@ -110,7 +99,6 @@ router.post("/", verifyToken, async (req, res) => {
     });
     newPost.poster = newPoster;
     newPost.attachments = newPostCreate.attachments;
->>>>>>> refactor-FE
     res.json(newPost);
   } catch (error) {
     console.log(error);
@@ -187,18 +175,11 @@ router.delete("/delete/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
     let post = await Post.findById(id);
-<<<<<<< HEAD
-    post.attachments.forEach(
-      async (file) => await SingleFile.findByIdAndDelete(file.id)
-    );
-    await Post.findByIdAndDelete(id);
-=======
     for (const a of post.attachments) {
       await SingleFile.findByIdAndDelete(a.toString());
     }
     let rs = await Post.findByIdAndDelete(id);
     return res.json(rs);
->>>>>>> refactor-FE
   } catch (err) {
     console.log(err);
     return error500({ success: false, message: "Xóa thất bại" });
@@ -288,60 +269,6 @@ router.put("/", verifyToken, async (req, res) => {
 // });
 // GET POST PROFILE
 router.get("/", verifyToken, async (req, res) => {
-<<<<<<< HEAD
-  const { limitPost, index, profile, userId, postId = "", groupId = "" } = req.query;
-  console.log(typeof limitPost === "string", index, profile, userId);
-  try {
-    let data = postId != "" ? { _id: ObjectId(postId), status: 1 } : { status: 1 };
-    if (profile == 1) {
-      const userIdReq = userId != "0" ? userId : req.userId;
-      data = { poster: userIdReq, status: 1 };
-    }
-    if (groupId !== "") { data.groupId = groupId }
-    const result = await Post.find(data)
-      .sort({ createAt: -1 })
-      .skip(index * limitPost)
-      .limit(10)
-      .populate("poster")
-      .populate({
-        path: "comments",
-        options: {
-          skip: 0,
-          perDocumentLimit: 10,
-          sort: { createAt: "descending" },
-        },
-        populate: [
-          {
-            path: "user",
-            select: "username fullName avatar like",
-          },
-          {
-            path: "like.user",
-            select: "username fullName avatar like",
-          },
-          {
-            path: "file",
-          },
-        ],
-      })
-      .populate({
-        path: "like",
-        populate: { path: "user", select: "username fullName avatar" },
-      })
-      .lean();
-    // result.comments=result.comments?.reverse()
-    return res.json(result);
-  } catch (err) {
-    console.log(err);
-    return error500(res);
-  }
-});
-
-router.get("/getPostById/:postId", verifyToken, async (req, res) => {
-  const { postId } = req.params;
-  try {
-    const result = await Post.findById(postId)
-=======
   const { limitPost, index, userId, postId = "", groupId = "" } = req.query;
   try {
     let query = [];
@@ -377,7 +304,6 @@ router.get("/getPostById/:postId", verifyToken, async (req, res) => {
       .sort({ createAt: -1 })
       .skip(index * limitPost)
       .limit(limitPost * 1)
->>>>>>> refactor-FE
       .populate("poster")
       .populate({ path: "groupId", select: "_id groupName cover" })
       .populate({
@@ -409,8 +335,6 @@ router.get("/getPostById/:postId", verifyToken, async (req, res) => {
       .lean();
     // result.comments=result.comments?.reverse()
     return res.json(result);
-<<<<<<< HEAD
-=======
   } catch (err) {
     console.log(err);
     return error500(res);
@@ -450,7 +374,6 @@ router.get("/getPostById/:postId", verifyToken, async (req, res) => {
       .lean();
     // result.comments=result.comments?.reverse()
     return res.json(result);
->>>>>>> refactor-FE
   } catch (err) {
     console.log(err);
     return error500(res);
@@ -515,17 +438,7 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
         fromUser: ObjectId(req.userId),
         type: 1,
       });
-<<<<<<< HEAD
-      io.sockets.to(`user_${post.poster.toString()}`).emit("notification", {
-        data: {
-          postId: post._id,
-          fromUser: userForNoti,
-          type: -1,
-        },
-      });
-=======
 
->>>>>>> refactor-FE
       return res.json({
         like: false,
         postId: post._id,
@@ -548,19 +461,10 @@ router.get("/likepost/:id", verifyToken, async (req, res) => {
         });
         await noti.save();
         io.sockets.to(`user_${post.poster.toString()}`).emit("notification", {
-<<<<<<< HEAD
-          data: {
-            user: post.poster,
-            type: 1,
-            postId: post._id,
-            fromUser: userForNoti,
-          },
-=======
           postId: post._id,
           fromUser: userForNoti,
           type: 1,
           mess: "liked your post",
->>>>>>> refactor-FE
         });
       }
 

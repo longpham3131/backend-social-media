@@ -38,10 +38,12 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "5f6d2f8173860-bp-cover-image_gw7shw.jpg",
     },
-    groups: [{
-      type: Schema.Types.ObjectId,
-      ref: "Group",
-    }],
+    groups: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Group",
+      },
+    ],
     imageList: {
       type: Array,
       default: [],
@@ -57,11 +59,7 @@ const UserSchema = new mongoose.Schema(
         type: Schema.Types.ObjectId,
         ref: "User",
       },
-<<<<<<< HEAD
-    ], 
-=======
     ],
->>>>>>> refactor-FE
     friends: [
       {
         user: {
@@ -89,19 +87,19 @@ const UserSchema = new mongoose.Schema(
     interests: [
       {
         title: {
-          type: String
+          type: String,
         },
         context: {
-          type: String
-        }
-      }
+          type: String,
+        },
+      },
     ],
     address: {
       district: {
-        type: String
+        type: String,
       },
       province: {
-        type: String
+        type: String,
       },
     },
     birthplace: {
@@ -123,8 +121,8 @@ const UserSchema = new mongoose.Schema(
         description: {
           type: String,
           default: "",
-        }
-      }
+        },
+      },
     ],
     facebook: {
       type: String,
@@ -145,13 +143,8 @@ const UserSchema = new mongoose.Schema(
     isAdmin: {
       type: Boolean,
       default: false,
-    }
-    ,
-    isOnline: {
-      type: Boolean,
-      default: false,
     },
-    isOnline:{
+    isOnline: {
       type: Boolean,
       default: false,
     },
