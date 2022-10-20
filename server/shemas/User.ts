@@ -1,6 +1,7 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const UserSchema = new mongoose.Schema(
+import { model, Schema } from 'mongoose';
+import { IUser } from '../models/user.interface';
+
+const UserSchema = new Schema<IUser>(
   {
     username: {
       type: String,
@@ -38,28 +39,16 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "5f6d2f8173860-bp-cover-image_gw7shw.jpg",
     },
+    imageList: {
+      default: [String],
+    },
     groups: [
       {
         type: Schema.Types.ObjectId,
         ref: "Group",
       },
     ],
-    imageList: {
-      type: Array,
-      default: [],
-    },
-    followers: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    followings: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+
     friends: [
       {
         user: {
@@ -112,18 +101,6 @@ const UserSchema = new mongoose.Schema(
         default: "",
       },
     },
-    achievements: [
-      {
-        icon: {
-          type: String,
-          default: "",
-        },
-        description: {
-          type: String,
-          default: "",
-        },
-      },
-    ],
     facebook: {
       type: String,
       default: "",
@@ -160,4 +137,4 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("User", UserSchema);
+export default model("User", UserSchema);
